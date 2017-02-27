@@ -160,4 +160,15 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
+
+    public void soundtest(View view) {
+        class TestShape extends Shape {
+            TestShape() {
+                super();
+            }
+        }
+        TestShape testShape = new TestShape();
+        testShape.playSound(getApplicationContext());
+
+    }
 }
