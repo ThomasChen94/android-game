@@ -1,11 +1,9 @@
 package edu.stanford.cs108.rabbit;
 
 import android.annotation.SuppressLint;
-<<<<<<< Updated upstream
+
 import android.database.sqlite.SQLiteDatabase;
-=======
-import android.content.Intent;
->>>>>>> Stashed changes
+
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -168,7 +166,7 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
-<<<<<<< Updated upstream
+
     SQLiteDatabase db;
     public void soundtest(View view) {
         class TestShape extends Shape {
@@ -183,6 +181,4 @@ public class FullscreenActivity extends AppCompatActivity {
         db = gameDatabase.getDb(getApplicationContext());
 
     }
-=======
->>>>>>> Stashed changes
 }

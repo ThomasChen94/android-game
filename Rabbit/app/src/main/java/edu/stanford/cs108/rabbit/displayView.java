@@ -31,7 +31,7 @@ public class displayView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        ImageShape img = new ImageShape("carrot", "");
+        ImageShape img = new ImageShape("carrot", "", "");
         img.draw(canvas, getContext());
     }
 }

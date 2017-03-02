@@ -1,6 +1,7 @@
 package edu.stanford.cs108.rabbit;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.media.MediaPlayer;
 import android.view.View;
 
@@ -24,9 +25,9 @@ public class Page {
     public Page() {
 
     }
-    public void draw() {
+    public void draw(Canvas canvas) {
         for (Shape shape : shapeList) {
-            shape.draw();
+            shape.draw(canvas);
         }
     }
     public void playSound(View view, Context context) {

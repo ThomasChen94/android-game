@@ -16,8 +16,8 @@ import java.io.InputStream;
 
 public class ImageShape extends Shape {
 
-    public ImageShape(String image, String text) {
-        super(image, text);
+    public ImageShape(String image, String text, String soundName) {
+        super(image, text, soundName);
         System.out.println(image);
     }
 
