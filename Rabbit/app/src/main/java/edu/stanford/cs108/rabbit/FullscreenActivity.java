@@ -1,6 +1,7 @@
 package edu.stanford.cs108.rabbit;
 
 import android.annotation.SuppressLint;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -106,6 +107,8 @@ public class FullscreenActivity extends AppCompatActivity {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+
+
     }
 
     @Override
@@ -161,6 +164,7 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
+    SQLiteDatabase db;
     public void soundtest(View view) {
         class TestShape extends Shape {
             TestShape() {
@@ -169,6 +173,9 @@ public class FullscreenActivity extends AppCompatActivity {
         }
         TestShape testShape = new TestShape();
         testShape.playSound(getApplicationContext());
+
+        GameDatabase gameDatabase= GameDatabase.getInstance();
+        db = gameDatabase.getDb(getApplicationContext());
 
     }
 }
