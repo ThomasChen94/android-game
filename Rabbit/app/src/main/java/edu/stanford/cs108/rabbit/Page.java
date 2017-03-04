@@ -22,8 +22,10 @@ public class Page {
     protected static final String RAW = "raw";
 
 
-    public Page() {
-
+    public Page(String background, String soundName, List<Shape> shapeList) {
+        this.background = background;
+        this.soundName = soundName;
+        this.shapeList = shapeList;
     }
     public void draw(Canvas canvas) {
         for (Shape shape : shapeList) {

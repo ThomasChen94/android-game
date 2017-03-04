@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eeeeee"
+    tools:context="edu.stanford.cs108.rabbit.GameActivity">
+    <!--<LinearLayout-->
+    <!--android:gravity="bottom"-->
+    <!--android:orientation="vertical"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
+
+    <edu.stanford.cs108.rabbit.GameView
+        android:id="@+id/gameView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <edu.stanford.cs108.rabbit.WrappingSlidingDrawer
+        android:layout_gravity="bottom"
+        android:content="@+id/content"
+        android:handle="@+id/handle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/handle">
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bag_icon"/>
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff">
+            <edu.stanford.cs108.rabbit.InventoryView
+                android:layout_width="wrap_content"
+                android:layout_height="100dp" />
+        </LinearLayout>
+
+
+
+    </edu.stanford.cs108.rabbit.WrappingSlidingDrawer>
+    <!--</LinearLayout>-->
+
+</FrameLayout>
