@@ -1,7 +1,9 @@
 package edu.stanford.cs108.rabbit;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 
 import android.app.Activity;
@@ -40,12 +42,19 @@ public abstract class Shape {
     int page;
     RectF rectF;
     JSONObject script;
+    JSONObject onClickJSON;
+    JSONObject onDropJSON;
+    JSONObject onEnterJSON;
+
     String image;
     String text;
     boolean hidden;
     boolean movable;
     String soundName;
     int order;
+
+    Activity activity;
+    DisplayView displayView;
 
 
     static GameView gameView;
@@ -66,6 +75,7 @@ public abstract class Shape {
     public Shape() {
         this.soundName = "evillaugh";
         this.rectF = new RectF(0,0,0,0);
+
     }
 
     public Shape(String image, String text, String soundName, String script, int order, boolean hidden, boolean movable, int left, int top, int right, int bottom) {
@@ -85,10 +95,87 @@ public abstract class Shape {
 
         }
 
+<<<<<<< HEAD
         initBitmapDrawable();
         initPaint();
 
     }
+=======
+
+    private String testScript = "{"
+            + "\"on click\": {\"goto\": \"page1\", \"show\": \"carrot\"},"
+            + "\"on enter\": {\"show\": \"carrot\"},"
+            + "\"on drop\": {\"show\": \"diamond\"}"
+            + "}";
+
+    private String testScript2 = "{\"on click\": {\"goto\": \"page1\", \"show\": \"carrot\"}}";
+
+
+
+    private void scriptParser() throws JSONException {
+        JSONObject jsonObject = new JSONObject(testScript2);
+
+        onClickJSON = jsonObject.getJSONObject("on click");
+        onEnterJSON = jsonObject.getJSONObject("on enter");
+        onDropJSON = jsonObject.getJSONObject("on drop");
+    }
+
+    public void onClick() throws JSONException {
+        actionProcesser(onClickJSON);
+    }
+
+    public void onDrop() throws JSONException {
+        actionProcesser(onDropJSON);
+    }
+
+    public void onEnter() throws JSONException {
+        actionProcesser(onEnterJSON);
+    }
+
+    private void actionProcesser(JSONObject jsonObject) throws JSONException {
+        Iterator<String> keys = jsonObject.keys();
+
+        while(keys.hasNext()) {
+            String key = keys.next();
+            String value = jsonObject.getString(key);
+            switch (key) {
+                case "goto": onGoto(value);
+                    break;
+                case "show": onShow(value);
+                    break;
+                case "hide": onHide(value);
+                    break;
+                case "play": onPlay(value);
+            }
+        }
+    }
+
+    public void onGoto(String pageName) {
+        GameDatabase gameDatabase = GameDatabase.getInstance();
+        Page newPage = gameDatabase.selectPage(pageName);  //Implemented a dummy selectPage() in GameDatabase, should delete that.
+        displayView.setCurrentPage(newPage);
+
+
+    }
+
+    //TODO: waiting for db's update shape method
+    public void onShow(String shapeName) {
+        //need to see if this shape "shapeName" is in the current page, if so, invalidate();
+    }
+
+    //TODO: waiting for db's update shape method
+    public void onHide(String shapeName) {
+        //need to see if this shape "shapeName" is in the current page, if so, invalidate();
+
+    }
+
+    public void onPlay(String soundName) {
+        int soundId = activity.getResources().getIdentifier(soundName, RAW, activity.getPackageName());
+        mp = MediaPlayer.create(activity, soundId);
+        mp.start();
+    }
+
+>>>>>>> origin/master
     public Shape(String image, String text, String soundName) {
         currentShapeNumber++; // every time constructing a new shape, increment the counter
 
@@ -105,16 +192,45 @@ public abstract class Shape {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+<<<<<<< HEAD
         initBitmapDrawable();
         initPaint();
+=======
+    }
+
+    BitmapDrawable imageDrawable;
+    private void initBitmapDrawable() {
+        if (image == null || image.equals("")) {
+            imageDrawable = null;
+        } else {
+            int imageId = activity.getResources().getIdentifier(image, RAW, activity.getPackageName());
+            imageDrawable =
+                    (BitmapDrawable) activity.getResources().getDrawable(imageId);
+        }
+    }
+
+    //TODO: need to organize different versions of constructor
+    public Shape(Activity activity) {  //we need to have a constructor that takes an activity for using findViewById()
+        this.activity = activity;
+        displayView = (DisplayView) activity.findViewById(R.id.displayView);
+        initBitmapDrawable();
+>>>>>>> origin/master
     }
 
     public static void setContext(Context contextPass) {
         context = contextPass;
     }
 
+<<<<<<< HEAD
     public static void setGameView(GameView gameViewPass) {
         gameView = gameViewPass;
+=======
+    //TODO: can be merged with onPlay(); don't need to pass a Context, instead we can use Activity.
+    public void playSound(Context context) {
+        int soundId = context.getResources().getIdentifier(soundName, RAW, context.getPackageName());
+        mp = MediaPlayer.create(context, soundId);
+        mp.start();
+>>>>>>> origin/master
     }
 
     public JSONObject parseStringToJson(String script) {

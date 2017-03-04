@@ -19,7 +19,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<<<<<<< HEAD
         <activity android:name=".GameActivity"></activity>
+=======
+        <activity
+            android:name=".playActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_play"
+            android:theme="@style/FullscreenTheme"></activity>
+>>>>>>> origin/master
     </application>
 
 </manifest>
