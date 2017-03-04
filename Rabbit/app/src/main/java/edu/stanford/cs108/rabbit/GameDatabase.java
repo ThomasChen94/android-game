@@ -115,10 +115,4 @@ public final class GameDatabase {
 
         count--;
     }
-
-
-    //For supressing error message, used in shape.onGoto()
-    public Page selectPage(String Name) {
-        return null;
-    }
 }

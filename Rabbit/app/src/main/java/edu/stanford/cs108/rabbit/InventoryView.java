@@ -1,26 +1,28 @@
 package edu.stanford.cs108.rabbit;
 
-import android.content.Context;
-import android.graphics.Canvas;
-import android.util.AttributeSet;
 import android.view.View;
 
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.SurfaceView;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.app.Activity;
+import android.view.SurfaceHolder;
+
 /**
- * Created by EricX on 2/3/17.
+ * Created by ThomasChen on 2/26/17.
  */
 
-public class DisplayView extends View {
-
-    Page currPage;
 
 
-<<<<<<< HEAD:Rabbit/app/src/main/java/edu/stanford/cs108/rabbit/InventoryView.java
 public class InventoryView extends View {
     public InventoryView(Context context, AttributeSet attrs) {
-=======
-
-    public DisplayView(Context context, AttributeSet attrs) {
->>>>>>> origin/master:Rabbit/app/src/main/java/edu/stanford/cs108/rabbit/displayView.java
         super(context, attrs);
     }
 
@@ -30,10 +32,5 @@ public class InventoryView extends View {
 
         ImageShape img = new ImageShape("carrot", "", "");
         img.draw(canvas, getContext());
-    }
-
-    public void setCurrentPage(Page newPage) {
-        this.currPage = newPage;
-        invalidate(); //Once the page is changed, redraw the view.
     }
 }
