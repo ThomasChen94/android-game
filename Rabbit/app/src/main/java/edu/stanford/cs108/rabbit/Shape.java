@@ -105,8 +105,8 @@ public abstract class Shape {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        initBitmapDrawable();
-        initPaint();
+        //initBitmapDrawable();
+        //initPaint();
     }
 
     public static void setContext(Context contextPass) {
