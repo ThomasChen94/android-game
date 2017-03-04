@@ -2,7 +2,6 @@ package edu.stanford.cs108.rabbit;
 
 import android.annotation.SuppressLint;
 
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 
 import android.support.v7.app.ActionBar;
@@ -11,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -170,22 +168,17 @@ public class FullscreenActivity extends AppCompatActivity {
 
 
     SQLiteDatabase db;
-    public void click(View view) {
-        Intent intent = new Intent(this, GameActivity.class);
-        startActivity(intent);
+    public void soundtest(View view) {
+        class TestShape extends Shape {
+            TestShape() {
+                super();
+            }
+        }
+        TestShape testShape = new TestShape();
+        testShape.playSound(getApplicationContext());
+
+        GameDatabase gameDatabase= GameDatabase.getInstance();
+        db = gameDatabase.getDb(getApplicationContext());
 
     }
-
-    //@Override
-/*    public boolean onTouchEvent(MotionEvent event) {
-        if(event.getAction() == MotionEvent.ACTION_DOWN) {
-            //当手指按下的时候
-            float x1 = event.getX();
-            float y1 = event.getY();
-            System.out.println(x1 + " " + y1);
-            Toast.makeText(FullscreenActivity.this, x1 + " " + y1, Toast.LENGTH_SHORT).show();
-        }
-
-        return super.onTouchEvent(event);
-    }*/
 }

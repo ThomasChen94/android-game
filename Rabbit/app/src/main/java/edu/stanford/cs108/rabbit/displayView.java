@@ -21,8 +21,9 @@ import android.view.SurfaceHolder;
 
 
 
-public class InventoryView extends View {
-    public InventoryView(Context context, AttributeSet attrs) {
+
+public class displayView extends View {
+    public displayView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

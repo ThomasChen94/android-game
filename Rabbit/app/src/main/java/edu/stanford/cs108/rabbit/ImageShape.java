@@ -21,10 +21,6 @@ public class ImageShape extends Shape {
         System.out.println(image);
     }
 
-    public ImageShape(String image, String text, String soundName, String script, int order, boolean hidden, boolean movable, int left, int top, int right, int bottom) {
-        super(image, text, soundName, script, order, hidden, movable, left, top, right, bottom);
-    }
-
     public void draw(Canvas canvas, Context context) {
         System.out.println(image);
         int imageId = context.getResources().getIdentifier(image, DRAWABLE, context.getPackageName());
