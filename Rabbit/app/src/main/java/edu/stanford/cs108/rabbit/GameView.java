@@ -7,6 +7,8 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
+
 /**
  * Created by qianyu on 2017/3/3.
  */
@@ -18,14 +20,34 @@ public class GameView extends View {
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
         gameDatabase = GameDatabase.getInstance();
+        gameDatabase.getDb(context);
         //currPage = gameDatabase.getPage(1);
+
+        currPage = gameDatabase.getPage("" + 2); // get the first page
+
+        ViewTreeObserver vto = this.getViewTreeObserver();
+        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            public boolean onPreDraw() {
+                GameView.this.getViewTreeObserver().removeOnPreDrawListener(this);
+                int height = GameView.this.getMeasuredHeight();
+                int width  = GameView.this.getMeasuredWidth();
+                Shape.setViewHeight(height);
+                Shape.setViewWidth(width);
+                //System.out.println(height + " " + width);
+                return true;
+            }
+        });
+
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        //currPage.draw(canvas);
+
+        //System.out.println(getWidth() + " " + getHeight());
+        currPage.draw(canvas);
     }
 
     public void setCurrentPage(Page newPage) {

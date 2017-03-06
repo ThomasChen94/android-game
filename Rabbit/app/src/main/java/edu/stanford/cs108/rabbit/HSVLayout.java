@@ -38,7 +38,7 @@ public class HSVLayout extends LinearLayout {
 
                     // Insert new shape
                     EditView editView = (EditView) ((Activity) getContext()).findViewById(R.id.editView);
-                    editView.insertShape(EditActivity.images[index - 1], "", "");
+                    editView.insertShape(EditActivity.images[index - 1], "", "","");
                     editView.invalidate();
 
                 }

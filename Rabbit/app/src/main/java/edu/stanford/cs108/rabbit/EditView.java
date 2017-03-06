@@ -38,8 +38,8 @@ public class EditView extends View {
     PopupWindow popupWindowAttribute;
     PopupWindow popupWindowScript;
 
-    public void insertShape(String image, String text, String soundName) {
-        shapeList.add(new ImageShape(image, text, soundName));
+    public void insertShape(String image, String text, String name, String page) {
+        shapeList.add(new Shape(image, text, name, page));
 
     }
 

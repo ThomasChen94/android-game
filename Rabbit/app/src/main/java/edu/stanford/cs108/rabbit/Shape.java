@@ -1,6 +1,8 @@
 package edu.stanford.cs108.rabbit;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.RectF;
 import android.view.View;
 
@@ -33,21 +35,25 @@ import java.util.Iterator;
  * Created by qianyu on 2017/2/26.
  */
 
-public abstract class Shape {
+public class Shape {
     // fields
 
-    String id;
-    int page;
+    String name;
+    String page;
     RectF rectF;
     JSONObject script;
     String image;
     String text;
     boolean hidden;
     boolean movable;
-    String soundName;
+    String soundName = null;
     int order;
 
+    Paint textPaint;
+    Bitmap imageBitmap;
 
+    static float viewWidth;
+    static float viewHeight;
     static GameView gameView;
     static int currentShapeNumber = 0; // counting the current shapes in our app
 
@@ -64,16 +70,17 @@ public abstract class Shape {
     // methods
 
     public Shape() {
-        this.soundName = "evillaugh";
         this.rectF = new RectF(0,0,0,0);
     }
 
-    public Shape(String image, String text, String soundName, String script, int order, boolean hidden, boolean movable, int left, int top, int right, int bottom) {
+    public Shape(String image, String text, String soundName, String name, String page, String script, int order, boolean hidden, boolean movable, float left, float top, float right, float bottom) {
         //currentShapeNumber++; // every time constructing a new shape, increment the counter
 
         this.image = image;
         this.text = text;
         this.soundName = soundName;
+        this.page = page;
+        this.name = name;
         this.order = order;
         this.hidden = hidden;
         this.movable = movable;
@@ -89,29 +96,35 @@ public abstract class Shape {
         initPaint();
 
     }
-    public Shape(String image, String text, String soundName) {
-        // 余谦改啦
-        this();
-        // 余谦改啦
-        currentShapeNumber++; // every time constructing a new shape, increment the counter
 
+    public Shape(String image, String text, String name, String page) {
+        this();
         this.image = image;
         this.text = text;
-        this.soundName = soundName;
+        this.page = page;
 
         hidden = false;
         movable = false;
 
         script = new JSONObject();
+
         try {                       //parsing script into individual Json objects for 3 action triggers
             scriptParser();
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        // 余谦改啦
+
+
         initBitmapDrawable();
         initPaint();
-        // 余谦改啦
+    }
+
+    public static void setViewWidth(float viewWidth) {
+        Shape.viewWidth = viewWidth;
+    }
+
+    public static void setViewHeight(float viewHeight) {
+        Shape.viewHeight = viewHeight;
     }
 
     public static void setContext(Context contextPass) {
@@ -127,18 +140,18 @@ public abstract class Shape {
     }
 
     public String getId() {
-        return id;
+        return name;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.name = id;
     }
 
-    public int getPage() {
+    public String getPage() {
         return page;
     }
 
-    public void setPage(int page) {
+    public void setPage(String page) {
         this.page = page;
     }
 
@@ -148,9 +161,9 @@ public abstract class Shape {
 
     public void setRectF(float left, float top, float right, float bottom) {
         this.rectF = new RectF(left, top, right, bottom);
-        if (imageDrawable != null) {
-            rectF.right = rectF.left + imageDrawable.getIntrinsicWidth();
-            rectF.bottom = rectF.top + imageDrawable.getIntrinsicHeight();
+        if (imageBitmap != null) {
+            rectF.right = rectF.left + imageBitmap.getWidth();
+            rectF.bottom = rectF.top + imageBitmap.getHeight();
         }
     }
 
@@ -258,7 +271,7 @@ public abstract class Shape {
             String value = jsonObject.getString(key);
 
             switch (key) {
-                case "goto": onGoto(Integer.parseInt(value));
+                case "goto": onGoto(value);
                     break;
                 case "show": onShow(value);
                     break;
@@ -271,7 +284,7 @@ public abstract class Shape {
 
 
     //Actions handlers: onGoto, onShow, onHide, onPlay.
-    public void onGoto(int pageName) {
+    public void onGoto(String pageName) {
         GameDatabase gameDatabase = GameDatabase.getInstance();
         Page newPage = gameDatabase.getPage(pageName);  //Implemented a dummy selectPage() in GameDatabase, should delete that.
         gameView.setCurrentPage(newPage);
@@ -299,36 +312,38 @@ public abstract class Shape {
 
 
     //initialize BitmapDrawable of the shape's associated image
-    BitmapDrawable imageDrawable;
-    private void initBitmapDrawable( ) {
+
+    private void initBitmapDrawable() {
         if (image == null || image.equals("")) {
-            imageDrawable = null;
+            imageBitmap = null;
         } else {
+
+            BitmapFactory.Options opts = new BitmapFactory.Options();
+
+            opts.inSampleSize = 1;
+            opts.inJustDecodeBounds = false;
             int imageId = context.getResources().getIdentifier(image, DRAWABLE, context.getPackageName());
-            imageDrawable =
-                    (BitmapDrawable) context.getResources().getDrawable(imageId);
-            // 余谦改啦
-            rectF.right = rectF.left + imageDrawable.getIntrinsicWidth();
-            rectF.bottom = rectF.top + imageDrawable.getIntrinsicHeight();
-            // 余谦改啦
+            imageBitmap = BitmapFactory.decodeResource(context.getResources(), imageId, opts);
+
+            rectF = new RectF(rectF.left, rectF.top, imageBitmap.getWidth(), imageBitmap.getHeight());
+
         }
     }
 
     //initialize the paint for the shape's associate text (can be made a static varaible of shape)
-    Paint textPaint;
+
     private void initPaint() {
         textPaint = new Paint();
         textPaint.setColor(Color.BLACK);
-        textPaint.setTextSize(15);
+        textPaint.setTextSize(35);
     }
 
     //Draw the shape-self; text takes precedence over image
     public void draw(Canvas canvas) {
         if (text != null && !text.equals(""))
             canvas.drawText(text, rectF.centerX(), rectF.centerY(), textPaint);
-        else if (imageDrawable != null)
-            canvas.drawBitmap(imageDrawable.getBitmap(),rectF.left,rectF.top,null);
-
+        else if (imageBitmap != null)
+            canvas.drawBitmap(imageBitmap, rectF.left, rectF.top, new Paint());
     }
 
 
