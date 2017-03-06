@@ -39,7 +39,6 @@ public class GameView extends View {
                 return true;
             }
         });
-
     }
 
     @Override

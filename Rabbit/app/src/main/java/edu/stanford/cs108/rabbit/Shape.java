@@ -48,6 +48,7 @@ public class Shape {
     boolean movable;
     String soundName = null;
     int order;
+    int fontsize;
 
     Paint textPaint;
     Bitmap imageBitmap;
@@ -73,6 +74,14 @@ public class Shape {
         this.rectF = new RectF(0,0,0,0);
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
     public Shape(String image, String text, String soundName, String name, String page, String script, int order, boolean hidden, boolean movable, float left, float top, float right, float bottom) {
         //currentShapeNumber++; // every time constructing a new shape, increment the counter
 
@@ -84,6 +93,7 @@ public class Shape {
         this.order = order;
         this.hidden = hidden;
         this.movable = movable;
+
         rectF = new RectF(left, top, right, bottom);
 
         try{
@@ -149,6 +159,10 @@ public class Shape {
 
     public String getPage() {
         return page;
+    }
+
+    public int getFontsize() {
+        return fontsize;
     }
 
     public void setPage(String page) {
