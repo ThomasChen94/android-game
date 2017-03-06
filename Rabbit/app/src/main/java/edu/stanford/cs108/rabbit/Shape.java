@@ -90,6 +90,9 @@ public abstract class Shape {
 
     }
     public Shape(String image, String text, String soundName) {
+        // 余谦改啦
+        this();
+        // 余谦改啦
         currentShapeNumber++; // every time constructing a new shape, increment the counter
 
         this.image = image;
@@ -105,8 +108,10 @@ public abstract class Shape {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        //initBitmapDrawable();
-        //initPaint();
+        // 余谦改啦
+        initBitmapDrawable();
+        initPaint();
+        // 余谦改啦
     }
 
     public static void setContext(Context contextPass) {
@@ -143,6 +148,10 @@ public abstract class Shape {
 
     public void setRectF(float left, float top, float right, float bottom) {
         this.rectF = new RectF(left, top, right, bottom);
+        if (imageDrawable != null) {
+            rectF.right = rectF.left + imageDrawable.getIntrinsicWidth();
+            rectF.bottom = rectF.top + imageDrawable.getIntrinsicHeight();
+        }
     }
 
     public JSONObject getScript() {
@@ -192,6 +201,10 @@ public abstract class Shape {
     public void setSoundName(String soundName) {
         this.soundName = soundName;
     }
+
+
+
+
 
 
 
@@ -291,9 +304,13 @@ public abstract class Shape {
         if (image == null || image.equals("")) {
             imageDrawable = null;
         } else {
-            int imageId = context.getResources().getIdentifier(image, RAW, context.getPackageName());
+            int imageId = context.getResources().getIdentifier(image, DRAWABLE, context.getPackageName());
             imageDrawable =
                     (BitmapDrawable) context.getResources().getDrawable(imageId);
+            // 余谦改啦
+            rectF.right = rectF.left + imageDrawable.getIntrinsicWidth();
+            rectF.bottom = rectF.top + imageDrawable.getIntrinsicHeight();
+            // 余谦改啦
         }
     }
 

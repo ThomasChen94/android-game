@@ -176,6 +176,11 @@ public class FullscreenActivity extends AppCompatActivity {
 
     }
 
+    public void editClick(View view) {
+        Intent intent = new Intent(this, EditActivity.class);
+        startActivity(intent);
+    }
+
     //@Override
 /*    public boolean onTouchEvent(MotionEvent event) {
         if(event.getAction() == MotionEvent.ACTION_DOWN) {

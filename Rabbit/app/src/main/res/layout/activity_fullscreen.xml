@@ -46,6 +46,13 @@
                 android:onClick="click"/>
 
         </LinearLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:text="Edit"
+            android:onClick="editClick"/>
     </FrameLayout>
 
 </FrameLayout>
