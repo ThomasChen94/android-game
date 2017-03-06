@@ -33,7 +33,7 @@ public final class GameDatabase {
         if (tablesCursor.getCount() == 0) {
             String setupStr = "CREATE TABLE shapes ("
                     + "name TEXT, page Text, image TEXT, sound TEXT, text TEXT, script TEXT,"
-                    + "left FLOAT, top FLOAT, right FLOAT, bottom FLOAT, hidden BOOLEAN, movable BOOLEAN,"
+                    + "left FLOAT, top FLOAT, right FLOAT, bottom FLOAT, hidden BOOLEAN, movable BOOLEAN, Type INTEGER,"
                     + " _id INTEGER PRIMARY KEY AUTOINCREMENT);";
 
             //System.out.println(setupStr);
@@ -48,10 +48,10 @@ public final class GameDatabase {
 
     public Page getPage(int pageIndex) {
         Cursor cursor = db.rawQuery(
-                "SELECT * FROM shapes WHERE page = " + pageIndex + "and name not like %info;", null);
+                "SELECT * FROM shapes WHERE page = " + pageIndex + " and name not like '%info';", null);
         if(cursor.moveToFirst() == false) return new Page("", "", null); // if nothing is selected, return an empty page
         List<Shape> shapeList= new LinkedList<Shape>();
-        while(cursor.moveToNext()) {
+        do {
             String sound    = cursor.getString(cursor.getColumnIndex("sound"));
             String image    = cursor.getString(cursor.getColumnIndex("image"));
             String text     = cursor.getString(cursor.getColumnIndex("text"));
@@ -59,23 +59,27 @@ public final class GameDatabase {
             boolean hidden  = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("hidden")));
             boolean movable = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("movable")));
             int order    = cursor.getShort(cursor.getColumnIndex("order"));
-            int left     = cursor.getShort(cursor.getColumnIndex("left"));
-            int top      = cursor.getShort(cursor.getColumnIndex("top"));
-            int right    = cursor.getShort(cursor.getColumnIndex("right"));
-            int bottom   = cursor.getShort(cursor.getColumnIndex("bottom"));
-            int type     = cursor.getShort(cursor.getColumnIndex("type"));
+            float left     = cursor.getFloat(cursor.getColumnIndex("left")) * Shape.viewWidth;
+            float top      = cursor.getFloat(cursor.getColumnIndex("top")) * Shape.viewHeight;
+            float right    = cursor.getFloat(cursor.getColumnIndex("right")) * Shape.viewWidth;
+            float bottom   = cursor.getFloat(cursor.getColumnIndex("bottom")) * Shape.viewHeight;
+            int type     = cursor.getShort(cursor.getColumnIndex("Type"));
+
 
             Shape newShape = null;
+            System.out.println(image);
             if(type == 0) {
                 newShape = new TextShape(image, text, sound, script, order, hidden, movable, left, top, right, bottom);
             } else {
                 newShape = new ImageShape(image, text, sound, script, order, hidden, movable, left, top, right, bottom);
+                //System.out.println(left);
             }
             shapeList.add(newShape);
-        }
+        } while(cursor.moveToNext());
 
-        Cursor pageCursor = db.rawQuery(
-                "SELECT * FROM shapes WHERE page = " + pageIndex + "and name like %info;", null);
+            Cursor pageCursor = db.rawQuery(
+                "SELECT * FROM shapes WHERE page = " + pageIndex + " and name like '%info';", null);
+        pageCursor.moveToNext();
         String sound    = pageCursor.getString(pageCursor.getColumnIndex("sound"));
         String image    = pageCursor.getString(pageCursor.getColumnIndex("image"));
         return new Page(image, sound, shapeList);

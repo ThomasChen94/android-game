@@ -31,6 +31,7 @@ public class InventoryView extends View {
         super.onDraw(canvas);
 
         ImageShape img = new ImageShape("carrot", "", "");
-        img.draw(canvas, getContext());
+
+        img.draw(canvas);
     }
 }

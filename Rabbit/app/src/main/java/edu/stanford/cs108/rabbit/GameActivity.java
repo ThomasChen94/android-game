@@ -24,9 +24,12 @@ public class GameActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.activity_game);
+
         Shape.setContext(this);
+        setContentView(R.layout.activity_game);
         Shape.setGameView((GameView) findViewById(R.id.gameView));
+
+
     }
 
     @Override
@@ -37,7 +40,7 @@ public class GameActivity extends Activity {
                 double downX = event.getX();
                 double downY = event.getY();
                 String curPos = "x: " + downX + " y: " +downY;
-                System.out.println(curPos);
+                //System.out.println(curPos);
 //                Toast toast = Toast.makeText(getApplicationContext(), curPos, Toast.LENGTH_SHORT);
 //                toast.show();
                 break;
