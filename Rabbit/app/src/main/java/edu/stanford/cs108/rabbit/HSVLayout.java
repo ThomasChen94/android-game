@@ -2,9 +2,12 @@ package edu.stanford.cs108.rabbit;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -37,9 +40,44 @@ public class HSVLayout extends LinearLayout {
                     hsv.setVisibility(View.INVISIBLE);
 
                     // Insert new shape
-                    EditView editView = (EditView) ((Activity) getContext()).findViewById(R.id.editView);
-                    editView.insertShape(EditActivity.images[index - 1], "", "","");
-                    editView.invalidate();
+                    final EditView editView = (EditView) ((Activity) getContext()).findViewById(R.id.editView);
+                    int imagesNumber = EditActivity.images.length;
+                    if (index == imagesNumber - 1) {
+                        // Insert text shape
+                        final EditText editText = new EditText(getContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("Set Text");
+                        builder.setView(editText);
+                        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String text = editText.getText().toString();
+                                int curShapeCount = editView.getShapeCount() + 1;
+                                String curShapeName = editView.shapeDefaultPrefix + curShapeCount;
+                                editView.insertShape("",text, curShapeName,"");
+                                editView.invalidate();
+                            }
+                        });
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                        builder.setCancelable(true);
+                        AlertDialog dialog = builder.create();
+                        dialog.setCanceledOnTouchOutside(true);
+                        dialog.show();
+
+                    } else {
+                        // Insert image shape
+                        int curShapeCount = editView.getShapeCount() + 1;
+                        String curShapeName = editView.shapeDefaultPrefix + curShapeCount;
+                        editView.insertShape(EditActivity.images[index], "", curShapeName,"");
+                        editView.invalidate();
+
+                    }
+
 
                 }
             });

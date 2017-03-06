@@ -2,31 +2,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-<ScrollView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-    <LinearLayout
+    <ScrollView
         android:layout_width="wrap_content"
-        android:orientation="vertical"
         android:layout_height="wrap_content">
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Delete"
-        android:onClick="delete"/>
-    <Button
-        android:id="@+id/script"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Script"
-        android:onClick="script"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Attribute"
-        android:onClick="attribute"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete"
+            android:onClick="delete"/>
+        <Button
+            android:id="@+id/script"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Script"
+            android:onClick="script"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Attribute"
+            android:onClick="attribute"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="showscript"
+            android:onClick="showScript"/>
 
-    </LinearLayout>
 
-</ScrollView>
+        </LinearLayout>
+
+    </ScrollView>
 </LinearLayout>

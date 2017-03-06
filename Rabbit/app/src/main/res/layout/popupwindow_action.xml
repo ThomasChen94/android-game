@@ -12,19 +12,23 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="onclickTrigger"
-                android:text="onclick"/>
+                android:text="goto"
+                android:onClick="gotoAction"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="onenterTrigger"
-                android:text="onenter"/>
+                android:text="play"
+                android:onClick="playAction"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="ondropTrigger"
-                android:text="ondrop"/>
+                android:text="show"
+                android:onClick="showAction"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="hide"
+                android:onClick="hideAction"/>
         </LinearLayout>
     </ScrollView>
-
 </LinearLayout>

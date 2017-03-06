@@ -26,7 +26,9 @@ import java.util.List;
  */
 
 public class EditView extends View {
-
+    // 在选择show的action的时候来存当前选择shape的名字
+    String togoPageSelected;
+    List<String> pageList;
     List<Shape> shapeList;
     Shape curShape;
     int curShapeIndex;
@@ -37,6 +39,8 @@ public class EditView extends View {
     PopupWindow popupWindowMain;
     PopupWindow popupWindowAttribute;
     PopupWindow popupWindowScript;
+    PopupWindow popupWindowAction;
+    String shapeDefaultPrefix = "Shape";
 
     public void insertShape(String image, String text, String name, String page) {
         shapeList.add(new Shape(image, text, name, page));
@@ -45,11 +49,18 @@ public class EditView extends View {
 
     public EditView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        togoPageSelected = "";
         shapeList = new LinkedList<>();
+        pageList = new LinkedList<>();
         Shape.setContext(context);
         initPopupWindowMain();
         initPopupWindowAttribute();
         initPopupWindowScript();
+        initPopupWindowAction();
+//        initPopupWindow(popupWindowMain, R.layout.popupwindow_main);
+//        initPopupWindow(popupWindowAttribute, R.layout.popupwindow_attributes);
+//        initPopupWindow(popupWindowScript, R.layout.popupwindow_script);
+//        initPopupWindow(popupWindowAction, R.layout.popupwindow_action);
     }
 
 
@@ -103,9 +114,15 @@ public class EditView extends View {
         System.out.println(curPos);
         curShape = findShape(downX, downY);
         if (curShape != null) {
-            System.out.println(curShape.getImage());
-            relativeX = downX - curShape.getRectF().left;
-            relativeY = downY - curShape.getRectF().top;
+            System.out.println(getLastShape().getRectF().left + " " + getLastShape().getRectF().top + " " + getLastShape().getRectF().right + " " + getLastShape().getRectF().bottom);
+            if (!curShape.getText().isEmpty()) {
+                relativeX = downX - curShape.getRectF().left;
+                relativeY = downY - curShape.getRectF().bottom;
+            } else {
+                relativeX = downX - curShape.getRectF().left;
+                relativeY = downY - curShape.getRectF().top;
+            }
+
         }
 
     }
@@ -115,9 +132,16 @@ public class EditView extends View {
         float downX = event.getX();
         float downY = event.getY();
         if (curShape != null) {
-            float rectX = downX - relativeX;
-            float rectY = downY - relativeY;
-            curShape.setRectF(rectX, rectY, 0, 0);
+            if (!curShape.getText().isEmpty()) {
+                float rectX = downX - relativeX;
+                float rectY = downY - relativeY;
+                curShape.setRectFLeftBottom(rectX, rectY);
+            } else {
+                float rectX = downX - relativeX;
+                float rectY = downY - relativeY;
+                curShape.setRectFLeftTop(rectX, rectY);
+            }
+
         }
         invalidate();
     }
@@ -126,7 +150,16 @@ public class EditView extends View {
             popupWindowMain.showAsDropDown(((Activity) getContext()).findViewById(R.id.insert_shape));
         }
     }
-
+    public void initPopupWindow(PopupWindow popupWindow, int layout) {
+        View popupView = LayoutInflater.from(getContext()).inflate(layout, null);
+        popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        popupWindow.setContentView(popupView);
+        popupWindow.setTouchable(true);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
+        popupWindow.setAnimationStyle(R.style.AnimationFade);
+    }
     public void initPopupWindowMain() {
         View popupView = LayoutInflater.from(getContext()).inflate(R.layout.popupwindow_main, null);
         popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
@@ -140,6 +173,7 @@ public class EditView extends View {
 
     public void initPopupWindowAttribute() {
         View popupView = LayoutInflater.from(getContext()).inflate(R.layout.popupwindow_attributes, null);
+        popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         popupWindowAttribute = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
         popupWindowAttribute.setContentView(popupView);
         popupWindowAttribute.setTouchable(true);
@@ -150,6 +184,7 @@ public class EditView extends View {
 
     public void initPopupWindowScript() {
         View popupView = LayoutInflater.from(getContext()).inflate(R.layout.popupwindow_script, null);
+        popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         popupWindowScript = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
         popupWindowScript.setContentView(popupView);
         popupWindowScript.setTouchable(true);
@@ -158,6 +193,16 @@ public class EditView extends View {
         popupWindowScript.setAnimationStyle(R.style.AnimationFade);
     }
 
+    public void initPopupWindowAction() {
+        View popupView = LayoutInflater.from(getContext()).inflate(R.layout.popupwindow_action, null);
+        popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        popupWindowAction = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        popupWindowAction.setContentView(popupView);
+        popupWindowAction.setTouchable(true);
+        popupWindowAction.setOutsideTouchable(true);
+        popupWindowAction.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
+        popupWindowAction.setAnimationStyle(R.style.AnimationFade);
+    }
     public Shape getCurShape() {
         return curShape;
     }
@@ -184,5 +229,35 @@ public class EditView extends View {
     public void expandScriptMenu() {
         int width = popupWindowMain.getContentView().getMeasuredWidth();
         popupWindowScript.showAsDropDown(((Activity) getContext()).findViewById(R.id.insert_shape), width, 0);
+    }
+
+    public Shape getLastShape() {
+        return shapeList.get(shapeList.size() - 1);
+    }
+
+    public int getShapeCount() {
+        return shapeList.size();
+    }
+
+    public void expandOnclickMenu() {
+        int widthMain = popupWindowMain.getContentView().getMeasuredWidth();
+        int widthScript = popupWindowScript.getContentView().getMeasuredWidth();
+        popupWindowAction.showAsDropDown(((Activity) getContext()).findViewById(R.id.insert_shape), widthMain + widthScript, 0);
+    }
+
+    public void expandOnenterMenu() {
+        int widthMain = popupWindowMain.getContentView().getMeasuredWidth();
+        int widthScript = popupWindowScript.getContentView().getMeasuredWidth();
+        popupWindowAction.showAsDropDown(((Activity) getContext()).findViewById(R.id.insert_shape), widthMain + widthScript, 0);
+    }
+
+    public void expandOndropMenu() {
+        int widthMain = popupWindowMain.getContentView().getMeasuredWidth();
+        int widthScript = popupWindowScript.getContentView().getMeasuredWidth();
+        popupWindowAction.showAsDropDown(((Activity) getContext()).findViewById(R.id.insert_shape), widthMain + widthScript, 0);
+    }
+
+    public void showShapeScript() {
+        System.out.println(curShape.getRawScript());
     }
 }

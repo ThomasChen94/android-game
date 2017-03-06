@@ -3,6 +3,7 @@ package edu.stanford.cs108.rabbit;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.View;
 
@@ -37,6 +38,8 @@ import java.util.Iterator;
 
 public class Shape {
     // fields
+
+    String rawScript;
 
     String name;
     String page;
@@ -101,9 +104,9 @@ public class Shape {
         } catch (Exception e) {
 
         }
-
-        initBitmapDrawable();
         initPaint();
+        initBitmapDrawable();
+
 
     }
 
@@ -112,7 +115,8 @@ public class Shape {
         this.image = image;
         this.text = text;
         this.page = page;
-
+        this.name = name;
+        rawScript = "";
         hidden = false;
         movable = false;
 
@@ -124,9 +128,9 @@ public class Shape {
             e.printStackTrace();
         }
 
-
-        initBitmapDrawable();
         initPaint();
+        initBitmapDrawable();
+
     }
 
     public static void setViewWidth(float viewWidth) {
@@ -149,11 +153,11 @@ public class Shape {
         return new JSONObject();
     }
 
-    public String getId() {
+    public String getName() {
         return name;
     }
 
-    public void setId(String id) {
+    public void setName(String id) {
         this.name = id;
     }
 
@@ -179,6 +183,22 @@ public class Shape {
             rectF.right = rectF.left + imageBitmap.getWidth();
             rectF.bottom = rectF.top + imageBitmap.getHeight();
         }
+    }
+
+    public void setRectFLeftTop(float left, float top) {
+        this.rectF.left = left;
+        this.rectF.top = top;
+        if (imageBitmap != null) {
+            rectF.right = rectF.left + imageBitmap.getWidth();
+            rectF.bottom = rectF.top + imageBitmap.getHeight();
+        }
+    }
+    public void setRectFLeftBottom(float left, float bottom) {
+        this.rectF.left = left;
+        this.rectF.bottom = bottom;
+        Rect rect = new Rect();
+        textPaint.getTextBounds(text, 0, text.length(), rect);
+        setRectF(left, bottom - rect.height(), left + rect.width(), bottom);
     }
 
     public JSONObject getScript() {
@@ -329,6 +349,9 @@ public class Shape {
 
     private void initBitmapDrawable() {
         if (image == null || image.equals("")) {
+            Rect rect = new Rect();
+            textPaint.getTextBounds(text, 0, text.length(), rect);
+            setRectF(getRectF().left, getRectF().top, getRectF().left + rect.width(), getRectF().top + rect.height());
             imageBitmap = null;
         } else {
 
@@ -349,14 +372,14 @@ public class Shape {
     private void initPaint() {
         textPaint = new Paint();
         textPaint.setColor(Color.BLACK);
-        textPaint.setTextSize(35);
+        textPaint.setTextSize(60);
     }
 
     //Draw the shape-self; text takes precedence over image
     public void draw(Canvas canvas) {
-        if (text != null && !text.equals(""))
-            canvas.drawText(text, rectF.centerX(), rectF.centerY(), textPaint);
-        else if (imageBitmap != null)
+        if (text != null && !text.equals("")) {
+            canvas.drawText(text, rectF.left, rectF.bottom, textPaint);
+        } else if (imageBitmap != null)
             canvas.drawBitmap(imageBitmap, rectF.left, rectF.top, new Paint());
     }
 
@@ -371,6 +394,7 @@ public class Shape {
 
     }
 
-
-
+    public String getRawScript() {
+        return rawScript;
+    }
 }

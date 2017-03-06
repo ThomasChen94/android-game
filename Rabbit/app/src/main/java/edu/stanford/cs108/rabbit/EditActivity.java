@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
@@ -27,8 +28,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 public class EditActivity extends Activity {
-
-    public static String[] images = {"carrot", "carrot2", "death", "duck", "fire"};
+    public static String[] images = {"carrot_icon", "carrot2_icon", "death_icon", "duck_icon", "fire_icon", "textbox_icon"};
     public static String[] sounds = {"carrotcarrotcarrot", "evillaugh", "fire", "hooray", "munch", "munching", "woof"};
     private HSVAdapter hsvAdapter;
     private HSVLayout hsvLayout;
@@ -52,7 +52,7 @@ public class EditActivity extends Activity {
             Map<String, Object> map = new HashMap<>();
             int id = getResources().getIdentifier(images[i], DRAWABLE, getPackageName());
             map.put("image", id);
-            map.put("index", i + 1);
+            map.put("index", i);
             hsvAdapter.addObject(map);
         }
         hsvLayout.setAdapter(hsvAdapter);
@@ -72,7 +72,7 @@ public class EditActivity extends Activity {
 
     public void rename(View view) {
         final EditView editView = (EditView) findViewById(R.id.editView);
-        String curID = editView.getCurShape().getId();
+        String curID = editView.getCurShape().getName();
         final EditText editText = new EditText(this);
         editText.setText(curID);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -83,7 +83,7 @@ public class EditActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 String changedID = editText.getText().toString();
                 if (!changedID.isEmpty()) {
-                    editView.getCurShape().setId(changedID);
+                    editView.getCurShape().setName(changedID);
                 }
             }
         });
@@ -99,6 +99,8 @@ public class EditActivity extends Activity {
         dialog.show();
 
     }
+
+
 
     public void delete(View view) {
         EditView editView = (EditView) findViewById(R.id.editView);
@@ -116,6 +118,54 @@ public class EditActivity extends Activity {
     public void script(View view) {
         EditView editView = (EditView) findViewById(R.id.editView);
         editView.expandScriptMenu();
+    }
+
+    public void showScript(View view) {
+        EditView editView = (EditView) findViewById(R.id.editView);
+        editView.showShapeScript();
+    }
+
+    public void onclickTrigger(View view) {
+        EditView editView = (EditView) findViewById(R.id.editView);
+        if (editView.curShape != null) {
+            editView.curShape.rawScript += "ONCLICK,";
+        }
+        editView.expandOnclickMenu();
+    }
+
+    public void onenterTrigger(View view) {
+        EditView editView = (EditView) findViewById(R.id.editView);
+        if (editView.curShape != null) {
+            editView.curShape.rawScript += "ONENTER,";
+        }
+        editView.expandOnenterMenu();
+    }
+
+    public void ondropTrigger(View view) {
+        final EditView editView = (EditView) findViewById(R.id.editView);
+        if (editView.curShape != null) {
+            editView.curShape.rawScript += "ONDROP,";
+        }
+
+        Integer[] shapeImageID = new Integer[images.length];
+        for (int i = 0; i < images.length; i++) {
+            shapeImageID[i] = getResources().getIdentifier(images[i], DRAWABLE, getPackageName());
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose Shape to Hide");
+        ListAdapter adapter = new ArrayAdapterWithIcon(this, images, shapeImageID);
+        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                editView.getCurShape().rawScript += images[which] + ",";
+            }
+        });
+        builder.setCancelable(true);
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+
+        editView.expandOndropMenu();
     }
 
     public void setSound(View view) {
@@ -157,5 +207,133 @@ public class EditActivity extends Activity {
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
         editView.getCurShape().setSoundName("");
+    }
+
+
+    public void playAction(View view) {
+        final EditView editView = (EditView) findViewById(R.id.editView);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final String oldSoundName = editView.getCurShape().getSoundName();
+        builder.setTitle("Choose Sound");
+        builder.setSingleChoiceItems(sounds, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String curSound = sounds[which];
+                int soundId = getResources().getIdentifier(curSound, RAW, getPackageName());
+                MediaPlayer mp = MediaPlayer.create(getApplicationContext(), soundId);
+                mp.start();
+                editView.getCurShape().setSoundName(curSound);
+            }
+        });
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                editView.getCurShape().rawScript += "PLAY,";
+                editView.getCurShape().rawScript += editView.getCurShape().getSoundName() + ",";
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.setCancelable(true);
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+        editView.getCurShape().setSoundName("");
+    }
+
+    public void gotoAction(View view) {
+        final EditView editView = (EditView) findViewById(R.id.editView);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose Shape to Show");
+        final String[] pageNameList = new String[editView.pageList.size()];
+        for (int i = 0; i < editView.pageList.size(); i++) {
+            pageNameList[i] = editView.pageList.get(i);
+        }
+        builder.setSingleChoiceItems(pageNameList, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                editView.togoPageSelected = pageNameList[which];
+            }
+        });
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                editView.getCurShape().rawScript += "TOGO,";
+                editView.getCurShape().rawScript += editView.pageList + ",";
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.setCancelable(true);
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+    }
+    public void showAction(View view) {
+
+        final EditView editView = (EditView) findViewById(R.id.editView);
+
+        Integer[] shapeImageID = new Integer[editView.shapeList.size()];
+        for (int i = 0; i < editView.shapeList.size(); i++) {
+            shapeImageID[i] = getResources().getIdentifier(editView.shapeList.get(i).image, DRAWABLE, getPackageName());
+        }
+        String[] shapeImageName = new String[editView.shapeList.size()];
+        for (int i = 0; i < editView.shapeList.size(); i++) {
+            shapeImageName[i] = editView.shapeList.get(i).name;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose Shape to Show");
+        ListAdapter adapter = new ArrayAdapterWithIcon(this, shapeImageName, shapeImageID);
+        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                editView.getCurShape().rawScript += "SHOW,";
+                editView.getCurShape().rawScript += editView.shapeList.get(which).name + ",";
+            }
+        });
+        builder.setCancelable(true);
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+
+
+
+
+
+    }
+    public void hideAction(View view) {
+
+        final EditView editView = (EditView) findViewById(R.id.editView);
+
+        Integer[] shapeImageID = new Integer[editView.shapeList.size()];
+        for (int i = 0; i < editView.shapeList.size(); i++) {
+            shapeImageID[i] = getResources().getIdentifier(editView.shapeList.get(i).image, DRAWABLE, getPackageName());
+        }
+        String[] shapeImageName = new String[editView.shapeList.size()];
+        for (int i = 0; i < editView.shapeList.size(); i++) {
+            shapeImageName[i] = editView.shapeList.get(i).name;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose Shape to Hide");
+        ListAdapter adapter = new ArrayAdapterWithIcon(this, shapeImageName, shapeImageID);
+        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                editView.getCurShape().rawScript += "HIDE,";
+                editView.getCurShape().rawScript += editView.shapeList.get(which).name + ",";
+            }
+        });
+        builder.setCancelable(true);
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
     }
 }
