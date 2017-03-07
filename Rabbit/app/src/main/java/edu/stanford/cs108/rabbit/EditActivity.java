@@ -128,7 +128,9 @@ public class EditActivity extends Activity {
     public void onclickTrigger(View view) {
         EditView editView = (EditView) findViewById(R.id.editView);
         if (editView.curShape != null) {
-            editView.curShape.rawScript += "ONCLICK,";
+            editView.resetTmpScript();
+            editView.tmpScript[0] = "ONCLICK";
+            //editView.curShape.rawScript += "ONCLICK,";
         }
         editView.expandOnclickMenu();
     }
@@ -136,7 +138,9 @@ public class EditActivity extends Activity {
     public void onenterTrigger(View view) {
         EditView editView = (EditView) findViewById(R.id.editView);
         if (editView.curShape != null) {
-            editView.curShape.rawScript += "ONENTER,";
+            editView.resetTmpScript();
+            editView.tmpScript[0] = "ONENTER";
+            //editView.curShape.rawScript += "ONENTER,";
         }
         editView.expandOnenterMenu();
     }
@@ -144,7 +148,9 @@ public class EditActivity extends Activity {
     public void ondropTrigger(View view) {
         final EditView editView = (EditView) findViewById(R.id.editView);
         if (editView.curShape != null) {
-            editView.curShape.rawScript += "ONDROP,";
+            editView.resetTmpScript();
+            editView.tmpScript[0] = "ONDROP";
+            //editView.curShape.rawScript += "ONDROP,";
         }
 
         Integer[] shapeImageID = new Integer[images.length];
@@ -157,7 +163,8 @@ public class EditActivity extends Activity {
         builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                editView.getCurShape().rawScript += images[which] + ",";
+                editView.tmpScript[1] += images[which] + "";
+                //editView.getCurShape().rawScript += images[which] + ",";
             }
         });
         builder.setCancelable(true);
@@ -228,8 +235,14 @@ public class EditActivity extends Activity {
         builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                editView.getCurShape().rawScript += "PLAY,";
-                editView.getCurShape().rawScript += editView.getCurShape().getSoundName() + ",";
+                if (!editView.getCurShape().getSoundName().isEmpty()) {
+                    editView.tmpScript[2] = "PLAY";
+                    editView.tmpScript[3] = editView.getCurShape().getSoundName() + "";
+                    editView.flushTmpScriptToRawScript();
+                }
+
+//                editView.getCurShape().rawScript += "PLAY,";
+//                editView.getCurShape().rawScript += editView.getCurShape().getSoundName() + ",";
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -262,8 +275,11 @@ public class EditActivity extends Activity {
         builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                editView.getCurShape().rawScript += "TOGO,";
-                editView.getCurShape().rawScript += editView.pageList + ",";
+                editView.tmpScript[2] = "TOGO";
+                editView.tmpScript[3] = editView.pageList + "";
+                editView.flushTmpScriptToRawScript();
+//                editView.getCurShape().rawScript += "TOGO,";
+//                editView.getCurShape().rawScript += editView.pageList + ",";
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -295,8 +311,11 @@ public class EditActivity extends Activity {
         builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                editView.getCurShape().rawScript += "SHOW,";
-                editView.getCurShape().rawScript += editView.shapeList.get(which).name + ",";
+                editView.tmpScript[2] = "SHOW";
+                editView.tmpScript[3] = editView.shapeList.get(which).name + "";
+                editView.flushTmpScriptToRawScript();
+//                editView.getCurShape().rawScript += "SHOW,";
+//                editView.getCurShape().rawScript += editView.shapeList.get(which).name + ",";
             }
         });
         builder.setCancelable(true);
@@ -327,8 +346,11 @@ public class EditActivity extends Activity {
         builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                editView.getCurShape().rawScript += "HIDE,";
-                editView.getCurShape().rawScript += editView.shapeList.get(which).name + ",";
+                editView.tmpScript[2] = "HIDE";
+                editView.tmpScript[3] = editView.shapeList.get(which).name + "";
+                editView.flushTmpScriptToRawScript();
+//                editView.getCurShape().rawScript += "HIDE,";
+//                editView.getCurShape().rawScript += editView.shapeList.get(which).name + ",";
             }
         });
         builder.setCancelable(true);

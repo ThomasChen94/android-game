@@ -77,9 +77,6 @@ public class Shape {
         this.rectF = new RectF(0,0,0,0);
     }
 
-    public String getName() {
-        return name;
-    }
 
     public int getOrder() {
         return order;

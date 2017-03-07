@@ -27,6 +27,7 @@ import java.util.List;
 
 public class EditView extends View {
     // 在选择show的action的时候来存当前选择shape的名字
+    String[] tmpScript;
     String togoPageSelected;
     List<String> pageList;
     List<Shape> shapeList;
@@ -50,6 +51,8 @@ public class EditView extends View {
     public EditView(Context context, AttributeSet attrs) {
         super(context, attrs);
         togoPageSelected = "";
+        tmpScript = new String[4];
+        resetTmpScript();
         shapeList = new LinkedList<>();
         pageList = new LinkedList<>();
         Shape.setContext(context);
@@ -259,5 +262,18 @@ public class EditView extends View {
 
     public void showShapeScript() {
         System.out.println(curShape.getRawScript());
+    }
+
+    public void flushTmpScriptToRawScript() {
+        for (String s : tmpScript) {
+            if (s.isEmpty()) continue;
+            getCurShape().rawScript += s + ",";
+        }
+    }
+
+    public void resetTmpScript() {
+        for (int i = 0; i < tmpScript.length; i++) {
+            tmpScript[i] = "";
+        }
     }
 }
