@@ -29,7 +29,9 @@ import android.content.Context;
 import org.json.JSONObject;
 import org.json.JSONException;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 
 /**
@@ -44,7 +46,9 @@ public class Shape {
     String name;
     String page;
     RectF rectF;
-    JSONObject script;
+    //JSONObject script;
+    Map<String, Map<String, String>> command;
+    String script;  // we no longer use Json
     String image;
     String text;
     boolean hidden;
@@ -61,8 +65,8 @@ public class Shape {
     static GameView gameView;
     static int currentShapeNumber = 0; // counting the current shapes in our app
 
-    final String[] scriptPrimitives = new String[] {"goto", "play", "hide", "show"};
-    final String[] scriptTriggers = new String[] {"onClick", "onEnter", "onDrop"};
+    final String[] scriptPrimitives = new String[] {"GOTO", "PLAY", "HIDE", "SHOW"};
+    final String[] scriptTriggers = new String[] {"ONCLICK", "ONENTER", "ONDROP"};
 
     static final String PACKAGE_NAME = "edu.stanford.cs108.rabbit";
     static final String DRAWABLE = "drawable";
@@ -93,14 +97,11 @@ public class Shape {
         this.order = order;
         this.hidden = hidden;
         this.movable = movable;
+        this.script = script;
 
         rectF = new RectF(left, top, right, bottom);
 
-        try{
-            this.script = new JSONObject(script);
-        } catch (Exception e) {
 
-        }
         initPaint();
         initBitmapDrawable();
 
@@ -117,7 +118,7 @@ public class Shape {
         hidden = false;
         movable = false;
 
-        script = new JSONObject();
+        script = "";
 
         try {                       //parsing script into individual Json objects for 3 action triggers
             scriptParser();
@@ -198,13 +199,66 @@ public class Shape {
         setRectF(left, bottom - rect.height(), left + rect.width(), bottom);
     }
 
-    public JSONObject getScript() {
+    public String getScript() {
         return script;
     }
 
-    public void setScript(JSONObject script) {
-        this.script = script;
+    public void setScript(String script) {
+        String formatScript = parseScript(script);
+        this.script = formatScript;
+        this.rawScript = formatScript;
     }
+
+
+    // parse the script into command, and also the correct format
+    public String parseScript(String script) {
+        command = new HashMap<String, Map<String, String>>();
+        String[] rawCommand = script.split("\\s+");
+        for (int i = 0; i < rawCommand.length; i++) {
+            switch (rawCommand[i]) {
+                case "ONCLICK":
+                    parserScriptHelper(rawCommand[i], rawCommand[i + 1], rawCommand[i + 2]);
+                    break;
+                case "ONENTER":
+                    parserScriptHelper(rawCommand[i], rawCommand[i + 1], rawCommand[i + 2]);
+                    break;
+                case "ONDROP":
+                    String trigger = rawCommand[i] + " " + rawCommand[i + 1];
+                    parserScriptHelper(trigger, rawCommand[i + 2], rawCommand[i + 3]);
+                    break;
+                default:
+                    continue;
+            }
+        }
+        // parse the command map to string for storing in the database
+        String formatScript = "";
+        for(String trigger : command.keySet()) {
+            formatScript += trigger + " ";
+            for(String action : command.get(trigger).keySet()) {
+                formatScript += action + " " + command.get(trigger).get(action);
+            }
+        }
+        return formatScript;
+    }
+
+    private void parserScriptHelper(String trigger, String commandNext, String obj) {
+        Map<String, String> followCommand = null;
+        if(command.containsKey(trigger)) {
+            followCommand = command.get(trigger);
+        } else {
+            followCommand = new HashMap<String, String>();
+        }
+        if(followCommand.containsKey(commandNext)) {
+            // chain the same command
+            followCommand.put(commandNext,
+                    followCommand.get(commandNext) + " " + obj + " ");
+        } else {
+            followCommand.put(commandNext,
+                    obj + " ");
+        }
+        command.put(trigger, followCommand);
+    }
+
 
     public String getImage() {
         return image;

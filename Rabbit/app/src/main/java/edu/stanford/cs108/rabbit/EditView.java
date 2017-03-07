@@ -267,8 +267,9 @@ public class EditView extends View {
     public void flushTmpScriptToRawScript() {
         for (String s : tmpScript) {
             if (s.isEmpty()) continue;
-            getCurShape().rawScript += s + ",";
+            getCurShape().rawScript += s + " ";
         }
+        getCurShape().setScript(getCurShape().rawScript);
     }
 
     public void resetTmpScript() {
