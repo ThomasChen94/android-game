@@ -43,7 +43,9 @@ public class Shape {
 
     String rawScript;
 
+
     String name;
+    String uniqueName;
     String page;
     RectF rectF;
     //JSONObject script;
@@ -86,13 +88,14 @@ public class Shape {
         return order;
     }
 
-    public Shape(String image, String text, String soundName, String name, String page, String script, int order, boolean hidden, boolean movable, float left, float top, float right, float bottom) {
+    public Shape(String image, String text, String soundName, String uniqueName, String name, String page, String script, int order, boolean hidden, boolean movable, float left, float top, float right, float bottom) {
         //currentShapeNumber++; // every time constructing a new shape, increment the counter
 
         this.image = image;
         this.text = text;
         this.soundName = soundName;
         this.page = page;
+        this.uniqueName = uniqueName;
         this.name = name;
         this.order = order;
         this.hidden = hidden;
@@ -108,12 +111,13 @@ public class Shape {
 
     }
 
-    public Shape(String image, String text, String name, String page) {
+    public Shape(String image, String text, String uniqueName, String page) {
         this();
         this.image = image;
         this.text = text;
         this.page = page;
-        this.name = name;
+        this.uniqueName = uniqueName;
+        this.name = uniqueName;
         rawScript = "";
         hidden = false;
         movable = false;
@@ -155,8 +159,12 @@ public class Shape {
         return name;
     }
 
-    public void setName(String id) {
-        this.name = id;
+    public String getUniqueName() {
+        return uniqueName;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPage() {

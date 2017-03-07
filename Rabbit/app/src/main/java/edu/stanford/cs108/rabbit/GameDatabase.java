@@ -32,7 +32,7 @@ public final class GameDatabase {
                 "SELECT * FROM sqlite_master WHERE type='table' AND name='shapes';", null);
         if (tablesCursor.getCount() == 0) {
             String setupStr = "CREATE TABLE shapes ("
-                    + "name TEXT, page Text, image TEXT, sound TEXT, text TEXT, fontsize INTEGER, script TEXT,"
+                    + "uniquename TEXT, name TEXT, page Text, image TEXT, sound TEXT, text TEXT, fontsize INTEGER, script TEXT,"
                     + "left FLOAT, top FLOAT, right FLOAT, bottom FLOAT, hidden BOOLEAN, movable BOOLEAN"
                     + " );";
 
@@ -55,6 +55,7 @@ public final class GameDatabase {
             String sound    = cursor.getString(cursor.getColumnIndex("sound"));
             String image    = cursor.getString(cursor.getColumnIndex("image"));
             String text     = cursor.getString(cursor.getColumnIndex("text"));
+            String uniqueName    = cursor.getString(cursor.getColumnIndex("uniquename"));
             String name    = cursor.getString(cursor.getColumnIndex("name"));
             String script   = cursor.getString(cursor.getColumnIndex("script"));
             boolean hidden  = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("hidden")));
@@ -68,7 +69,7 @@ public final class GameDatabase {
             Shape newShape = null;
             System.out.println(image);
 
-            newShape = new Shape(image, text, sound, name, page, script, order, hidden, movable, left, top, right, bottom);
+            newShape = new Shape(image, text, sound, uniqueName, name, page, script, order, hidden, movable, left, top, right, bottom);
             shapeList.add(newShape);
         } while(cursor.moveToNext());
 
@@ -80,6 +81,7 @@ public final class GameDatabase {
         return new Page(image, sound, shapeList);
     }
 
+    // updata the given shape
     public void updateShape(Shape shape, String gameName) {
         gameName = "shapes";   // hard code the game name
         String updateSQL = "UPDATE " + gameName + " SET"
@@ -97,13 +99,13 @@ public final class GameDatabase {
                             + " hidden = " + shape.isHidden() + ","
                             + " movable = " + shape.isMovable() + ","
                             + " order = " + shape.getOrder() + " "
-                            + "WHERE name = \"" + shape.getName() + "\";";
+                            + "WHERE uniquename = \"" + shape.getUniqueName() + "\";";
         db.execSQL(updateSQL);
     }
 
     public boolean ifExistShape (Shape shape) {
         Cursor shapeCursor = db.rawQuery(
-                "SELECT * FROM shapes WHERE name = " + shape.getName() + " and name like '%info';", null);
+                "SELECT * FROM shapes WHERE uniquename = " + shape.getUniqueName() + ";", null);
         if(shapeCursor.moveToFirst() == false) return false;
         return true;
     }
@@ -115,6 +117,7 @@ public final class GameDatabase {
     public void addShape(Shape shape) {
         if (db == null) return;
         String dataStr = "INSERT INTO shapes VALUES ("
+                + "\"" + shape.getUniqueName() + "\","
                 + "\"" + shape.getName() + "\","
                 + "\"" + shape.getPage() + "\","
                 + "\"" + shape.getImage() + "\","
@@ -138,8 +141,8 @@ public final class GameDatabase {
 
     public void deleteShape(Shape shape) {
         if (db == null) return;
-        String queryStr = "DELETE FROM shapes WHERE name = "
-                + "\"" + shape.getName() + "\";";
+        String queryStr = "DELETE FROM shapes WHERE uniquename = "
+                + "\"" + shape.getUniqueName() + "\";";
         db.execSQL(queryStr);
 
         count--;
