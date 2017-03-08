@@ -52,6 +52,11 @@ public class EditView extends View {
 
     }
 
+    public void insertPage(String pageName) {
+        pageList.add(pageName);
+        ((EditActivity)getContext()).updatePageList();
+    }
+
     public EditView(Context context, AttributeSet attrs) {
         super(context, attrs);
         createOrLoadGame();
@@ -84,8 +89,6 @@ public class EditView extends View {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 pageList.add("Page1");
-                ((EditActivity)getContext()).updatePageList();
-                pageList.add("Page 1");
                 ((EditActivity)getContext()).updatePageList();
             }
         });

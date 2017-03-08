@@ -36,13 +36,48 @@ public class HSVLayoutPage extends LinearLayout {
                 public void onClick(View v) {
                     System.out.println(map.get("index"));
                     int index = (Integer) map.get("index");
-                    HorizontalScrollView hsv = (HorizontalScrollView) ((Activity) getContext()).findViewById(R.id.hsv);
-                    hsv.setVisibility(View.INVISIBLE);
+//                    HorizontalScrollView hsv = (HorizontalScrollView) ((Activity) getContext()).findViewById(R.id.hsv_page);
+//                    hsv.setVisibility(View.INVISIBLE);
 
-                    // Insert new shape
+
                     final EditView editView = (EditView) ((Activity) getContext()).findViewById(R.id.editView);
+                    // Insert new page
+                    if (index == 0) {
+                        final EditText editText = new EditText(getContext());
+                        final int newPageIndex = editView.pageList.size() + 1;
+                        editText.setText("Page" + newPageIndex);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("Rename");
+                        builder.setView(editText);
+                        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                editView.insertPage(editText.getText().toString());
+                            }
+                        });
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                editView.insertPage("Page" + newPageIndex);
+                            }
+                        });
+                        builder.setCancelable(true);
+                        AlertDialog dialog = builder.create();
+                        dialog.setCanceledOnTouchOutside(true);
+                        dialog.show();
+                    } else {
+                        // choose page
 
+                    }
 
+                }
+            });
+            view.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    final EditView editView = (EditView) ((Activity) getContext()).findViewById(R.id.editView);
+                    editView.popupWindowMain.showAsDropDown(((Activity) getContext()).findViewById(R.id.hidden),0,0);
+                    return false;
                 }
             });
             this.setOrientation(HORIZONTAL);
