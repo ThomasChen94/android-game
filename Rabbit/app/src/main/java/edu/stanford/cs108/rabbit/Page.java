@@ -14,13 +14,38 @@ import java.util.List;
 public class Page {
     protected String background;
     protected String soundName;
+
+
+    String uniqueName;
+    String name;
     protected List<Shape> shapeList;
+
     protected MediaPlayer mp;
 
     protected static final String PACKAGE_NAME = "edu.stanford.cs108.rabbit";
     protected static final String DRAWABLE = "drawable";
     protected static final String RAW = "raw";
 
+
+    public String getUniqueName() {
+        return uniqueName;
+    }
+
+    public String getSoundName() {
+        return soundName;
+    }
+
+    public String getBackground() {
+        return background;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Page(String background, String soundName, List<Shape> shapeList) {
         this.background = background;
