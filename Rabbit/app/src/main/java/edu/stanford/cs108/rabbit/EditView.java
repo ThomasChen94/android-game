@@ -2,9 +2,11 @@ package edu.stanford.cs108.rabbit;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -43,6 +45,8 @@ public class EditView extends View {
     PopupWindow popupWindowAction;
     String shapeDefaultPrefix = "Shape";
 
+    GameDatabase gameDatabase;
+
     public void insertShape(String image, String text, String name, String page) {
         shapeList.add(new Shape(image, text, name, page));
 
@@ -50,12 +54,18 @@ public class EditView extends View {
 
     public EditView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        createOrLoadGame();
+        gameDatabase = GameDatabase.getInstance();
+        gameDatabase.getDb(context);
+        shapeList = new LinkedList<>();
+        pageList = new LinkedList<>();
+
         togoPageSelected = "";
         tmpScript = new String[4];
         resetTmpScript();
-        shapeList = new LinkedList<>();
-        pageList = new LinkedList<>();
+
         Shape.setContext(context);
+
         initPopupWindowMain();
         initPopupWindowAttribute();
         initPopupWindowScript();
@@ -66,6 +76,27 @@ public class EditView extends View {
 //        initPopupWindow(popupWindowAction, R.layout.popupwindow_action);
     }
 
+    public void createOrLoadGame() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Create or Load Game");
+        builder.setTitle("");
+        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                pageList.add("Page1");
+                ((EditActivity)getContext()).updatePageList();
+                pageList.add("Page 1");
+                ((EditActivity)getContext()).updatePageList();
+            }
+        });
+        builder.setNegativeButton("Load", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.show();
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -113,6 +144,8 @@ public class EditView extends View {
         float downY = event.getY();
         HorizontalScrollView hsv = (HorizontalScrollView) ((Activity) getContext()).findViewById(R.id.hsv);
         hsv.setVisibility(View.INVISIBLE);
+        HorizontalScrollView hsvPage = (HorizontalScrollView) ((Activity) getContext()).findViewById(R.id.hsv_page);
+        hsvPage.setVisibility(View.INVISIBLE);
         String curPos = "x: " + downX + " y: " +downY;
         System.out.println(curPos);
         curShape = findShape(downX, downY);
@@ -150,7 +183,8 @@ public class EditView extends View {
     }
     public void upEventHandler(MotionEvent event) {
         if (isClick && curShape != null) {
-            popupWindowMain.showAsDropDown(((Activity) getContext()).findViewById(R.id.insert_shape));
+            //popupWindowMain.showAsDropDown(((Activity) getContext()).findViewById(R.id.insert_shape));
+            popupWindowMain.showAsDropDown(((Activity) getContext()).findViewById(R.id.hidden),0,0);
         }
     }
     public void initPopupWindow(PopupWindow popupWindow, int layout) {
@@ -225,13 +259,16 @@ public class EditView extends View {
 
     public void expandAttributeMenu() {
         int width = popupWindowMain.getContentView().getMeasuredWidth();
-        popupWindowAttribute.showAsDropDown(((Activity) getContext()).findViewById(R.id.insert_shape), width, 0);
+        popupWindowAttribute.showAsDropDown(((Activity) getContext()).findViewById(R.id.hidden), width, 0);
+        //popupWindowAttribute.showAtLocation(this, Gravity.LEFT, width, 0);
+
     }
 
 
     public void expandScriptMenu() {
         int width = popupWindowMain.getContentView().getMeasuredWidth();
-        popupWindowScript.showAsDropDown(((Activity) getContext()).findViewById(R.id.insert_shape), width, 0);
+        popupWindowScript.showAsDropDown(((Activity) getContext()).findViewById(R.id.hidden), width, 0);
+        //popupWindowScript.showAtLocation(this, Gravity.LEFT, width, 0);
     }
 
     public Shape getLastShape() {
@@ -245,19 +282,24 @@ public class EditView extends View {
     public void expandOnclickMenu() {
         int widthMain = popupWindowMain.getContentView().getMeasuredWidth();
         int widthScript = popupWindowScript.getContentView().getMeasuredWidth();
-        popupWindowAction.showAsDropDown(((Activity) getContext()).findViewById(R.id.insert_shape), widthMain + widthScript, 0);
+        popupWindowAction.showAsDropDown(((Activity) getContext()).findViewById(R.id.hidden), widthMain + widthScript, 0);
+        //popupWindowAction.showAtLocation(this, Gravity.LEFT, widthMain + widthScript, 0);
+
     }
 
     public void expandOnenterMenu() {
         int widthMain = popupWindowMain.getContentView().getMeasuredWidth();
         int widthScript = popupWindowScript.getContentView().getMeasuredWidth();
-        popupWindowAction.showAsDropDown(((Activity) getContext()).findViewById(R.id.insert_shape), widthMain + widthScript, 0);
+        popupWindowAction.showAsDropDown(((Activity) getContext()).findViewById(R.id.hidden), widthMain + widthScript, 0);
+        //popupWindowAction.showAtLocation(this, Gravity.LEFT, widthMain + widthScript, 0);
+
     }
 
     public void expandOndropMenu() {
         int widthMain = popupWindowMain.getContentView().getMeasuredWidth();
         int widthScript = popupWindowScript.getContentView().getMeasuredWidth();
-        popupWindowAction.showAsDropDown(((Activity) getContext()).findViewById(R.id.insert_shape), widthMain + widthScript, 0);
+        popupWindowAction.showAsDropDown(((Activity) getContext()).findViewById(R.id.hidden), widthMain + widthScript, 0);
+        //popupWindowAction.showAtLocation(this, Gravity.LEFT, widthMain + widthScript, 0);
     }
 
     public void showShapeScript() {

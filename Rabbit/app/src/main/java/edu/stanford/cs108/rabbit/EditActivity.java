@@ -30,11 +30,14 @@ import java.util.StringTokenizer;
 public class EditActivity extends Activity {
     public static String[] images = {"carrot_icon", "carrot2_icon", "death_icon", "duck_icon", "fire_icon", "textbox_icon"};
     public static String[] sounds = {"carrotcarrotcarrot", "evillaugh", "fire", "hooray", "munch", "munching", "woof"};
-    private HSVAdapter hsvAdapter;
-    private HSVLayout hsvLayout;
+    HSVAdapter hsvAdapter;
+    HSVLayout hsvLayout;
+    HSVAdapterPage hsvAdapterPage;
+    HSVLayoutPage hsvLayoutPage;
     static final String DRAWABLE = "drawable";
     protected static final String RAW = "raw";
-
+    HorizontalScrollView hsv;
+    HorizontalScrollView hsvPage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +47,7 @@ public class EditActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_edit);
+
 
 
         hsvAdapter = new HSVAdapter(this);
@@ -58,14 +62,54 @@ public class EditActivity extends Activity {
         hsvLayout.setAdapter(hsvAdapter);
 
 
+
+        hsvAdapterPage = new HSVAdapterPage(this);
+        hsvLayoutPage = (HSVLayoutPage) findViewById(R.id.select_layout_page);
+        final EditView editView = (EditView) findViewById(R.id.editView);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("text", "newpage");
+        map.put("index", 0);
+        hsvAdapterPage.addObject(map);
+
+
+        for (int i = 0; i < editView.pageList.size(); i++) {
+            Map<String, Object> mapTmp = new HashMap<>();
+            mapTmp.put("text", editView.pageList.get(i));
+            mapTmp.put("index", i + 1);
+            hsvAdapterPage.addObject(mapTmp);
+        }
+        hsvLayoutPage.setAdapter(hsvAdapterPage);
+
+        hsv = (HorizontalScrollView) findViewById(R.id.hsv);
+        hsvPage = (HorizontalScrollView) findViewById(R.id.hsv_page);
+    }
+
+    public void updatePageList() {
+        final EditView editView = (EditView) findViewById(R.id.editView);
+        Map<String, Object> mapTmp = new HashMap<>();
+        mapTmp.put("text", editView.pageList.get(editView.pageList.size() - 1));
+        mapTmp.put("index", editView.pageList.size());
+        hsvAdapterPage.addObject(mapTmp);
+        hsvLayoutPage.removeAllViews();
+        hsvLayoutPage.setAdapter(hsvAdapterPage);
     }
 
     public void showInsertMenu(View view) {
-        HorizontalScrollView hsv = (HorizontalScrollView) findViewById(R.id.hsv);
         if (hsv.getVisibility() == View.VISIBLE) {
             hsv.setVisibility(View.INVISIBLE);
         } else {
+            if (hsvPage.getVisibility() == View.VISIBLE) hsvPage.setVisibility(View.INVISIBLE);
             hsv.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void showPageMenu(View view) {
+        if (hsvPage.getVisibility() == View.VISIBLE) {
+            hsvPage.setVisibility(View.INVISIBLE);
+        } else {
+            if (hsv.getVisibility() == View.VISIBLE) hsv.setVisibility(View.INVISIBLE);
+            hsvPage.setVisibility(View.VISIBLE);
         }
     }
 
@@ -358,4 +402,5 @@ public class EditActivity extends Activity {
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
     }
+
 }

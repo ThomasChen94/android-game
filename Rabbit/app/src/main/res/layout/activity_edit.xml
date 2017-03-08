@@ -5,23 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="edu.stanford.cs108.rabbit.EditActivity">
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/hidden"/>
 
     <Button
+        android:layout_gravity="bottom"
         android:id="@+id/insert_shape"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@drawable/plus_icon"
+        android:background="@drawable/plus_small_icon"
         android:onClick="showInsertMenu"/>
 
+    <Button
+        android:layout_marginLeft="50dp"
+        android:layout_gravity="bottom"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/page_icon"
+        android:onClick="showPageMenu"/>
+
     <edu.stanford.cs108.rabbit.EditView
-        android:layout_marginTop="50dp"
         android:id="@+id/editView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <HorizontalScrollView
-        android:layout_marginTop="50dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="50dp"
         android:visibility="invisible"
         android:id="@+id/hsv"
         android:layout_width="match_parent"
@@ -33,5 +45,18 @@
     </HorizontalScrollView>
 
 
+
+    <HorizontalScrollView
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="50dp"
+        android:visibility="invisible"
+        android:id="@+id/hsv_page"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+        <edu.stanford.cs108.rabbit.HSVLayoutPage
+            android:id="@+id/select_layout_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></edu.stanford.cs108.rabbit.HSVLayoutPage>
+    </HorizontalScrollView>
 
 </FrameLayout>

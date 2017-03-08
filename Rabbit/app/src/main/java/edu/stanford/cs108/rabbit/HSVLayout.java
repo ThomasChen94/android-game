@@ -78,6 +78,7 @@ public class HSVLayout extends LinearLayout {
 
                     }
 
+                    editView.gameDatabase.addShape(editView.getLastShape());
 
                 }
             });
