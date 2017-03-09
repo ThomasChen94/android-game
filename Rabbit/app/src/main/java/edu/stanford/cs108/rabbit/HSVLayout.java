@@ -54,8 +54,10 @@ public class HSVLayout extends LinearLayout {
                                 String text = editText.getText().toString();
                                 int curShapeCount = editView.getShapeCount() + 1;
                                 String curShapeName = editView.shapeDefaultPrefix + curShapeCount;
-                                editView.insertShape("",text, curShapeName,"");
+                                editView.insertShape("",text, curShapeName,
+                                        editView.getCurGameName() + editView.getCurPageName() + curShapeName, editView.getCurGameName() + editView.getCurPageName());
                                 editView.invalidate();
+                                editView.gameDatabase.addShape(editView.getLastShape());
                             }
                         });
                         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -73,12 +75,13 @@ public class HSVLayout extends LinearLayout {
                         // Insert image shape
                         int curShapeCount = editView.getShapeCount() + 1;
                         String curShapeName = editView.shapeDefaultPrefix + curShapeCount;
-                        editView.insertShape(EditActivity.images[index], "", curShapeName,"");
+                        editView.insertShape(EditActivity.images[index], "", curShapeName,
+                                editView.getCurGameName() + editView.getCurPageName() + curShapeName, editView.getCurGameName() + editView.getCurPageName());
                         editView.invalidate();
+                        editView.gameDatabase.addShape(editView.getLastShape());
 
                     }
 
-                    editView.gameDatabase.addShape(editView.getLastShape());
 
                 }
             });

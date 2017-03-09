@@ -42,7 +42,7 @@ public class Shape {
     // fields
 
     String rawScript;
-
+    String gameName;
 
     String name;
     String uniqueName;
@@ -111,13 +111,13 @@ public class Shape {
 
     }
 
-    public Shape(String image, String text, String uniqueName, String page) {
+    public Shape(String image, String text, String name, String uniqueName, String page) {
         this();
         this.image = image;
         this.text = text;
         this.page = page;
         this.uniqueName = uniqueName;
-        this.name = uniqueName;
+        this.name = name;
         rawScript = "";
         hidden = false;
         movable = false;

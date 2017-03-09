@@ -53,21 +53,30 @@ public class HSVLayoutPage extends LinearLayout {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 editView.insertPage(editText.getText().toString());
+                                editView.setCurPageName(editText.getText().toString());
                             }
                         });
                         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 editView.insertPage("Page" + newPageIndex);
+                                editView.setCurPageName("Page" + newPageIndex);
                             }
                         });
                         builder.setCancelable(true);
                         AlertDialog dialog = builder.create();
                         dialog.setCanceledOnTouchOutside(true);
                         dialog.show();
+
+                        editView.createNewEmptyPage();
+                        HorizontalScrollView hsvPage = (HorizontalScrollView) ((Activity) getContext()).findViewById(R.id.hsv_page);
+                        hsvPage.setVisibility(View.INVISIBLE);
                     } else {
                         // choose page
-
+                        int indexInList = index - 1;
+                        Page newPage = editView.gameDatabase.getPage(editView.getCurGameName() + editView.pageList.get(indexInList));
+                        editView.setCurPageName(editView.pageList.get(indexInList));
+                        editView.updateCurPage(newPage);
                     }
 
                 }

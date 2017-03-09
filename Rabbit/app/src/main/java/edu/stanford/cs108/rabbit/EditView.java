@@ -14,12 +14,14 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,10 +47,12 @@ public class EditView extends View {
     PopupWindow popupWindowAction;
     String shapeDefaultPrefix = "Shape";
 
+    String curPageName;
+    String curGameName;
     GameDatabase gameDatabase;
 
-    public void insertShape(String image, String text, String name, String page) {
-        shapeList.add(new Shape(image, text, name, page));
+    public void insertShape(String image, String text, String name, String uniqueName, String page) {
+        shapeList.add(new Shape(image, text, name, uniqueName, page));
 
     }
 
@@ -64,7 +68,7 @@ public class EditView extends View {
         gameDatabase.getDb(context);
         shapeList = new LinkedList<>();
         pageList = new LinkedList<>();
-
+        curGameName = "Game1";
         togoPageSelected = "";
         tmpScript = new String[4];
         resetTmpScript();
@@ -88,8 +92,57 @@ public class EditView extends View {
         builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                pageList.add("Page1");
-                ((EditActivity)getContext()).updatePageList();
+                // create the game
+
+                final EditText editTextPage = new EditText(getContext());
+                final int newPageIndex = pageList.size() + 1;
+                editTextPage.setText("Page" + newPageIndex);
+                AlertDialog.Builder builderPage = new AlertDialog.Builder(getContext());
+                builderPage.setTitle("Rename");
+                builderPage.setView(editTextPage);
+                builderPage.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        insertPage(editTextPage.getText().toString());
+                        setCurPageName(editTextPage.getText().toString());
+                    }
+                });
+                builderPage.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        insertPage("Page" + newPageIndex);
+                        setCurPageName("Page" + newPageIndex);
+                    }
+                });
+                builderPage.setCancelable(true);
+                AlertDialog dialogPage = builderPage.create();
+                dialogPage.setCanceledOnTouchOutside(true);
+                dialogPage.show();
+
+
+
+                final EditText editTextGame = new EditText(getContext());
+                editTextGame.setText("Game" + 1);
+                AlertDialog.Builder builderGame = new AlertDialog.Builder(getContext());
+                builderGame.setTitle("Rename");
+                builderGame.setView(editTextGame);
+                builderGame.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        setCurGameName(editTextGame.getText().toString());
+                    }
+                });
+                builderGame.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        setCurPageName("Game" + 1);
+                    }
+                });
+                builderGame.setCancelable(true);
+                AlertDialog dialogGame = builderGame.create();
+                dialogGame.setCanceledOnTouchOutside(true);
+                dialogGame.show();
+
             }
         });
         builder.setNegativeButton("Load", new DialogInterface.OnClickListener() {
@@ -256,7 +309,9 @@ public class EditView extends View {
     }
 
     public void setCurShapeIndex() {
+        gameDatabase.deleteShape(curShape);
         shapeList.remove(curShapeIndex);
+        curShape = null;
         invalidate();
     }
 
@@ -306,6 +361,8 @@ public class EditView extends View {
     }
 
     public void showShapeScript() {
+        Toast toast = Toast.makeText(getContext(), curShape.getRawScript(), Toast.LENGTH_SHORT);
+        toast.show();
         System.out.println(curShape.getRawScript());
     }
 
@@ -314,12 +371,44 @@ public class EditView extends View {
             if (s.isEmpty()) continue;
             getCurShape().rawScript += s + " ";
         }
-        getCurShape().setScript(getCurShape().rawScript);
+        //getCurShape().setScript(getCurShape().rawScript);
     }
 
     public void resetTmpScript() {
         for (int i = 0; i < tmpScript.length; i++) {
             tmpScript[i] = "";
         }
+    }
+
+    public String getCurPageName() {
+        return curPageName;
+    }
+
+    public void setCurPageName(String curPageName) {
+        this.curPageName = curPageName;
+    }
+
+    public String getCurGameName() {
+        return curGameName;
+    }
+
+    public void setCurGameName(String curGameName) {
+        this.curGameName = curGameName;
+    }
+
+
+    public void updateCurPage(Page newPage) {
+        shapeList = newPage.shapeList;
+        if (shapeList == null) shapeList = new LinkedList<>();
+        curShape = null;
+        curShapeIndex = -1;
+        invalidate();
+    }
+
+    public void createNewEmptyPage() {
+        shapeList = new LinkedList<>();
+        curShape = null;
+        curShapeIndex = -1;
+        invalidate();
     }
 }

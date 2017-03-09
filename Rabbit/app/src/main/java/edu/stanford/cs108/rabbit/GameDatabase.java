@@ -33,7 +33,7 @@ public final class GameDatabase {
         if (tablesCursor.getCount() == 0) {
             String setupStr = "CREATE TABLE shapes ("
                     + "uniquename TEXT, name TEXT, page Text, image TEXT, sound TEXT, text TEXT, fontsize INTEGER, script TEXT,"
-                    + "left FLOAT, top FLOAT, right FLOAT, bottom FLOAT, hidden BOOLEAN, movable BOOLEAN, order INTEGER"
+                    + "left FLOAT, top FLOAT, right FLOAT, bottom FLOAT, hidden BOOLEAN, movable BOOLEAN, myorder INTEGER"
                     + " );";
 
             //System.out.println(setupStr);
@@ -48,7 +48,7 @@ public final class GameDatabase {
 
     public Page getPage(String page) {
         Cursor cursor = db.rawQuery(
-                "SELECT * FROM shapes WHERE page = " + page + " and name not like '%info';", null);
+                "SELECT * FROM shapes WHERE page = \"" + page + "\" and name not like '%info';", null);
         if(cursor.moveToFirst() == false) return new Page("", "", null); // if nothing is selected, return an empty page
         List<Shape> shapeList= new LinkedList<Shape>();
         do {
@@ -60,7 +60,7 @@ public final class GameDatabase {
             String script   = cursor.getString(cursor.getColumnIndex("script"));
             boolean hidden  = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("hidden")));
             boolean movable = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("movable")));
-            int order    = cursor.getShort(cursor.getColumnIndex("order"));
+            int order    = cursor.getShort(cursor.getColumnIndex("myorder"));
             float left     = cursor.getFloat(cursor.getColumnIndex("left")) * Shape.viewWidth;
             float top      = cursor.getFloat(cursor.getColumnIndex("top")) * Shape.viewHeight;
             float right    = cursor.getFloat(cursor.getColumnIndex("right")) * Shape.viewWidth;
@@ -72,13 +72,13 @@ public final class GameDatabase {
             newShape = new Shape(image, text, sound, uniqueName, name, page, script, order, hidden, movable, left, top, right, bottom);
             shapeList.add(newShape);
         } while(cursor.moveToNext());
-
-            Cursor pageCursor = db.rawQuery(
-                "SELECT * FROM shapes WHERE page = " + page + " and name like '%info';", null);
-        pageCursor.moveToNext();
-        String sound    = pageCursor.getString(pageCursor.getColumnIndex("sound"));
-        String image    = pageCursor.getString(pageCursor.getColumnIndex("image"));
-        return new Page(image, sound, shapeList);
+//
+//            Cursor pageCursor = db.rawQuery(
+//                "SELECT * FROM shapes WHERE page = \"" + page + "\" and name like '%info';", null);
+//        pageCursor.moveToNext();
+//        String sound    = pageCursor.getString(pageCursor.getColumnIndex("sound"));
+//        String image    = pageCursor.getString(pageCursor.getColumnIndex("image"));
+        return new Page("", "", shapeList);
     }
 
     // updata the given shape
@@ -96,9 +96,9 @@ public final class GameDatabase {
                             + " top = " + shape.getRectF().top + ","
                             + " right = " + shape.getRectF().right + ","
                             + " bottom = " + shape.getRectF().bottom + ","
-                            + " hidden = " + shape.isHidden() + ","
-                            + " movable = " + shape.isMovable() + ","
-                            + " order = " + shape.getOrder() + " "
+                            + " hidden = " + (shape.isHidden() ? 1 : 0) + ","
+                            + " movable = " + (shape.isMovable() ? 1 : 0) + ","
+                             + " myorder = " + shape.getOrder() + " "
                             + "WHERE uniquename = \"" + shape.getUniqueName() + "\";";
         db.execSQL(updateSQL);
     }

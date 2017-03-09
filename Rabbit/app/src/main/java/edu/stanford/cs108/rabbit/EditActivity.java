@@ -128,6 +128,7 @@ public class EditActivity extends Activity {
                 String changedID = editText.getText().toString();
                 if (!changedID.isEmpty()) {
                     editView.getCurShape().setName(changedID);
+                    editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
                 }
             }
         });
@@ -149,7 +150,6 @@ public class EditActivity extends Activity {
     public void delete(View view) {
         EditView editView = (EditView) findViewById(R.id.editView);
         if (editView.getCurShape() != null) {
-            editView.setCurShape(null);
             editView.setCurShapeIndex();
         }
     }
@@ -239,6 +239,7 @@ public class EditActivity extends Activity {
                 MediaPlayer mp = MediaPlayer.create(getApplicationContext(), soundId);
                 mp.start();
                 editView.getCurShape().setSoundName(curSound);
+                editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
             }
         });
         builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
@@ -283,6 +284,7 @@ public class EditActivity extends Activity {
                     editView.tmpScript[2] = "PLAY";
                     editView.tmpScript[3] = editView.getCurShape().getSoundName() + "";
                     editView.flushTmpScriptToRawScript();
+                    editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
                 }
 
 //                editView.getCurShape().rawScript += "PLAY,";
@@ -322,6 +324,7 @@ public class EditActivity extends Activity {
                 editView.tmpScript[2] = "TOGO";
                 editView.tmpScript[3] = editView.pageList + "";
                 editView.flushTmpScriptToRawScript();
+                editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
 //                editView.getCurShape().rawScript += "TOGO,";
 //                editView.getCurShape().rawScript += editView.pageList + ",";
             }
@@ -358,6 +361,7 @@ public class EditActivity extends Activity {
                 editView.tmpScript[2] = "SHOW";
                 editView.tmpScript[3] = editView.shapeList.get(which).name + "";
                 editView.flushTmpScriptToRawScript();
+                editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
 //                editView.getCurShape().rawScript += "SHOW,";
 //                editView.getCurShape().rawScript += editView.shapeList.get(which).name + ",";
             }
@@ -393,6 +397,7 @@ public class EditActivity extends Activity {
                 editView.tmpScript[2] = "HIDE";
                 editView.tmpScript[3] = editView.shapeList.get(which).name + "";
                 editView.flushTmpScriptToRawScript();
+                editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
 //                editView.getCurShape().rawScript += "HIDE,";
 //                editView.getCurShape().rawScript += editView.shapeList.get(which).name + ",";
             }
