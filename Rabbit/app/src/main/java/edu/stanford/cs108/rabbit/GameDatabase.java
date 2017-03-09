@@ -34,7 +34,7 @@ public final class GameDatabase {
             String setupStr = "CREATE TABLE shapes ("
                     + "uniquename TEXT, name TEXT, page Text, image TEXT, sound TEXT, text TEXT, fontsize INTEGER, script TEXT,"
                     + "left FLOAT, top FLOAT, right FLOAT, bottom FLOAT, hidden BOOLEAN, movable BOOLEAN, myorder INTEGER"
-                    + " );";
+                    + ");";
 
             //System.out.println(setupStr);
             db.execSQL(setupStr);
@@ -82,9 +82,9 @@ public final class GameDatabase {
     }
 
     // updata the given shape
-    public void updateShape(Shape shape, String gameName) {
-        gameName = "shapes";   // hard code the game name
-        String updateSQL = "UPDATE " + gameName + " SET"
+    public void updateShape(Shape shape) {
+        //gameName = "shapes";   // hard code the game name
+        String updateSQL = "UPDATE " + "shapes" + " SET"
                             + " name = \" " + shape.getName() + "\","
                             + " page = \"" + shape.getPage() + "\","
                             + " image = \"" + shape.getImage() + "\","
@@ -146,5 +146,40 @@ public final class GameDatabase {
         db.execSQL(queryStr);
 
         count--;
+    }
+
+    // add a new page
+    public void addPage(Page page) {
+        String insertSQL = "INSERT INTO pages VALUES ("
+                + "\"" + page.getUniqueName() + "\","
+                + "\"" + page.getName() + "\","
+                + "\"" + page.getBackground() + "\","
+                + "\"" + page.getSoundName() + ");";
+        db.execSQL(insertSQL);
+    }
+
+    public void updatePage(Page page) {
+        String updateSQL = "UPDATE " + "pages" + " SET"
+                + " name = \" " + page.getUniqueName() + "\","
+                + " page = \"" + page.getName() + "\","
+                + " image = \"" + page.getBackground() + "\","
+                + " sound = \"" + page.getSoundName() + "\" "
+                + "WHERE uniquename = \"" + page.getUniqueName()  + "\"; ";
+        db.execSQL(updateSQL);
+    }
+
+    public void updateGame(String uniqueName, String newName) {
+
+    }
+
+    public int countGame() {
+        String countGame = "SELECT * FROM games;";
+        Cursor gameCursor = db.rawQuery(countGame, null);
+        db.execSQL(countGame);
+        count = 0;
+        while(gameCursor.moveToNext()) {
+            count++;
+        }
+        return count;
     }
 }
