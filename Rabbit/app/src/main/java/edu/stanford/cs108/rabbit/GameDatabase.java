@@ -60,7 +60,11 @@ public final class GameDatabase {
             String script   = cursor.getString(cursor.getColumnIndex("script"));
             boolean hidden  = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("hidden")));
             boolean movable = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("movable")));
-            int order    = cursor.getShort(cursor.getColumnIndex("myorder"));
+            //Eric modified this.
+            //int order    = cursor.getShort(cursor.getColumnIndex("myorder"));
+            int order    = cursor.getShort(cursor.getColumnIndex("order"));
+            //Eric modified this.
+
             float left     = cursor.getFloat(cursor.getColumnIndex("left")) * Shape.viewWidth;
             float top      = cursor.getFloat(cursor.getColumnIndex("top")) * Shape.viewHeight;
             float right    = cursor.getFloat(cursor.getColumnIndex("right")) * Shape.viewWidth;

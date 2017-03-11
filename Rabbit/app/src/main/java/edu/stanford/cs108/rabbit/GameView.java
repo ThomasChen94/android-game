@@ -25,7 +25,9 @@ public class GameView extends View {
         gameDatabase.getDb(context);
         //currPage = gameDatabase.getPage(1);
 
-        currPage = gameDatabase.getPage("" + 2); // get the first page
+        Shape.setContext(context);
+
+        currPage = gameDatabase.getPage("3"); // get the first page
 
         ViewTreeObserver vto = this.getViewTreeObserver();
         vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -52,5 +54,25 @@ public class GameView extends View {
     public void setCurrentPage(Page newPage) {
         currPage = newPage;
         invalidate(); //Once the page is changed, redraw the view.
+    }
+
+    public Page getCurrPage() {
+        return currPage;
+    }
+
+    float viewWidth, viewHeight;
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        viewWidth = w;
+        viewHeight = h;
+    }
+
+    public float getViewHeight() {
+        return viewHeight;
+    }
+
+    public float getViewWidth() {
+        return viewWidth;
     }
 }

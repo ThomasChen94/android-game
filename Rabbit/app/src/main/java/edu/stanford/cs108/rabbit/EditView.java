@@ -64,8 +64,6 @@ public class EditView extends View {
     public EditView(Context context, AttributeSet attrs) {
         super(context, attrs);
         createOrLoadGame();
-        gameDatabase = GameDatabase.getInstance();
-        gameDatabase.getDb(context);
         shapeList = new LinkedList<>();
         pageList = new LinkedList<>();
         curGameName = "Game1";

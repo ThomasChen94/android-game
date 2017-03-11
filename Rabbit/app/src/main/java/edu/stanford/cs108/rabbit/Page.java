@@ -62,4 +62,8 @@ public class Page {
         mp = MediaPlayer.create(view.getContext(), soundId);
         mp.start();
     }
+
+    public List<Shape> getShapeList() {
+        return shapeList;
+    }
 }

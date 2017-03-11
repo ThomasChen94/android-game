@@ -181,16 +181,18 @@ public class FullscreenActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //@Override
-/*    public boolean onTouchEvent(MotionEvent event) {
-        if(event.getAction() == MotionEvent.ACTION_DOWN) {
-            //当手指按下的时候
-            float x1 = event.getX();
-            float y1 = event.getY();
-            System.out.println(x1 + " " + y1);
-            Toast.makeText(FullscreenActivity.this, x1 + " " + y1, Toast.LENGTH_SHORT).show();
-        }
-
-        return super.onTouchEvent(event);
-    }*/
+//    //@Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+//            //当手指按下的时候
+////            float x1 = event.getX();
+////            float y1 = event.getY();
+////            System.out.println(x1 + " " + y1);
+////            Toast.makeText(FullscreenActivity.this, x1 + " " + y1, Toast.LENGTH_SHORT).show();
+//            Intent intent = new Intent(this, GameActivity.class);
+//            startActivity(intent);
+//        }
+//
+//        return true;
+//    }
 }

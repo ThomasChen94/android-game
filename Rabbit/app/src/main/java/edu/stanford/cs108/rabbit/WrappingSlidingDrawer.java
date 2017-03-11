@@ -61,6 +61,29 @@ public class WrappingSlidingDrawer extends SlidingDrawer {
         setMeasuredDimension(widthSpecSize, heightSpecSize);
     }
 
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+
+        final int height = b - t;
+
+        View handle = (View) getHandle();
+        int childLeft = 0;
+        int childWidth = handle.getWidth();
+        int topOffset = 0;
+        int bottomOffset = 0;
+        int childHeight = handle.getHeight();
+
+        int childTop;
+        if (this.isOpened()) {
+            childTop = topOffset;
+        } else {
+            childTop = height - childHeight + bottomOffset;
+        }
+
+        handle.layout(childLeft, childTop , childLeft + childWidth, childTop+childHeight);
+    }
+
     private boolean mVertical;
     private int mTopOffset;
 }
