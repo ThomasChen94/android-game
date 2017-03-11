@@ -128,7 +128,9 @@ public class EditActivity extends Activity {
                 String changedID = editText.getText().toString();
                 if (!changedID.isEmpty()) {
                     editView.getCurShape().setName(changedID);
+
                     //editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
+
                     editView.gameDatabase.updateShape(editView.getCurShape());
                 }
             }
@@ -240,6 +242,7 @@ public class EditActivity extends Activity {
                 MediaPlayer mp = MediaPlayer.create(getApplicationContext(), soundId);
                 mp.start();
                 editView.getCurShape().setSoundName(curSound);
+
                // editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
                 editView.gameDatabase.updateShape(editView.getCurShape());
             }
@@ -286,6 +289,7 @@ public class EditActivity extends Activity {
                     editView.tmpScript[2] = "PLAY";
                     editView.tmpScript[3] = editView.getCurShape().getSoundName() + "";
                     editView.flushTmpScriptToRawScript();
+
                    // editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
                     editView.gameDatabase.updateShape(editView.getCurShape());
                 }
@@ -327,7 +331,9 @@ public class EditActivity extends Activity {
                 editView.tmpScript[2] = "TOGO";
                 editView.tmpScript[3] = editView.pageList + "";
                 editView.flushTmpScriptToRawScript();
+
                 //editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
+
                 editView.gameDatabase.updateShape(editView.getCurShape());
 //                editView.getCurShape().rawScript += "TOGO,";
 //                editView.getCurShape().rawScript += editView.pageList + ",";
@@ -365,6 +371,7 @@ public class EditActivity extends Activity {
                 editView.tmpScript[2] = "SHOW";
                 editView.tmpScript[3] = editView.shapeList.get(which).name + "";
                 editView.flushTmpScriptToRawScript();
+
               //  editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
                 editView.gameDatabase.updateShape(editView.getCurShape());
 //                editView.getCurShape().rawScript += "SHOW,";
@@ -402,6 +409,7 @@ public class EditActivity extends Activity {
                 editView.tmpScript[2] = "HIDE";
                 editView.tmpScript[3] = editView.shapeList.get(which).name + "";
                 editView.flushTmpScriptToRawScript();
+
                 //editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
                 editView.gameDatabase.updateShape(editView.getCurShape());
 //                editView.getCurShape().rawScript += "HIDE,";
