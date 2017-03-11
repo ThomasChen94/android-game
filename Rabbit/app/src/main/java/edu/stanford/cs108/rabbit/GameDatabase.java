@@ -62,7 +62,7 @@ public final class GameDatabase {
             boolean movable = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("movable")));
             //Eric modified this.
             //int order    = cursor.getShort(cursor.getColumnIndex("myorder"));
-            int order    = cursor.getShort(cursor.getColumnIndex("order"));
+            int myorder    = cursor.getShort(cursor.getColumnIndex("myorder"));
             //Eric modified this.
 
             float left     = cursor.getFloat(cursor.getColumnIndex("left")) * Shape.viewWidth;
@@ -73,7 +73,7 @@ public final class GameDatabase {
             Shape newShape = null;
             System.out.println(image);
 
-            newShape = new Shape(image, text, sound, uniqueName, name, page, script, order, hidden, movable, left, top, right, bottom);
+            newShape = new Shape(image, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
             shapeList.add(newShape);
         } while(cursor.moveToNext());
 //

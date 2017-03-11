@@ -70,7 +70,8 @@ public class EditView extends View {
         togoPageSelected = "";
         tmpScript = new String[4];
         resetTmpScript();
-
+        gameDatabase = GameDatabase.getInstance();
+        gameDatabase.getDb(context);
         Shape.setContext(context);
 
         initPopupWindowMain();
