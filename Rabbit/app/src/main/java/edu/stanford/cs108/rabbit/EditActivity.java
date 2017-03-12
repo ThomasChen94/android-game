@@ -3,11 +3,13 @@ package edu.stanford.cs108.rabbit;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -77,9 +79,9 @@ public class EditActivity extends Activity {
         hsvAdapterPage.addObject(map);
 
 
-        for (int i = 0; i < editView.pageList.size(); i++) {
+        for (int i = 0; i < editView.pageUserList.size(); i++) {
             Map<String, Object> mapTmp = new HashMap<>();
-            mapTmp.put("text", editView.pageList.get(i));
+            mapTmp.put("text", editView.pageUserList.get(i));
             mapTmp.put("index", i + 1);
             hsvAdapterPage.addObject(mapTmp);
         }
@@ -89,6 +91,7 @@ public class EditActivity extends Activity {
         hsvPage = (HorizontalScrollView) findViewById(R.id.hsv_page);
 
         //initSwitchButtonListener();
+
 
 
 
@@ -124,11 +127,34 @@ public class EditActivity extends Activity {
     public void updatePageList() {
         final EditView editView = (EditView) findViewById(R.id.editView);
         Map<String, Object> mapTmp = new HashMap<>();
-        mapTmp.put("text", editView.pageList.get(editView.pageList.size() - 1));
-        mapTmp.put("index", editView.pageList.size());
+        mapTmp.put("text", editView.pageUserList.get(editView.pageUserList.size() - 1));
+        mapTmp.put("index", editView.pageUserList.size());
         hsvAdapterPage.addObject(mapTmp);
         hsvLayoutPage.removeAllViews();
         hsvLayoutPage.setAdapter(hsvAdapterPage);
+    }
+
+
+    public void resetPageList() {
+        final EditView editView = (EditView) findViewById(R.id.editView);
+
+        hsvAdapterPage = new HSVAdapterPage(this);
+        hsvLayoutPage.removeAllViews();
+        Map<String, Object> map = new HashMap<>();
+        map.put("text", "newpage");
+        map.put("index", 0);
+        hsvAdapterPage.addObject(map);
+
+
+        for (int i = 0; i < editView.pageUserList.size(); i++) {
+            Map<String, Object> mapTmp = new HashMap<>();
+            mapTmp.put("text", editView.pageUserList.get(i));
+            mapTmp.put("index", i + 1);
+            hsvAdapterPage.addObject(mapTmp);
+        }
+
+        hsvLayoutPage.setAdapter(hsvAdapterPage);
+
     }
 
     public void showInsertMenu(View view) {
@@ -351,9 +377,9 @@ public class EditActivity extends Activity {
         final EditView editView = (EditView) findViewById(R.id.editView);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Choose Shape to Show");
-        final String[] pageNameList = new String[editView.pageList.size()];
-        for (int i = 0; i < editView.pageList.size(); i++) {
-            pageNameList[i] = editView.pageList.get(i);
+        final String[] pageNameList = new String[editView.pageUserList.size()];
+        for (int i = 0; i < editView.pageUserList.size(); i++) {
+            pageNameList[i] = editView.pageUserList.get(i);
         }
         builder.setSingleChoiceItems(pageNameList, -1, new DialogInterface.OnClickListener() {
             @Override
@@ -365,7 +391,7 @@ public class EditActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 editView.tmpScript[2] = "TOGO";
-                editView.tmpScript[3] = editView.pageList + "";
+                editView.tmpScript[3] = editView.pageUserList.get(which) + "";
                 editView.flushTmpScriptToRawScript();
 
                 //editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());

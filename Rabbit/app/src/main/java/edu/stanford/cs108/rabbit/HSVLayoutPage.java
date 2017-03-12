@@ -44,7 +44,7 @@ public class HSVLayoutPage extends LinearLayout {
                     // Insert new page
                     if (index == 0) {
                         final EditText editText = new EditText(getContext());
-                        final int newPageIndex = editView.pageList.size() + 1;
+                        final int newPageIndex = editView.pageUserList.size() + 1;
                         editText.setText("Page" + newPageIndex);
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         builder.setTitle("Rename");
@@ -74,8 +74,8 @@ public class HSVLayoutPage extends LinearLayout {
                     } else {
                         // choose page
                         int indexInList = index - 1;
-                        Page newPage = editView.gameDatabase.getPage(editView.getCurGameName() + editView.pageList.get(indexInList));
-                        editView.setCurPageName(editView.pageList.get(indexInList));
+                        Page newPage = editView.gameDatabase.getPage(editView.getCurGameName() + editView.pageUserList.get(indexInList));
+                        editView.setCurPageName(editView.pageUserList.get(indexInList));
                         editView.updateCurPage(newPage);
                     }
 

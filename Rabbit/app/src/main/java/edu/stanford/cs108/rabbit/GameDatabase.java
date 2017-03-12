@@ -119,10 +119,10 @@ public final class GameDatabase {
                             + " text = \"" + shape.getText() + "\","
                             + " fontsize = " + shape.getFontsize() + ","
                             + " script = \"" + shape.getScript().toString() + "\","
-                            + " left = " + shape.getRectF().left + ","
-                            + " top = " + shape.getRectF().top + ","
-                            + " right = " + shape.getRectF().right + ","
-                            + " bottom = " + shape.getRectF().bottom + ","
+                            + " left = " + shape.getRectF().left / Shape.viewWidth + ","
+                            + " top = " + shape.getRectF().top / Shape.viewHeight + ","
+                            + " right = " + shape.getRectF().right / Shape.viewWidth + ","
+                            + " bottom = " + shape.getRectF().bottom / Shape.viewHeight + ","
                             + " hidden = " + (shape.isHidden() ? 1 : 0) + ","
                             + " movable = " + (shape.isMovable() ? 1 : 0) + ","
                              + " myorder = " + shape.getOrder() + " "
@@ -182,10 +182,10 @@ public final class GameDatabase {
                 + "\"" + shape.getText() + "\","
                 + "\"" + shape.getFontsize() + "\","
                 + "\"" + shape.getScript() + "\","
-                + shape.getRectF().left + ","
-                + shape.getRectF().top + ","
-                + shape.getRectF().right + ","
-                + shape.getRectF().bottom + ","
+                + shape.getRectF().left / Shape.viewWidth + ","
+                + shape.getRectF().top / Shape.viewHeight + ","
+                + shape.getRectF().right / Shape.viewWidth + ","
+                + shape.getRectF().bottom / Shape.viewHeight + ","
                 + (shape.isHidden() ? 1 : 0) + ","
                 + (shape.isMovable() ? 1 : 0) + ","
                 + shape.getOrder()
@@ -235,7 +235,7 @@ public final class GameDatabase {
 
     public List<Page> getGame(String gameUniquename) {
         Cursor cursor = db.rawQuery(
-                "SELECT * FROM pages WHERE uniquename = " + gameUniquename + ";", null);
+                "SELECT * FROM pages WHERE game = \"" + gameUniquename + "\";", null);
         List<Page> pageList = new ArrayList<Page>();
         while(cursor.moveToNext()) {
             String name    = cursor.getString(cursor.getColumnIndex("name"));
