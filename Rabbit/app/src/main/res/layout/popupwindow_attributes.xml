@@ -23,10 +23,12 @@
             <Switch
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/hidden"
                 android:text="hidden"/>
             <Switch
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/movable"
                 android:text="movable"/>
         </LinearLayout>
     </ScrollView>

@@ -56,11 +56,13 @@ public class Page {
         this.uniqueName = pageUniqueName;
         this.game = gameName;
     }
+
     public void draw(Canvas canvas) {
         for (Shape shape : shapeList) {
             shape.draw(canvas);
         }
     }
+
     public void playSound(View view, Context context) {
         int soundId = context.getResources().getIdentifier(soundName, RAW, context.getPackageName());
         mp = MediaPlayer.create(view.getContext(), soundId);

@@ -16,11 +16,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.PopupWindow;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import java.util.List;
@@ -85,6 +87,38 @@ public class EditActivity extends Activity {
 
         hsv = (HorizontalScrollView) findViewById(R.id.hsv);
         hsvPage = (HorizontalScrollView) findViewById(R.id.hsv_page);
+
+        initSwitchButtonListener();
+
+
+
+    }
+
+    public void initSwitchButtonListener() {
+        Switch hidden = (Switch) findViewById(R.id.hidden);
+        hidden.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                EditView editView = (EditView) findViewById(R.id.editView);
+                if (isChecked) {
+                    editView.getCurShape().setHidden(true);
+                } else {
+                    editView.getCurShape().setHidden(false);
+                }
+            }
+        });
+        Switch movable = (Switch) findViewById(R.id.movable);
+        hidden.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                EditView editView = (EditView) findViewById(R.id.editView);
+                if (isChecked) {
+                    editView.getCurShape().setMovable(true);
+                } else {
+                    editView.getCurShape().setMovable(false);
+                }
+            }
+        });
     }
 
     public void updatePageList() {

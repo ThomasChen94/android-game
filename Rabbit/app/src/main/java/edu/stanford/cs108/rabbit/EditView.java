@@ -35,6 +35,7 @@ public class EditView extends View {
     String togoPageSelected;
     List<String> pageList;
     List<Shape> shapeList;
+    List<String> gameList;
     Shape curShape;
     int curShapeIndex;
     boolean isClick;
@@ -67,8 +68,11 @@ public class EditView extends View {
     public EditView(Context context, AttributeSet attrs) {
         super(context, attrs);
         createOrLoadGame();
+
         shapeList = new LinkedList<>();
         pageList = new LinkedList<>();
+        gameList = new LinkedList<>();
+
         curGameName = "Game1";
         togoPageSelected = "";
         tmpScript = new String[4];
@@ -76,6 +80,7 @@ public class EditView extends View {
         gameDatabase = GameDatabase.getInstance();
         gameDatabase.getDb(context);
         Shape.setContext(context);
+
 
         initPopupWindowMain();
         initPopupWindowAttribute();
@@ -85,16 +90,18 @@ public class EditView extends View {
 //        initPopupWindow(popupWindowAttribute, R.layout.popupwindow_attributes);
 //        initPopupWindow(popupWindowScript, R.layout.popupwindow_script);
 //        initPopupWindow(popupWindowAction, R.layout.popupwindow_action);
+
     }
 
     public void createOrLoadGame() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage("Create or Load Game");
         builder.setTitle("");
+        
+        // Create Game
         builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // create the game
 
                 final EditText editTextPage = new EditText(getContext());
                 final int newPageIndex = pageList.size() + 1;
@@ -147,6 +154,7 @@ public class EditView extends View {
 
             }
         });
+        // Load Game
         builder.setNegativeButton("Load", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
