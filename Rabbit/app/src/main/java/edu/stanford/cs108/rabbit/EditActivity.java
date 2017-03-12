@@ -90,10 +90,7 @@ public class EditActivity extends Activity {
         hsv = (HorizontalScrollView) findViewById(R.id.hsv);
         hsvPage = (HorizontalScrollView) findViewById(R.id.hsv_page);
 
-        //initSwitchButtonListener();
-
-
-
+        initSwitchButtonListener();
 
     }
 
@@ -111,7 +108,7 @@ public class EditActivity extends Activity {
             }
         });
         Switch movable = (Switch) findViewById(R.id.movable_switch);
-        hidden.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        movable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 EditView editView = (EditView) findViewById(R.id.editView);
@@ -391,7 +388,7 @@ public class EditActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 editView.tmpScript[2] = "TOGO";
-                editView.tmpScript[3] = editView.pageUserList.get(which) + "";
+                editView.tmpScript[3] = editView.togoPageSelected + "";
                 editView.flushTmpScriptToRawScript();
 
                 //editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());

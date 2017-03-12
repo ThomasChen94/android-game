@@ -103,10 +103,10 @@ public class Shape {
         this.script = script;
 
         rectF = new RectF(left, top, right, bottom);
-        setRectF();
 
         initPaint();
         initBitmapDrawable();
+        setRectF();
 
 
     }
@@ -130,10 +130,10 @@ public class Shape {
             e.printStackTrace();
         }
 
-        setRectF();
+
         initPaint();
         initBitmapDrawable();
-
+        setRectF();
     }
 
     public static void setViewWidth(float viewWidth) {
@@ -442,6 +442,14 @@ public class Shape {
         textPaint = new Paint();
         textPaint.setColor(Color.BLACK);
         textPaint.setTextSize(60);
+    }
+
+    public void drawBorder(Canvas canvas) {
+        Paint pt = new Paint();
+        pt.setColor(Color.BLACK);
+        pt.setStyle(Paint.Style.STROKE);
+        pt.setStrokeWidth(5.0f);
+        canvas.drawRect(rectF, pt);
     }
 
     //Draw the shape-self; text takes precedence over image
