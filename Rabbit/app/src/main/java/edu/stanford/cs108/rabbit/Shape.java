@@ -120,7 +120,7 @@ public class Shape {
         this.name = name;
         rawScript = "";
         hidden = false;
-        movable = false;
+        movable = true;
 
         script = "";
 

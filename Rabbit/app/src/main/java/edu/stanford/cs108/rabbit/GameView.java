@@ -27,7 +27,7 @@ public class GameView extends View {
 
         Shape.setContext(context);
 
-        currPage = gameDatabase.getPage("1"); // get the first page
+        currPage = gameDatabase.getPage("3"); // get the first page
 
         ViewTreeObserver vto = this.getViewTreeObserver();
         vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
