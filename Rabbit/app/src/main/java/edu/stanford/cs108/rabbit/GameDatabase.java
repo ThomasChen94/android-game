@@ -28,12 +28,34 @@ public final class GameDatabase {
         if (db == null) {
             db = context.openOrCreateDatabase("ShapesDB", context.MODE_PRIVATE, null);
         }
-        Cursor tablesCursor = db.rawQuery(
+        Cursor shapeTablesCursor = db.rawQuery(
                 "SELECT * FROM sqlite_master WHERE type='table' AND name='shapes';", null);
-        if (tablesCursor.getCount() == 0) {
+        if (shapeTablesCursor.getCount() == 0) {
             String setupStr = "CREATE TABLE shapes ("
                     + "uniquename TEXT, name TEXT, page Text, image TEXT, sound TEXT, text TEXT, fontsize INTEGER, script TEXT,"
                     + "left FLOAT, top FLOAT, right FLOAT, bottom FLOAT, hidden BOOLEAN, movable BOOLEAN, myorder INTEGER"
+                    + ");";
+
+            //System.out.println(setupStr);
+            db.execSQL(setupStr);
+        }
+
+        Cursor pageTableCursor = db.rawQuery(
+                "SELECT * FROM sqlite_master WHERE type='table' AND name='pages';", null);
+        if (pageTableCursor.getCount() == 0) {
+            String setupStr = "CREATE TABLE pages ("
+                    + "uniquename TEXT, name TEXT, game Text, image TEXT, sound TEXT"
+                    + ");";
+
+            //System.out.println(setupStr);
+            db.execSQL(setupStr);
+        }
+
+        Cursor gameTablesCursor = db.rawQuery(
+                "SELECT * FROM sqlite_master WHERE type='table' AND name='games';", null);
+        if (gameTablesCursor.getCount() == 0) {
+            String setupStr = "CREATE TABLE games ("
+                    + "uniquename TEXT, name TEXT"
                     + ");";
 
             //System.out.println(setupStr);
@@ -157,6 +179,7 @@ public final class GameDatabase {
         String insertSQL = "INSERT INTO pages VALUES ("
                 + "\"" + page.getUniqueName() + "\","
                 + "\"" + page.getName() + "\","
+                + "\"" + page.getGame() + "\","
                 + "\"" + page.getBackground() + "\","
                 + "\"" + page.getSoundName() + ");";
         db.execSQL(insertSQL);
