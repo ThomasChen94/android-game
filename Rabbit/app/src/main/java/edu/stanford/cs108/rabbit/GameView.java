@@ -1,10 +1,13 @@
 package edu.stanford.cs108.rabbit;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.util.AttributeSet;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -27,9 +30,7 @@ public class GameView extends View {
 
         Shape.setContext(context);
 
-        currPage = gameDatabase.getPage("3"); // get the first page
-
-        ViewTreeObserver vto = this.getViewTreeObserver();
+/*        ViewTreeObserver vto = this.getViewTreeObserver();
         vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
                 GameView.this.getViewTreeObserver().removeOnPreDrawListener(this);
@@ -40,7 +41,15 @@ public class GameView extends View {
                 //System.out.println(height + " " + width);
                 return true;
             }
-        });
+        });*/
+
+        Display display = ((Activity)getContext()).getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        System.out.println("width: " + size.x + " height: " + size.y);
+        Shape.setViewHeight(size.y);
+        Shape.setViewWidth(size.x);
+        currPage = gameDatabase.getPage("3"); // get the first page
     }
 
     @Override
