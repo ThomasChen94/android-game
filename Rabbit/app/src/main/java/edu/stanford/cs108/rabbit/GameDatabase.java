@@ -130,6 +130,9 @@ public final class GameDatabase {
         db.execSQL(updateSQL);
     }
 
+    public Shape getShape(String uniqueShapeName) { return null;}
+
+
     public boolean ifExistShape (Shape shape) {
         Cursor shapeCursor = db.rawQuery(
                 "SELECT * FROM shapes WHERE uniquename = " + shape.getUniqueName() + ";", null);

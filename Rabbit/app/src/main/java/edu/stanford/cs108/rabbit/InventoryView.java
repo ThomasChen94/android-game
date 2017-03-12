@@ -15,6 +15,9 @@ import android.widget.RadioGroup;
 import android.app.Activity;
 import android.view.SurfaceHolder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by ThomasChen on 2/26/17.
  */
@@ -22,9 +25,12 @@ import android.view.SurfaceHolder;
 
 
 public class InventoryView extends View {
+    List<Shape>  inventoryShapes;
     public InventoryView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        inventoryShapes = new ArrayList<>();
     }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
