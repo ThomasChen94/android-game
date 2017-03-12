@@ -141,6 +141,34 @@ public final class GameDatabase {
         return ourInstance;
     }
 
+    public Shape getShape(String uniquename) {
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM shapes WHERE uniquename = " + uniquename + ";", null);
+        cursor.moveToFirst();
+        String sound    = cursor.getString(cursor.getColumnIndex("sound"));
+        String image    = cursor.getString(cursor.getColumnIndex("image"));
+        String text     = cursor.getString(cursor.getColumnIndex("text"));
+        String uniqueName    = cursor.getString(cursor.getColumnIndex("uniquename"));
+        String name    = cursor.getString(cursor.getColumnIndex("name"));
+        String page    = cursor.getString(cursor.getColumnIndex("page"));
+        String script   = cursor.getString(cursor.getColumnIndex("script"));
+        boolean hidden  = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("hidden")));
+        boolean movable = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("movable")));
+        //Eric modified this.
+        //int order    = cursor.getShort(cursor.getColumnIndex("myorder"));
+        int myorder    = cursor.getShort(cursor.getColumnIndex("myorder"));
+        //Eric modified this.
+
+        float left     = cursor.getFloat(cursor.getColumnIndex("left")) * Shape.viewWidth;
+        float top      = cursor.getFloat(cursor.getColumnIndex("top")) * Shape.viewHeight;
+        float right    = cursor.getFloat(cursor.getColumnIndex("right")) * Shape.viewWidth;
+        float bottom   = cursor.getFloat(cursor.getColumnIndex("bottom")) * Shape.viewHeight;
+
+
+        Shape newShape = new Shape(image, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
+        return newShape;
+    }
+
     public void addShape(Shape shape) {
         if (db == null) return;
         String dataStr = "INSERT INTO shapes VALUES ("
