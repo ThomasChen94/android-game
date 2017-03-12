@@ -7,6 +7,7 @@ import android.graphics.RectF;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -195,18 +196,44 @@ public final class GameDatabase {
         db.execSQL(updateSQL);
     }
 
-    public void updateGame(String uniqueName, String newName) {
-
+    public void addGame(String uniqueName, String name) {
+        String insertSQL = "INSERT INTO pages VALUES ("
+                + "\"" + uniqueName + "\","
+                + "\"" + name + "\");";
+        db.execSQL(insertSQL);
     }
 
-    public int countGame() {
-        String countGame = "SELECT * FROM games;";
-        Cursor gameCursor = db.rawQuery(countGame, null);
-        db.execSQL(countGame);
-        count = 0;
-        while(gameCursor.moveToNext()) {
-            count++;
+    public List<Page> getGame(String gameUniquename) {
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM pages WHERE uniquename = " + gameUniquename + ";", null);
+        List<Page> pageList = new ArrayList<Page>();
+        while(cursor.moveToNext()) {
+            String name    = cursor.getString(cursor.getColumnIndex("name"));
+            String uniquename    = cursor.getString(cursor.getColumnIndex("uniquename"));
+            String game    = cursor.getString(cursor.getColumnIndex("game"));
+            String sound    = cursor.getString(cursor.getColumnIndex("sound"));
+            String image    = cursor.getString(cursor.getColumnIndex("image"));
+            pageList.add(new Page(image, sound, null, name, uniquename, game));
         }
-        return count;
+        return pageList;
     }
+
+    public List<String> getGameNameList() {
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM games;", null);
+        List<String> gameList = new ArrayList<String>();
+        while(cursor.moveToNext()) {
+            String name    = cursor.getString(cursor.getColumnIndex("name"));
+            gameList.add(name);
+        }
+        return gameList;
+    }
+
+    public void updateGame(String uniqueName, String newName) {
+        String updateSQL = "UPDATE " + "games" + " SET"
+                + " name = \" " + newName + "\" "
+                + "WHERE uniquename = \"" + uniqueName  + "\"; ";
+        db.execSQL(updateSQL);
+    }
+
 }

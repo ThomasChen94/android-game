@@ -413,4 +413,9 @@ public class EditView extends View {
         curShapeIndex = -1;
         invalidate();
     }
+
+    public void testReadDb() {
+        List<Page> pageList = gameDatabase.getGame("game1");
+
+    }
 }
