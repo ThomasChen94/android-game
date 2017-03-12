@@ -70,4 +70,8 @@ public class Page {
     public List<Shape> getShapeList() {
         return shapeList;
     }
+
+    public String getGame() {
+        return game;
+    }
 }
