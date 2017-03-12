@@ -235,7 +235,7 @@ public final class GameDatabase {
 
     public List<Page> getGame(String gameUniquename) {
         Cursor cursor = db.rawQuery(
-                "SELECT * FROM pages WHERE uniquename = " + gameUniquename + ";", null);
+                "SELECT * FROM pages WHERE game = \"" + gameUniquename + "\";", null);
         List<Page> pageList = new ArrayList<Page>();
         while(cursor.moveToNext()) {
             String name    = cursor.getString(cursor.getColumnIndex("name"));

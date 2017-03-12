@@ -34,7 +34,8 @@ public class EditView extends View {
     // 在选择show的action的时候来存当前选择shape的名字
     String[] tmpScript;
     String togoPageSelected;
-    List<String> pageList;
+    List<String> pageUserList;
+    List<String> pageUniqueList;
     List<Shape> shapeList;
     List<String> gameList;
     Shape curShape;
@@ -65,8 +66,9 @@ public class EditView extends View {
     }
 
     public void insertPage(String pageName) {
-        pageList.add(pageName);
-        String pageUniqueName = curGameName + "Page" + String.valueOf(pageList.size());
+        pageUserList.add(pageName);
+        String pageUniqueName = curGameName + "Page" + String.valueOf(pageUserList.size());
+        pageUniqueList.add(pageUniqueName);
         // background picture and background music is ignored here
         gameDatabase.addPage(new Page("", "", null, pageName, pageUniqueName, curGameName));
         ((EditActivity)getContext()).updatePageList();
@@ -79,7 +81,8 @@ public class EditView extends View {
         createOrLoadGame();
 
         shapeList = new LinkedList<>();
-        pageList = new LinkedList<>();
+        pageUserList = new LinkedList<>();
+        pageUniqueList = new LinkedList<>();
         gameList = new LinkedList<>();
 
         curGameName = "Game1";
@@ -115,7 +118,7 @@ public class EditView extends View {
                 gameList = gameDatabase.getGameNameList();
 
                 final EditText editTextPage = new EditText(getContext());
-                final int newPageIndex = pageList.size() + 1;
+                final int newPageIndex = pageUserList.size() + 1;
                 editTextPage.setText("Page" + newPageIndex);
                 AlertDialog.Builder builderPage = new AlertDialog.Builder(getContext());
                 builderPage.setTitle("Rename");
@@ -157,7 +160,7 @@ public class EditView extends View {
                 builderGame.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        setCurPageName("Game" + 1);
+                        setCurPageName(gameUniqueName);
                         gameDatabase.addGame(gameUniqueName, gameUniqueName);
                     }
                 });
@@ -188,7 +191,18 @@ public class EditView extends View {
                 builderLoad.setAdapter(adapter, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        List<Page> dummyPageList = gameDatabase.getGame(gameList.get(which));
+                        setCurGameName(gameList.get(which));
+                        pageUniqueList = new ArrayList<String>(dummyPageList.size());
+                        pageUserList = new ArrayList<String>(dummyPageList.size());
+                        for (int i = 0; i < dummyPageList.size(); i++) {
+                            pageUniqueList.add(dummyPageList.get(i).getUniqueName());
+                            pageUserList.add(dummyPageList.get(i).getName());
+                        }
+                        ((EditActivity)getContext()).resetPageList();
+                        Page newPage = gameDatabase.getPage(getCurGameName() + pageUserList.get(0));
+                        setCurPageName(pageUserList.get(0));
+                        updateCurPage(newPage);
                     }
                 });
                 builderLoad.setCancelable(true);
@@ -283,6 +297,7 @@ public class EditView extends View {
             }
 
         }
+        gameDatabase.updateShape(curShape);
         invalidate();
     }
     public void upEventHandler(MotionEvent event) {
