@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -97,6 +99,15 @@ public class EditView extends View {
         initPopupWindowAttribute();
         initPopupWindowScript();
         initPopupWindowAction();
+
+
+        Display display = ((Activity)getContext()).getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        System.out.println("width: " + size.x + " height: " + size.y);
+        Shape.setViewHeight(size.y);
+        Shape.setViewWidth(size.x);
+
 //        initPopupWindow(popupWindowMain, R.layout.popupwindow_main);
 //        initPopupWindow(popupWindowAttribute, R.layout.popupwindow_attributes);
 //        initPopupWindow(popupWindowScript, R.layout.popupwindow_script);
@@ -297,13 +308,17 @@ public class EditView extends View {
             }
 
         }
-        gameDatabase.updateShape(curShape);
+
         invalidate();
     }
     public void upEventHandler(MotionEvent event) {
         if (isClick && curShape != null) {
             //popupWindowMain.showAsDropDown(((Activity) getContext()).findViewById(R.id.insert_shape));
             popupWindowMain.showAsDropDown(((Activity) getContext()).findViewById(R.id.hidden),0,0);
+
+        }
+        if (curShape != null) {
+            gameDatabase.updateShape(curShape);
         }
     }
     public void initPopupWindow(PopupWindow popupWindow, int layout) {
