@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.Toast;
@@ -52,6 +53,12 @@ public class EditView extends View {
     String curGameName;
     GameDatabase gameDatabase;
 
+
+
+    static final String DRAWABLE = "drawable";
+    protected static final String RAW = "raw";
+    static final String PACKAGENAME = "edu.stanford.cs108.rabbit";
+
     public void insertShape(String image, String text, String name, String uniqueName, String page) {
         shapeList.add(new Shape(image, text, name, uniqueName, page));
 
@@ -67,6 +74,8 @@ public class EditView extends View {
 
     public EditView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        gameDatabase = GameDatabase.getInstance();
+        gameDatabase.getDb(context);
         createOrLoadGame();
 
         shapeList = new LinkedList<>();
@@ -77,8 +86,7 @@ public class EditView extends View {
         togoPageSelected = "";
         tmpScript = new String[4];
         resetTmpScript();
-        gameDatabase = GameDatabase.getInstance();
-        gameDatabase.getDb(context);
+
         Shape.setContext(context);
 
 
@@ -97,11 +105,14 @@ public class EditView extends View {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage("Create or Load Game");
         builder.setTitle("");
-        
+        gameList = gameDatabase.getGameNameList();
+
         // Create Game
         builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
+                gameList = gameDatabase.getGameNameList();
 
                 final EditText editTextPage = new EditText(getContext());
                 final int newPageIndex = pageList.size() + 1;
@@ -125,13 +136,14 @@ public class EditView extends View {
                 });
                 builderPage.setCancelable(true);
                 AlertDialog dialogPage = builderPage.create();
-                dialogPage.setCanceledOnTouchOutside(true);
+                dialogPage.setCanceledOnTouchOutside(false);
                 dialogPage.show();
 
 
 
                 final EditText editTextGame = new EditText(getContext());
-                editTextGame.setText("Game" + 1);
+                final String gameUniqueName = "Game" + String.valueOf(gameList.size() + 1);
+                editTextGame.setText(gameUniqueName);
                 AlertDialog.Builder builderGame = new AlertDialog.Builder(getContext());
                 builderGame.setTitle("Rename");
                 builderGame.setView(editTextGame);
@@ -139,17 +151,19 @@ public class EditView extends View {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         setCurGameName(editTextGame.getText().toString());
+                        gameDatabase.addGame(gameUniqueName, editTextGame.getText().toString());
                     }
                 });
                 builderGame.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         setCurPageName("Game" + 1);
+                        gameDatabase.addGame(gameUniqueName, gameUniqueName);
                     }
                 });
                 builderGame.setCancelable(true);
                 AlertDialog dialogGame = builderGame.create();
-                dialogGame.setCanceledOnTouchOutside(true);
+                dialogGame.setCanceledOnTouchOutside(false);
                 dialogGame.show();
 
             }
@@ -158,10 +172,34 @@ public class EditView extends View {
         builder.setNegativeButton("Load", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                gameList = gameDatabase.getGameNameList();
+                Integer[] gameImageID = new Integer[EditView.this.gameList.size()];
+                for (int i = 0; i < gameList.size(); i++) {
+                    // 暂时用萝卜图
+                    gameImageID[i] = getResources().getIdentifier("carrot", DRAWABLE, PACKAGENAME);
+                }
+                String[] gameName = new String[gameList.size()];
+                for (int i = 0; i < gameList.size(); i++) {
+                    gameName[i] = gameList.get(i);
+                }
+                AlertDialog.Builder builderLoad = new AlertDialog.Builder(getContext());
+                builderLoad.setTitle("Choose Game to Load");
+                ListAdapter adapter = new ArrayAdapterWithIcon(getContext(), gameName, gameImageID);
+                builderLoad.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
+                    }
+                });
+                builderLoad.setCancelable(true);
+                AlertDialog dialogLoad = builderLoad.create();
+                dialogLoad.setCanceledOnTouchOutside(false);
+                dialogLoad.show();
             }
         });
-        builder.show();
+        AlertDialog dialogLoadOrCreate = builder.create();
+        dialogLoadOrCreate.setCanceledOnTouchOutside(false);
+        dialogLoadOrCreate.show();
     }
 
     @Override

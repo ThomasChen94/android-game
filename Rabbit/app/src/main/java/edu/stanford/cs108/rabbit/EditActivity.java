@@ -88,14 +88,14 @@ public class EditActivity extends Activity {
         hsv = (HorizontalScrollView) findViewById(R.id.hsv);
         hsvPage = (HorizontalScrollView) findViewById(R.id.hsv_page);
 
-        initSwitchButtonListener();
+        //initSwitchButtonListener();
 
 
 
     }
 
     public void initSwitchButtonListener() {
-        Switch hidden = (Switch) findViewById(R.id.hidden);
+        Switch hidden = (Switch) findViewById(R.id.hidden_switch);
         hidden.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -107,7 +107,7 @@ public class EditActivity extends Activity {
                 }
             }
         });
-        Switch movable = (Switch) findViewById(R.id.movable);
+        Switch movable = (Switch) findViewById(R.id.movable_switch);
         hidden.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

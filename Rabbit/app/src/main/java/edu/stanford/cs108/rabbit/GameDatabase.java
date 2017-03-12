@@ -228,7 +228,7 @@ public final class GameDatabase {
     }
 
     public void addGame(String uniqueName, String name) {
-        String insertSQL = "INSERT INTO pages VALUES ("
+        String insertSQL = "INSERT INTO games VALUES ("
                 + "\"" + uniqueName + "\","
                 + "\"" + name + "\");";
         db.execSQL(insertSQL);
