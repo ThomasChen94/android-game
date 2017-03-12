@@ -103,7 +103,7 @@ public class Shape {
         this.script = script;
 
         rectF = new RectF(left, top, right, bottom);
-
+        setRectF();
 
         initPaint();
         initBitmapDrawable();
@@ -130,6 +130,7 @@ public class Shape {
             e.printStackTrace();
         }
 
+        setRectF();
         initPaint();
         initBitmapDrawable();
 
@@ -181,6 +182,15 @@ public class Shape {
 
     public RectF getRectF() {
         return rectF;
+    }
+
+    public void setRectF() {
+        //this.rectF = new RectF(left, top, right, bottom);
+        if (imageBitmap != null) {
+            //System.out.println("width: " + imageBitmap.getWidth() + "height: " + imageBitmap.getHeight());
+            rectF.right = rectF.left + imageBitmap.getWidth();
+            rectF.bottom = rectF.top + imageBitmap.getHeight();
+        }
     }
 
     public void setRectF(float left, float top, float right, float bottom) {

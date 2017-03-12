@@ -130,10 +130,7 @@ public final class GameDatabase {
         db.execSQL(updateSQL);
     }
 
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
 
     public boolean ifExistShape (Shape shape) {
         Cursor shapeCursor = db.rawQuery(

@@ -99,6 +99,7 @@ public class GameActivity extends Activity {
         for (int i = shapeList.size()-1; i>=0; i--) {
             if (shapeList.get(i).getRectF().contains(downX, downY)) {
                 selectedShape =  shapeList.get(i);
+                System.out.println(selectedShape.getName());
                 //uncomment this to allow selection to appear on top of all. Problematic when selection is big and not movable ,
                 // so selection will cover and hide other shape
 //                shapeList.remove(i);
