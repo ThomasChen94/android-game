@@ -58,6 +58,8 @@ public class GameActivity extends Activity {
                 break;
             }
             case MotionEvent.ACTION_UP: {
+                upEventHandler(event);
+
                 break;
             }
         }
@@ -89,7 +91,7 @@ public class GameActivity extends Activity {
             }
         } else { //TODO: clicked in inventory area
 
-        }
+        } //
 
     }
 
@@ -114,7 +116,7 @@ public class GameActivity extends Activity {
         isClick = false;
         float downX = event.getX();
         float downY = event.getY();
-        if (selectedShape != null && selectedShape.movable == true) {
+        if (selectedShape != null && selectedShape.movable == true ) { //
             float rectX = downX - relativeX;
             float rectY = downY - relativeY;
             float gameViewWidth = gameView.getViewWidth();
@@ -126,12 +128,12 @@ public class GameActivity extends Activity {
         gameView.invalidate();
     }
 
-    private void upEventHandler(MotionEvent event) throws JSONException {
+    private void upEventHandler(MotionEvent event) {
         if (selectedShape != null) {
             if (isClick) {
-                selectedShape.onClick();
+                //selectedShape.onClick();
             } else {
-                selectedShape.onDrop();
+                //selectedShape.onDrop();
             }
         }
 
@@ -142,7 +144,7 @@ public class GameActivity extends Activity {
     Rect wrappingSlidingDrawerRect;
     Rect turnOnInventoryRect;
     Rect turnOffInventoryRect;
-    boolean inventoryIsOn = false;
+    boolean inventoryIsOn;
 
     private void getInventoryDimensions() {
         bagView = (ImageView) findViewById(R.id.bag);

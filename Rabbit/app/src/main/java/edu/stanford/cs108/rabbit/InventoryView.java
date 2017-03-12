@@ -38,6 +38,19 @@ public class InventoryView extends View {
 
         Shape img = new Shape("carrot", "", "", "","");
 
+        inventoryShapes.add(img);
         img.draw(canvas);
+    }
+
+    public void addShape(Shape shape) {
+        inventoryShapes.add(shape);
+    }
+
+    public void removeShape(Shape shape) {
+        inventoryShapes.remove(shape);
+    }
+
+    public List<Shape> getInventoryShapes() {
+        return inventoryShapes;
     }
 }

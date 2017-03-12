@@ -343,37 +343,37 @@ public class Shape {
     }
 
     //Trigger handlers implementation of onTouchEvent in custom view.
-    public void onClick() throws JSONException {
-        actionProcessor(onClickJSON);
-    }
-
-    public void onDrop() throws JSONException {
-        actionProcessor(onDropJSON);
-    }
-
-    public void onEnter() throws JSONException {
-        actionProcessor(onEnterJSON);
-    }
+//    public void onClick() throws JSONException {
+//        actionProcessor(onClickJSON);
+//    }
+//
+//    public void onDrop() throws JSONException {
+//        actionProcessor(onDropJSON);
+//    }
+//
+//    public void onEnter() throws JSONException {
+//        actionProcessor(onEnterJSON);
+//   }
 
     //Parse actions in the trigger-specific JSONObject and call the corresponding action handler.
-    private void actionProcessor(JSONObject jsonObject) throws JSONException {
-        Iterator<String> keys = jsonObject.keys();
-
-        while(keys.hasNext()) {
-            String key = keys.next();
-            String value = jsonObject.getString(key);
-
-            switch (key) {
-                case "goto": onGoto(value);
-                    break;
-                case "show": onShow(value);
-                    break;
-                case "hide": onHide(value);
-                    break;
-                case "play": onPlay(value);
-            }
-        }
-    }
+//    private void actionProcessor(JSONObject jsonObject) throws JSONException {
+//        Iterator<String> keys = jsonObject.keys();
+//
+//        while(keys.hasNext()) {
+//            String key = keys.next();
+//            String value = jsonObject.getString(key);
+//
+//            switch (key) {
+//                case "goto": onGoto(value);
+//                    break;
+//                case "show": onShow(value);
+//                    break;
+//                case "hide": onHide(value);
+//                    break;
+//                case "play": onPlay(value);
+//            }
+//        }
+//    }
 
 
     //Actions handlers: onGoto, onShow, onHide, onPlay.
