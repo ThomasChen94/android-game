@@ -71,7 +71,7 @@ public final class GameDatabase {
     public Page getPage(String page) {
         Cursor cursor = db.rawQuery(
                 "SELECT * FROM shapes WHERE page = \"" + page + "\" and name not like '%info';", null);
-        if(cursor.moveToFirst() == false) return new Page("", "", null); // if nothing is selected, return an empty page
+        if(cursor.moveToFirst() == false) return new Page("", "", null, "", "", ""); // if nothing is selected, return an empty page
         List<Shape> shapeList= new LinkedList<Shape>();
         do {
             String sound    = cursor.getString(cursor.getColumnIndex("sound"));
@@ -104,7 +104,7 @@ public final class GameDatabase {
 //        pageCursor.moveToNext();
 //        String sound    = pageCursor.getString(pageCursor.getColumnIndex("sound"));
 //        String image    = pageCursor.getString(pageCursor.getColumnIndex("image"));
-        return new Page("", "", shapeList);
+        return new Page("", "", shapeList, "", "", "");
     }
 
     // updata the given shape
@@ -181,7 +181,7 @@ public final class GameDatabase {
                 + "\"" + page.getName() + "\","
                 + "\"" + page.getGame() + "\","
                 + "\"" + page.getBackground() + "\","
-                + "\"" + page.getSoundName() + ");";
+                + "\"" + page.getSoundName() + "\");";
         db.execSQL(insertSQL);
     }
 

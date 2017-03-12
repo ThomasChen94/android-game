@@ -18,6 +18,7 @@ public class Page {
 
     String uniqueName;
     String name;
+    String game;
     protected List<Shape> shapeList;
 
     protected MediaPlayer mp;
@@ -47,10 +48,13 @@ public class Page {
         this.name = name;
     }
 
-    public Page(String background, String soundName, List<Shape> shapeList) {
+    public Page(String background, String soundName, List<Shape> shapeList, String pageName, String pageUniqueName, String gameName) {
         this.background = background;
         this.soundName = soundName;
         this.shapeList = shapeList;
+        this.name = pageName;
+        this.uniqueName = pageUniqueName;
+        this.game = gameName;
     }
     public void draw(Canvas canvas) {
         for (Shape shape : shapeList) {

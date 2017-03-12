@@ -58,6 +58,9 @@ public class EditView extends View {
 
     public void insertPage(String pageName) {
         pageList.add(pageName);
+        String gameUniqueName = String.valueOf(pageList.size());
+        // background picture and background music is ignored here
+        gameDatabase.addPage(new Page("", "", null, pageName, gameUniqueName, curGameName));
         ((EditActivity)getContext()).updatePageList();
     }
 
