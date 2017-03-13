@@ -22,7 +22,6 @@ import java.util.List;
 
 public class GameActivity extends Activity {
     GameView gameView;
-    InventoryView inventoryView;
     ImageView bagView;
     WrappingSlidingDrawer wrappingSlidingDrawer;
     View handle;
@@ -38,6 +37,7 @@ public class GameActivity extends Activity {
         setContentView(R.layout.activity_game);
 
         gameView = (GameView) findViewById(R.id.gameView);
+        inventoryView = (InventoryView) findViewById(R.id.inventory);
         Shape.setGameView(gameView);
         System.out.println("if has gameview:" + Shape.gameView == null);
 
@@ -67,35 +67,50 @@ public class GameActivity extends Activity {
     }
 
     Page currPage;
-    List<Shape> shapeList;
+    List<Shape> pageShapeList;
     Shape selectedShape;
     float relativeX;
     float relativeY;
     boolean isClick;
+
+    InventoryView inventoryView;
+    List<Shape> inventoryShapeList;
+
     private void downEventHandler(MotionEvent event) {
+        //testInventoryDimension();
+
         isClick = true;
         inventoryIsOn = wrappingSlidingDrawer.isOpened();
+        selectedShape = null;
         float downX = event.getX();
         float downY = event.getY();
         String curPos = "x: " + downX + " y: " +downY;
         //System.out.println(curPos);
         Toast toast = Toast.makeText(getApplicationContext(), curPos, Toast.LENGTH_SHORT);
         toast.show();
-        if (!inventoryIsOn || !isClickOnInventory((int)downX, (int)downY)) {//Inventory is off (not clicked on the bag); test if clicked on some shape
+        if (!inventoryIsOn || !isClickOnInventory((int)downX, (int)downY) ) {//Not click on inventory); test if clicked on some shape
             currPage = gameView.getCurrPage();
-            shapeList = currPage.getShapeList();
-            findShape(downX, downY); //assign shape found to selectedShape;
-            if (selectedShape != null) {
-                relativeX = downX - selectedShape.getRectF().left;
-                relativeY = downY - selectedShape.getRectF().top;
-            }
+            pageShapeList = currPage.getShapeList();
+            findShape(pageShapeList, downX, downY); //assign shape found to selectedShape;
+//            if (selectedShape != null) {
+//                relativeX = downX - selectedShape.getRectF().left;
+//                relativeY = downY - selectedShape.getRectF().top;
+//            }
         } else { //TODO: clicked in inventory area
+            inventoryShapeList = inventoryView.getInventoryShapes();
+            findShape(inventoryShapeList, downX, downY);
 
-        } //
+        } //|| !isClickOnInventory((int)downX, (int)downY)
+
+        if (selectedShape != null) {
+            System.out.println("selectedSHape is not null" ); //+ selectedShape == null
+            relativeX = downX - selectedShape.getRectF().left;
+            relativeY = downY - selectedShape.getRectF().top;
+        }
 
     }
 
-    private void findShape(float downX, float downY) {
+    private void findShape(List<Shape> shapeList, float downX, float downY) {
         for (int i = shapeList.size()-1; i>=0; i--) {
             if (shapeList.get(i).getRectF().contains(downX, downY)) {
                 selectedShape =  shapeList.get(i);
@@ -117,7 +132,7 @@ public class GameActivity extends Activity {
         isClick = false;
         float downX = event.getX();
         float downY = event.getY();
-        if (selectedShape != null && selectedShape.movable == true ) { //
+        if (selectedShape != null ) { //&& selectedShape.movable == true
             float rectX = downX - relativeX;
             float rectY = downY - relativeY;
             float gameViewWidth = gameView.getViewWidth();
@@ -127,6 +142,7 @@ public class GameActivity extends Activity {
             selectedShape.setRectFLeftTop(rectX, rectY);
         }
         gameView.invalidate();
+        inventoryView.invalidate();
     }
 
     private void upEventHandler(MotionEvent event) {

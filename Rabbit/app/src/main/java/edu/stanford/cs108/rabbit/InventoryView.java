@@ -29,6 +29,9 @@ public class InventoryView extends View {
     public InventoryView(Context context, AttributeSet attrs) {
         super(context, attrs);
         inventoryShapes = new ArrayList<>();
+        Shape img = new Shape("carrot", "", "", "","");
+        //img.setRectF(0, 568, 100, 788);
+        inventoryShapes.add(img);
     }
 
 
@@ -36,10 +39,9 @@ public class InventoryView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        Shape img = new Shape("carrot", "", "", "","");
-
-        inventoryShapes.add(img);
-        img.draw(canvas);
+        for (Shape shape : inventoryShapes) {
+            shape.draw(canvas);
+        }
     }
 
     public void addShape(Shape shape) {

@@ -111,6 +111,7 @@ public class Shape {
         initBitmapDrawable();
         setRectF();
 
+
     }
 
     public Shape(String image, String text, String name, String uniqueName, String page) {
@@ -122,7 +123,7 @@ public class Shape {
         this.name = name;
         rawScript = "";
         hidden = false;
-        movable = false;
+        movable = true;
 
         script = "";
 
@@ -131,10 +132,10 @@ public class Shape {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         initPaint();
         initBitmapDrawable();
         setRectF();
-
 
     }
 
@@ -427,6 +428,14 @@ public class Shape {
         textPaint.setTextSize(60);
     }
 
+    public void drawBorder(Canvas canvas) {
+        Paint pt = new Paint();
+        pt.setColor(Color.BLACK);
+        pt.setStyle(Paint.Style.STROKE);
+        pt.setStrokeWidth(5.0f);
+        canvas.drawRect(rectF, pt);
+    }
+
     //Draw the shape-self; text takes precedence over image
     public void draw(Canvas canvas) {
         if (text != null && !text.equals("")) {
@@ -435,12 +444,6 @@ public class Shape {
             canvas.drawBitmap(imageBitmap, rectF.left, rectF.top, new Paint());
     }
 
-    public void drawBorder(Canvas canvas) {
-        Paint pt = new Paint();
-        pt.setColor(Color.BLACK);
-        pt.setStrokeWidth(1);
-        canvas.drawRect(rectF, pt);
-    }
 
     //TODO: can be merged with onPlay();
     //e.g. pass this when creating

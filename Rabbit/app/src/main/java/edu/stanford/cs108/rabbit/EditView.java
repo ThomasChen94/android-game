@@ -100,14 +100,13 @@ public class EditView extends View {
         initPopupWindowScript();
         initPopupWindowAction();
 
+
         Display display = ((Activity)getContext()).getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         System.out.println("width: " + size.x + " height: " + size.y);
         Shape.setViewHeight(size.y);
         Shape.setViewWidth(size.x);
-
-
 //        initPopupWindow(popupWindowMain, R.layout.popupwindow_main);
 //        initPopupWindow(popupWindowAttribute, R.layout.popupwindow_attributes);
 //        initPopupWindow(popupWindowScript, R.layout.popupwindow_script);
@@ -234,6 +233,7 @@ public class EditView extends View {
         for (Shape shape : shapeList) {
             shape.draw(canvas);
         }
+        if (isClick && curShape != null) curShape.drawBorder(canvas);
     }
 
     @Override
@@ -306,10 +306,11 @@ public class EditView extends View {
                 float rectX = downX - relativeX;
                 float rectY = downY - relativeY;
                 curShape.setRectFLeftTop(rectX, rectY);
+                curShape.setRectF();
             }
 
         }
-        gameDatabase.updateShape(curShape);
+
         invalidate();
     }
     public void upEventHandler(MotionEvent event) {
@@ -317,6 +318,10 @@ public class EditView extends View {
             //popupWindowMain.showAsDropDown(((Activity) getContext()).findViewById(R.id.insert_shape));
             popupWindowMain.showAsDropDown(((Activity) getContext()).findViewById(R.id.hidden),0,0);
         }
+        if (curShape != null) {
+            gameDatabase.updateShape(curShape);
+        }
+        invalidate();
     }
     public void initPopupWindow(PopupWindow popupWindow, int layout) {
         View popupView = LayoutInflater.from(getContext()).inflate(layout, null);

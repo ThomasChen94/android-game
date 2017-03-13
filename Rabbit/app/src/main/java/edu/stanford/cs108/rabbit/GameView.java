@@ -30,18 +30,6 @@ public class GameView extends View {
 
         Shape.setContext(context);
 
-/*        ViewTreeObserver vto = this.getViewTreeObserver();
-        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            public boolean onPreDraw() {
-                GameView.this.getViewTreeObserver().removeOnPreDrawListener(this);
-                int height = GameView.this.getMeasuredHeight();
-                int width  = GameView.this.getMeasuredWidth();
-                Shape.setViewHeight(height);
-                Shape.setViewWidth(width);
-                //System.out.println(height + " " + width);
-                return true;
-            }
-        });*/
 
         Display display = ((Activity)getContext()).getWindowManager().getDefaultDisplay();
         Point size = new Point();

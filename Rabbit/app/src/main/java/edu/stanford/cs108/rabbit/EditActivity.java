@@ -3,11 +3,13 @@ package edu.stanford.cs108.rabbit;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -88,9 +90,7 @@ public class EditActivity extends Activity {
         hsv = (HorizontalScrollView) findViewById(R.id.hsv);
         hsvPage = (HorizontalScrollView) findViewById(R.id.hsv_page);
 
-        //initSwitchButtonListener();
-
-
+//        initSwitchButtonListener();
 
     }
 
@@ -108,7 +108,7 @@ public class EditActivity extends Activity {
             }
         });
         Switch movable = (Switch) findViewById(R.id.movable_switch);
-        hidden.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        movable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 EditView editView = (EditView) findViewById(R.id.editView);
@@ -388,7 +388,7 @@ public class EditActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 editView.tmpScript[2] = "TOGO";
-                editView.tmpScript[3] = editView.pageUserList.get(which) + "";
+                editView.tmpScript[3] = editView.togoPageSelected + "";
                 editView.flushTmpScriptToRawScript();
 
                 //editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
