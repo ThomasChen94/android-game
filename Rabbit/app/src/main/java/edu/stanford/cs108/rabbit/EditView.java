@@ -549,7 +549,7 @@ public class EditView extends View {
         resizeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                
+                curShape.setSize(progress / 100);
             }
 
             @Override
