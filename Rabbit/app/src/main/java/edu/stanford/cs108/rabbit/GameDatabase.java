@@ -365,7 +365,7 @@ public final class GameDatabase {
         Cursor cursorGame = db.rawQuery(
                 "SELECT * FROM games where name = \"" + gameName + "\";", null);
         if(cursorGame.moveToFirst() == false) return new ArrayList<Shape>();
-        String game   = cursorGame.getString(cursorGame.getColumnIndex("game"));
+        String game   = cursorGame.getString(cursorGame.getColumnIndex("uniquename"));
 
         Cursor cursorShape = db.rawQuery(
                 "SELECT * FROM shapes where" +
