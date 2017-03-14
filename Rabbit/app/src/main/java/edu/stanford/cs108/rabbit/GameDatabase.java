@@ -302,7 +302,7 @@ public final class GameDatabase {
         Cursor cursorGame = db.rawQuery(
                 "SELECT game FROM pages where uniquename = \"" + page + "\";", null);
         if(cursorGame.moveToFirst() == false) return false;
-        String game    = cursorGame.getString(cursorPrev.getColumnIndex("game"));
+        String game    = cursorGame.getString(cursorGame.getColumnIndex("game"));
 
         Cursor cursorNew = db.rawQuery(
                 "SELECT * FROM shapes where name = \"" + newName + "\"" +
