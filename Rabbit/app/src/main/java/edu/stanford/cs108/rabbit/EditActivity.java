@@ -311,14 +311,16 @@ public class EditActivity extends Activity {
             editView.tmpScript[0] = "ONDROP";
             //editView.curShape.rawScript += "ONDROP,";
         }
-
-        Integer[] shapeImageID = new Integer[images.length];
-        for (int i = 0; i < images.length; i++) {
-            shapeImageID[i] = getResources().getIdentifier(images[i], DRAWABLE, getPackageName());
+        List<Shape> allShapeList = editView.gameDatabase.getAllShape(editView.getCurGameName());
+        Integer[] shapeImageID = new Integer[allShapeList.size()];
+        String[] shapeName = new String[allShapeList.size()];
+        for (int i = 0; i < allShapeList.size(); i++) {
+            shapeImageID[i] = getResources().getIdentifier(allShapeList.get(i).image, DRAWABLE, getPackageName());
+            shapeName[i] = allShapeList.get(i).name;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Choose Shape to Hide");
-        ListAdapter adapter = new ArrayAdapterWithIcon(this, images, shapeImageID);
+        ListAdapter adapter = new ArrayAdapterWithIcon(this, shapeName, shapeImageID);
         builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

@@ -69,6 +69,7 @@ public class EditView extends View {
     Switch hidden;
     Switch movable;
     Switch position;
+    Switch pageSwitch;
 
     static final String[] GAMEICONLIST = {"gba_icon", "controller_icon", "xbox_icon", "steam_icon", "playstation_icon"};
     static final String DRAWABLE = "drawable";
@@ -479,6 +480,7 @@ public class EditView extends View {
         popupWindowSettings.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
         popupWindowSettings.setAnimationStyle(R.style.AnimationFade);
         position = (Switch) popupView.findViewById(R.id.position_switch);
+        pageSwitch = (Switch) popupView.findViewById(R.id.page_switch);
     }
 
 
@@ -674,6 +676,18 @@ public class EditView extends View {
                     textView.setVisibility(VISIBLE);
                 } else {
                     TextView textView = (TextView) ((Activity)getContext()).findViewById(R.id.position_textview);
+                    textView.setVisibility(INVISIBLE);
+                }
+            }
+        });
+        pageSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    TextView textView = (TextView) ((Activity)getContext()).findViewById(R.id.page_textview);
+                    textView.setVisibility(VISIBLE);
+                } else {
+                    TextView textView = (TextView) ((Activity)getContext()).findViewById(R.id.page_textview);
                     textView.setVisibility(INVISIBLE);
                 }
             }

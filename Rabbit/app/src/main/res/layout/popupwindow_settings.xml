@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/page_switch"
                 android:drawableLeft="@drawable/hsv_page_icon"
-                android:text="POSITION"/>
+                android:text="SHOW PAGE"/>
         </LinearLayout>
 
     </ScrollView>
