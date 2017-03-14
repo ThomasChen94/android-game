@@ -42,13 +42,9 @@ public class GameActivity extends Activity {
         Shape.setGameView(gameView);
         System.out.println("if has gameview:" + Shape.gameView == null);
 
-<<<<<<< HEAD
         gameDatabase = GameDatabase.getInstance();
         gameDatabase.getDb(Shape.context);
 
-=======
-        //Shape.setContext(getApplicationContext());   setContext has been moved to GameView's constructor
->>>>>>> origin/master
     }
 
     @Override

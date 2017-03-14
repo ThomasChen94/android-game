@@ -115,7 +115,7 @@ public final class GameDatabase {
         //gameName = "shapes";   // hard code the game name
 
         String updateSQL = "UPDATE " + "shapes" + " SET"
-                            + " name = \" " + shape.getName() + "\","
+                            + " name = \"" + shape.getName() + "\","
                             + " page = \"" + shape.getPage() + "\","
                             + " image = \"" + shape.getImage() + "\","
                             + " sound = \"" + shape.getSoundName() + "\","
@@ -211,7 +211,7 @@ public final class GameDatabase {
 
     public void updatePage(Page page) {
         String updateSQL = "UPDATE " + "pages" + " SET"
-                + " name = \" " + page.getUniqueName() + "\","
+                + " name = \"" + page.getUniqueName() + "\","
                 + " page = \"" + page.getName() + "\","
                 + " image = \"" + page.getBackground() + "\","
                 + " sound = \"" + page.getSoundName() + "\" "
@@ -254,7 +254,7 @@ public final class GameDatabase {
 
     public void updateGame(String uniqueName, String newName) {
         String updateSQL = "UPDATE " + "games" + " SET"
-                + " name = \" " + newName + "\" "
+                + " name = \"" + newName + "\" "
                 + "WHERE uniquename = \"" + uniqueName  + "\"; ";
         db.execSQL(updateSQL);
     }
@@ -270,7 +270,7 @@ public final class GameDatabase {
 
         String uniquename    = cursorPrev.getString(cursorPrev.getColumnIndex("uniquename"));
         String updateGameName = "UPDATE " + "games" + " SET"
-                + " name = \" " + newName + "\""
+                + " name = \"" + newName + "\""
                 + "WHERE uniquename = \"" + uniquename  + "\"; ";
         db.execSQL(updateGameName);
         return true;
@@ -287,7 +287,7 @@ public final class GameDatabase {
         if(cursorNew.moveToFirst()) return false;
 
         String updatePageName = "UPDATE " + "pages" + " SET"
-                + " name = \" " + newName + "\""
+                + " name = \"" + newName + "\""
                 + "WHERE uniquename = \"" + uniqueName  + "\"; ";
         db.execSQL(updatePageName);
         return true;
@@ -310,7 +310,7 @@ public final class GameDatabase {
         if(cursorNew.moveToFirst()) return false;
 
         String updateShapeName = "UPDATE " + "shapes" + " SET"
-                + " name = \" " + newName + "\""
+                + " name = \"" + newName + "\""
                 + " WHERE uniquename = \"" + uniqueName  + "\"; ";
         db.execSQL(updateShapeName);
         return true;
@@ -394,9 +394,15 @@ public final class GameDatabase {
         return shapeList;
     }
 
-    public boolean containsPage(String curNewGameName) {
-        // Put your codes here
-        
+    public boolean containsPage(String gameName, String newPageName) {
+        Cursor cursorGame = db.rawQuery(
+                "SELECT * FROM games where name = \"" + gameName + "\";", null);
+        cursorGame.moveToFirst();
+        String game    = cursorGame.getString(cursorGame.getColumnIndex("uniquename"));
+
+        Cursor cursorPage = db.rawQuery(
+                "SELECT * FROM pages where name = \"" + newPageName + "\" and game = \"" + game + "\";", null);
+        if(cursorPage.moveToFirst()) return true;
         return false;
     }
 }

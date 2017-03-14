@@ -78,8 +78,8 @@ public class HSVLayoutPage extends LinearLayout {
                         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                String curNewGameName = editText.getText().toString();
-                                if (!editView.gameDatabase.containsPage(curNewGameName)) {
+                                String curNewPageName = editText.getText().toString();
+                                if (!editView.gameDatabase.containsPage(editView.curGameName, curNewPageName)) {
                                     editView.curPageIndex = newPageIndex - 1;
                                     editView.insertPage(editText.getText().toString());
                                     editView.setCurPageName(editText.getText().toString());
