@@ -9,15 +9,18 @@ import android.media.MediaPlayer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
@@ -35,6 +38,7 @@ import java.util.StringTokenizer;
 
 public class EditActivity extends Activity {
     public static String[] images = {"carrot_icon", "carrot2_icon", "death_icon", "duck_icon", "fire_icon", "textbox_icon"};
+    public static String[] SHAPENAME = {"Carrot", "Carrot2", "Death", "Duck", "Fire", "Textbox"};
     public static String[] sounds = {"carrotcarrotcarrot", "evillaugh", "fire", "hooray", "munch", "munching", "woof"};
     HSVAdapter hsvAdapter;
     HSVLayout hsvLayout;
@@ -90,36 +94,10 @@ public class EditActivity extends Activity {
         hsv = (HorizontalScrollView) findViewById(R.id.hsv);
         hsvPage = (HorizontalScrollView) findViewById(R.id.hsv_page);
 
-        initSwitchButtonListener();
 
     }
 
-    public void initSwitchButtonListener() {
-        Switch hidden = (Switch) findViewById(R.id.hidden_switch);
-        hidden.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                EditView editView = (EditView) findViewById(R.id.editView);
-                if (isChecked) {
-                    editView.getCurShape().setHidden(true);
-                } else {
-                    editView.getCurShape().setHidden(false);
-                }
-            }
-        });
-        Switch movable = (Switch) findViewById(R.id.movable_switch);
-        movable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                EditView editView = (EditView) findViewById(R.id.editView);
-                if (isChecked) {
-                    editView.getCurShape().setMovable(true);
-                } else {
-                    editView.getCurShape().setMovable(false);
-                }
-            }
-        });
-    }
+
 
     public void updatePageList() {
         final EditView editView = (EditView) findViewById(R.id.editView);
@@ -187,9 +165,6 @@ public class EditActivity extends Activity {
                 String changedID = editText.getText().toString();
                 if (!changedID.isEmpty()) {
                     editView.getCurShape().setName(changedID);
-
-                    //editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
-
                     editView.gameDatabase.updateShape(editView.getCurShape());
                 }
             }
@@ -207,7 +182,36 @@ public class EditActivity extends Activity {
 
     }
 
+    public void renamePage(View view) {
+        final EditView editView = (EditView) findViewById(R.id.editView);
+        String curID = editView.getCurPageName();
+        final EditText editText = new EditText(this);
+        editText.setText(curID);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Rename");
+        builder.setView(editText);
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String changedPageName = editText.getText().toString();
+                if (!changedPageName.isEmpty()) {
+                    editView.pageUserList.set(editView.curPageIndex, changedPageName);
+                    resetPageList();
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
+            }
+        });
+        builder.setCancelable(true);
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+
+    }
 
     public void delete(View view) {
         EditView editView = (EditView) findViewById(R.id.editView);
@@ -218,7 +222,11 @@ public class EditActivity extends Activity {
 
     public void attribute(View view) {
         EditView editView = (EditView) findViewById(R.id.editView);
+        //LayoutInflater factory = LayoutInflater.from(this);
+        //View otherLayout = factory.inflate(R.layout.popupwindow_attributes, null);
+
         editView.expandAttributeMenu();
+
     }
 
     public void script(View view) {
@@ -275,56 +283,11 @@ public class EditActivity extends Activity {
         });
         builder.setCancelable(true);
         AlertDialog dialog = builder.create();
-        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
 
         editView.expandOndropMenu();
     }
-
-    public void setSound(View view) {
-        final EditView editView = (EditView) findViewById(R.id.editView);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final String oldSoundName = editView.getCurShape().getSoundName();
-        builder.setTitle("Choose Sound");
-        int index = 0;
-        for (int i = 0; i < sounds.length; i++) {
-            if (sounds[i].equals(oldSoundName)) {
-                index = i;
-                break;
-            }
-        }
-        builder.setSingleChoiceItems(sounds, index, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String curSound = sounds[which];
-                int soundId = getResources().getIdentifier(curSound, RAW, getPackageName());
-                MediaPlayer mp = MediaPlayer.create(getApplicationContext(), soundId);
-                mp.start();
-                editView.getCurShape().setSoundName(curSound);
-
-               // editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
-                editView.gameDatabase.updateShape(editView.getCurShape());
-            }
-        });
-        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                editView.getCurShape().setSoundName(oldSoundName);
-            }
-        });
-        builder.setCancelable(true);
-        AlertDialog dialog = builder.create();
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.show();
-        editView.getCurShape().setSoundName("");
-    }
-
 
     public void playAction(View view) {
         final EditView editView = (EditView) findViewById(R.id.editView);
@@ -409,17 +372,26 @@ public class EditActivity extends Activity {
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
     }
+
     public void showAction(View view) {
 
         final EditView editView = (EditView) findViewById(R.id.editView);
 
         Integer[] shapeImageID = new Integer[editView.shapeList.size()];
         for (int i = 0; i < editView.shapeList.size(); i++) {
-            shapeImageID[i] = getResources().getIdentifier(editView.shapeList.get(i).image, DRAWABLE, getPackageName());
+            if (editView.shapeList.get(i).getText().isEmpty()) {
+                shapeImageID[i] = getResources().getIdentifier(editView.shapeList.get(i).image, DRAWABLE, getPackageName());
+            } else {
+                shapeImageID[i] = getResources().getIdentifier("textbox_icon", DRAWABLE, getPackageName());
+            }
         }
         String[] shapeImageName = new String[editView.shapeList.size()];
         for (int i = 0; i < editView.shapeList.size(); i++) {
-            shapeImageName[i] = editView.shapeList.get(i).name;
+            if (editView.shapeList.get(i).getText().isEmpty()) {
+                shapeImageName[i] = editView.shapeList.get(i).name;
+            } else {
+                shapeImageName[i] = editView.shapeList.get(i).name + "\n" + editView.shapeList.get(i).getText();
+            }
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Choose Shape to Show");
@@ -481,6 +453,101 @@ public class EditActivity extends Activity {
         dialog.show();
     }
 
+    public void changeContent(View view) {
+        final EditView editView = (EditView) findViewById(R.id.editView);
 
+        Integer[] shapeImageID = new Integer[images.length];
+        for (int i = 0; i < images.length; i++) {
+            shapeImageID[i] = getResources().getIdentifier(images[i], DRAWABLE, getPackageName());
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Change Shape\n (Delete text to change to image)");
+        ListAdapter adapter = new ArrayAdapterWithIcon(this, SHAPENAME, shapeImageID);
+        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which != images.length - 1) {
+                    // image
+                    editView.curShape.setImage(images[which]);
+                    editView.getCurShape().initBitmapDrawable();
+                    editView.getCurShape().setRectFLeftTop(editView.getCurShape().getRectF().left, editView.getCurShape().getRectF().top);
+                    editView.gameDatabase.updateShape(editView.getCurShape());
+                    editView.invalidate();
+                } else {
+                    // text
+                    final EditView editView = (EditView) findViewById(R.id.editView);
+                    String curText = editView.getCurShape().getText();
+                    final EditText editText = new EditText(EditActivity.this);
+                    editText.setText(curText);
+                    AlertDialog.Builder builderText = new AlertDialog.Builder(EditActivity.this);
+                    builderText.setTitle("Text");
+                    builderText.setView(editText);
+                    builderText.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String changedText = editText.getText().toString();
+                            editView.getCurShape().setText(changedText);
+                            editView.getCurShape().initBitmapDrawable();
+                            editView.getCurShape().setRectFLeftBottom(editView.getCurShape().getRectF().left, editView.getCurShape().getRectF().bottom);
+                            editView.gameDatabase.updateShape(editView.getCurShape());
+                            editView.invalidate();
+
+                        }
+                    });
+                    builderText.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    builderText.setCancelable(true);
+                    AlertDialog dialogText = builderText.create();
+                    dialogText.setCanceledOnTouchOutside(true);
+                    dialogText.show();
+                }
+                editView.invalidate();
+            }
+        });
+        builder.setCancelable(true);
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+    }
+
+
+    public void showSettings(View view) {
+        EditView editView = (EditView) findViewById(R.id.editView);
+        editView.showSettings();
+    }
+
+
+    public void renameGame(View view) {
+        final EditView editView = (EditView) findViewById(R.id.editView);
+        String curGameName = editView.getCurGameName();
+        final EditText editText = new EditText(this);
+        editText.setText(curGameName);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Rename");
+        builder.setView(editText);
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // game name要写入数据库
+                String changedGameName = editText.getText().toString();
+                editView.setCurGameName(changedGameName);
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.setCancelable(true);
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+    }
 
 }

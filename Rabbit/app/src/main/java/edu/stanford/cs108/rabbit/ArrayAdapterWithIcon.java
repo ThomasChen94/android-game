@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -51,6 +52,7 @@ public class ArrayAdapterWithIcon extends ArrayAdapter<String> {
         } else {
             textView.setCompoundDrawablesWithIntrinsicBounds(images.get(position), 0, 0, 0);
         }
+        textView.setGravity(Gravity.RIGHT);
         textView.setCompoundDrawablePadding(
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, getContext().getResources().getDisplayMetrics()));
         return view;

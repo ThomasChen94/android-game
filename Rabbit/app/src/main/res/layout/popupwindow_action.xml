@@ -10,24 +10,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <Button
+                android:background="@drawable/button_border"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="goto"
+                android:drawableLeft="@drawable/goto_icon"
                 android:onClick="gotoAction"/>
             <Button
+                android:background="@drawable/button_border"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="play"
+                android:drawableLeft="@drawable/sound_icon"
                 android:onClick="playAction"/>
             <Button
+                android:background="@drawable/button_border"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="show"
+                android:drawableLeft="@drawable/show_icon"
                 android:onClick="showAction"/>
             <Button
+                android:background="@drawable/button_border"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="hide"
+                android:drawableLeft="@drawable/hide_icon"
                 android:onClick="hideAction"/>
         </LinearLayout>
     </ScrollView>

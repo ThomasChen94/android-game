@@ -59,8 +59,8 @@ public class HSVLayoutPage extends LinearLayout {
                         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                editView.insertPage("Page" + newPageIndex);
-                                editView.setCurPageName("Page" + newPageIndex);
+//                                editView.insertPage("Page" + newPageIndex);
+//                                editView.setCurPageName("Page" + newPageIndex);
                             }
                         });
                         builder.setCancelable(true);
@@ -74,8 +74,9 @@ public class HSVLayoutPage extends LinearLayout {
                     } else {
                         // choose page
                         int indexInList = index - 1;
-                        Page newPage = editView.gameDatabase.getPage(editView.getCurGameName() + editView.pageUserList.get(indexInList));
+                        Page newPage = editView.gameDatabase.getPage(editView.pageUniqueList.get(indexInList));
                         editView.setCurPageName(editView.pageUserList.get(indexInList));
+                        editView.curPageIndex = indexInList;
                         editView.updateCurPage(newPage);
                     }
 
@@ -85,7 +86,13 @@ public class HSVLayoutPage extends LinearLayout {
                 @Override
                 public boolean onLongClick(View v) {
                     final EditView editView = (EditView) ((Activity) getContext()).findViewById(R.id.editView);
-                    editView.popupWindowMain.showAsDropDown(((Activity) getContext()).findViewById(R.id.hidden),0,0);
+                    int index = (Integer) map.get("index");
+                    int indexInList = index - 1;
+                    if (indexInList >= 1) {
+                        editView.setCurPageName(editView.pageUserList.get(indexInList));
+                        editView.curPageIndex = indexInList;
+                        editView.popupWindowPage.showAsDropDown(((Activity) getContext()).findViewById(R.id.hidden), 0, 0);
+                    }
                     return false;
                 }
             });

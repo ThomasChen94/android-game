@@ -51,14 +51,14 @@ public class HSVAdapterPage extends BaseAdapter {
         TextView text = (TextView) view.findViewById(R.id.movie_text);
         Map<String, Object> map = getItem(location);
         String s = (String) map.get("text");
-        int id = mContext.getResources().getIdentifier("plus_small_icon", "drawable", mContext.getPackageName());
+        int id = mContext.getResources().getIdentifier("hsv_add_page", "drawable", mContext.getPackageName());
         if (s.equals("newpage")) {
-            text.setMaxWidth(50);
-            text.setMaxHeight(50);
+//            text.setMaxWidth(50);
+//            text.setMaxHeight(50);
             text.setBackgroundResource(id);
         } else {
             text.setText((String) map.get("text"));
-            text.setTextSize(30f);
+            text.setTextSize(20f);
         }
 
         // text.setBackgroundResource((Integer) map.get("image"));

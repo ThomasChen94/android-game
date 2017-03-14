@@ -416,8 +416,8 @@ public class Shape {
 
     //initialize BitmapDrawable of the shape's associated image
 
-    private void initBitmapDrawable() {
-        if (image == null || image.equals("")) {
+    public void initBitmapDrawable() {
+        if (image == null || image.equals("") || !text.isEmpty()) {
             Rect rect = new Rect();
             textPaint.getTextBounds(text, 0, text.length(), rect);
             setRectF(getRectF().left, getRectF().top, getRectF().left + rect.width(), getRectF().top + rect.height());
@@ -438,7 +438,7 @@ public class Shape {
 
     //initialize the paint for the shape's associate text (can be made a static varaible of shape)
 
-    private void initPaint() {
+    public void initPaint() {
         textPaint = new Paint();
         textPaint.setColor(Color.BLACK);
         textPaint.setTextSize(60);

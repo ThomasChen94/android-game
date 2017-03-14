@@ -10,25 +10,41 @@
             android:orientation="vertical"
             android:layout_height="wrap_content">
         <Button
-            android:layout_width="wrap_content"
+            android:gravity="center|left"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="Delete"
+            android:background="@drawable/button_border"
+            android:drawableLeft="@drawable/delete_icon"
+            android:drawableRight="@drawable/forward_icon"
             android:onClick="delete"/>
         <Button
+            android:gravity="center|left"
             android:id="@+id/script"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="Script"
+            android:background="@drawable/button_border"
+            android:drawableLeft="@drawable/script_icon"
+            android:drawableRight="@drawable/forward_icon"
             android:onClick="script"/>
         <Button
-            android:layout_width="wrap_content"
+            android:gravity="center|left"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="Attribute"
+            android:background="@drawable/button_border"
+            android:drawableLeft="@drawable/attribute_icon"
+            android:drawableRight="@drawable/forward_icon"
             android:onClick="attribute"/>
         <Button
-            android:layout_width="wrap_content"
+            android:gravity="center|left"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="showscript"
+            android:background="@drawable/button_border"
+            android:drawableLeft="@drawable/showscript_icon"
+            android:drawableRight="@drawable/forward_icon"
             android:onClick="showScript"/>
 
 

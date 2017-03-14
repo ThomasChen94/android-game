@@ -30,24 +30,7 @@ public class GameView extends View {
 
         Shape.setContext(context);
 
-<<<<<<< HEAD
-        currPage = gameDatabase.getPage("3"); // get the first page
 
-        ViewTreeObserver vto = this.getViewTreeObserver();
-=======
-/*        ViewTreeObserver vto = this.getViewTreeObserver();
->>>>>>> origin/master
-        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            public boolean onPreDraw() {
-                GameView.this.getViewTreeObserver().removeOnPreDrawListener(this);
-                int height = GameView.this.getMeasuredHeight();
-                int width  = GameView.this.getMeasuredWidth();
-                Shape.setViewHeight(height);
-                Shape.setViewWidth(width);
-                //System.out.println(height + " " + width);
-                return true;
-            }
-        });*/
 
         Display display = ((Activity)getContext()).getWindowManager().getDefaultDisplay();
         Point size = new Point();

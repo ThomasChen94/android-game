@@ -81,8 +81,10 @@ public final class GameDatabase {
             String uniqueName    = cursor.getString(cursor.getColumnIndex("uniquename"));
             String name    = cursor.getString(cursor.getColumnIndex("name"));
             String script   = cursor.getString(cursor.getColumnIndex("script"));
-            boolean hidden  = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("hidden")));
-            boolean movable = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("movable")));
+            boolean hidden  = (cursor.getString(cursor.getColumnIndex("hidden")).equals("0")) ? false:true;
+            boolean movable = (cursor.getString(cursor.getColumnIndex("movable")).equals("0")) ? false:true;
+            //boolean hidden  = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("hidden")));
+            //boolean movable = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("movable")));
             //Eric modified this.
             //int order    = cursor.getShort(cursor.getColumnIndex("myorder"));
             int myorder    = cursor.getShort(cursor.getColumnIndex("myorder"));
@@ -118,7 +120,7 @@ public final class GameDatabase {
                             + " sound = \"" + shape.getSoundName() + "\","
                             + " text = \"" + shape.getText() + "\","
                             + " fontsize = " + shape.getFontsize() + ","
-                            + " script = \"" + shape.getScript().toString() + "\","
+                            + " script = \"" + shape.getScript() + "\","
                             + " left = " + shape.getRectF().left / Shape.viewWidth + ","
                             + " top = " + shape.getRectF().top / Shape.viewHeight + ","
                             + " right = " + shape.getRectF().right / Shape.viewWidth + ","
