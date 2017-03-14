@@ -30,6 +30,7 @@ public class GameView extends View {
 
         Shape.setContext(context);
 
+
         Display display = ((Activity)getContext()).getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);

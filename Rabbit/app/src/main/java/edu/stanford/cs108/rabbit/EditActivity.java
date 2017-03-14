@@ -189,11 +189,13 @@ public class EditActivity extends Activity {
             public void onClick(View v) {
                 String changedShapeName = editText.getText().toString();
                 if (editView.gameDatabase.renameShape(editView.getCurShape().uniqueName, changedShapeName)) {
+                    editView.getCurShape().setName(changedShapeName);
+                    // editView.gameDatabase.updateShape(editView.getCurShape());
                     dialog.dismiss();
                 } else {
                     final EditView editView = (EditView) findViewById(R.id.editView);
                     AlertDialog.Builder builderWarning = new AlertDialog.Builder(EditActivity.this);
-                    builderWarning.setTitle("Duplicated Game Name");
+                    builderWarning.setTitle("Duplicated Shape Name");
                     builderWarning.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
