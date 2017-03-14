@@ -152,7 +152,7 @@ public class EditActivity extends Activity {
     }
 
 
-    public void rename(View view) {
+    public void renameShape(View view) {
         final EditView editView = (EditView) findViewById(R.id.editView);
         String curID = editView.getCurShape().getName();
         final EditText editText = new EditText(this);
@@ -163,11 +163,11 @@ public class EditActivity extends Activity {
         builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String changedID = editText.getText().toString();
-                if (!changedID.isEmpty()) {
-                    editView.getCurShape().setName(changedID);
-                    editView.gameDatabase.updateShape(editView.getCurShape());
-                }
+//                String changedID = editText.getText().toString();
+//                if (!changedID.isEmpty()) {
+//                    editView.getCurShape().setName(changedID);
+//                    editView.gameDatabase.updateShape(editView.getCurShape());
+//                }
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -177,9 +177,32 @@ public class EditActivity extends Activity {
             }
         });
         builder.setCancelable(true);
-        AlertDialog dialog = builder.create();
+        final AlertDialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String changedShapeName = editText.getText().toString();
+                if (editView.gameDatabase.renameShape(editView.getCurShape().uniqueName, changedShapeName)) {
+                    dialog.dismiss();
+                } else {
+                    final EditView editView = (EditView) findViewById(R.id.editView);
+                    AlertDialog.Builder builderWarning = new AlertDialog.Builder(EditActivity.this);
+                    builderWarning.setTitle("Duplicated Game Name");
+                    builderWarning.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    builderWarning.setCancelable(true);
+                    AlertDialog dialogWarning = builderWarning.create();
+                    dialogWarning.setCanceledOnTouchOutside(false);
+                    dialogWarning.show();
+                }
+            }
+        });
 
     }
 

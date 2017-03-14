@@ -165,8 +165,8 @@ public class EditView extends View {
 //                dialogPage.setCanceledOnTouchOutside(false);
 //                dialogPage.show();
 
-                insertPage("Page1");
-                setCurPageName("Page1");
+//                insertPage("Page1");
+//                setCurPageName("Page1");
 
                 final EditText editTextGame = new EditText(getContext());
                 final String gameUniqueName = "Game" + String.valueOf(gameList.size() + 1);
@@ -177,15 +177,19 @@ public class EditView extends View {
                 builderGame.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        setCurGameName(editTextGame.getText().toString());
-                        gameDatabase.addGame(gameUniqueName, editTextGame.getText().toString());
+//                        setCurGameName(editTextGame.getText().toString());
+//                        gameDatabase.addGame(gameUniqueName, editTextGame.getText().toString());
+//                        insertPage("Page1");
+//                        setCurPageName("Page1");
                     }
                 });
                 builderGame.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        setCurPageName(gameUniqueName);
-                        gameDatabase.addGame(gameUniqueName, gameUniqueName);
+//                        setCurPageName(gameUniqueName);
+//                        gameDatabase.addGame(gameUniqueName, gameUniqueName);
+//                        insertPage("Page1");
+//                        setCurPageName("Page1");
                     }
                 });
                 builderGame.setCancelable(true);
@@ -195,9 +199,12 @@ public class EditView extends View {
                 dialogGame.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String changedGameName = editTextGame.getText().toString();
-                        if (gameDatabase.renameGame(getCurGameName(), changedGameName)) {
-                            setCurGameName(changedGameName);
+                        String curNewGameName = editTextGame.getText().toString();
+                        if (!gameDatabase.containsGame(curNewGameName)) {
+                            setCurGameName(curNewGameName);
+                            gameDatabase.addGame(gameUniqueName, curNewGameName);
+                            insertPage("Page1");
+                            setCurPageName("Page1");
                             dialogGame.dismiss();
                         } else {
                             final EditView editView = (EditView) findViewById(R.id.editView);
