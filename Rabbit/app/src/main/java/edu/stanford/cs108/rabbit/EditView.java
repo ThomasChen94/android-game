@@ -248,8 +248,8 @@ public class EditView extends View {
                             pageUserList.add(dummyPageList.get(i).getName());
                         }
                         ((EditActivity)getContext()).resetPageList();
-                        Page newPage = gameDatabase.getPage(pageUniqueList.get(0));
-                        //Page newPage = gameDatabase.getPage(getCurGameName() + pageUserList.get(0));
+                        // Page newPage = gameDatabase.getPage(pageUniqueList.get(0));
+                        Page newPage = gameDatabase.getPage(getCurGameName() + pageUserList.get(0));
                         setCurPageName(pageUserList.get(0));
                         updateCurPage(newPage);
                     }

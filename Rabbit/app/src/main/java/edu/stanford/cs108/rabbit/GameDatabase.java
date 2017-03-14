@@ -278,7 +278,7 @@ public final class GameDatabase {
 
     public boolean renamePage(String uniqueName, String newName) {
         Cursor cursorPrev = db.rawQuery(
-                "SELECT * FROM pages where name = \"" + uniqueName + "\";", null);
+                "SELECT * FROM pages where uniquename = \"" + uniqueName + "\";", null);
         if(cursorPrev.moveToFirst() == false) return false;
         String game    = cursorPrev.getString(cursorPrev.getColumnIndex("game"));
 
@@ -295,7 +295,7 @@ public final class GameDatabase {
 
     public boolean renameShape(String uniqueName, String newName) {
         Cursor cursorPrev = db.rawQuery(
-                "SELECT * FROM shapes where name = \"" + uniqueName + "\";", null);
+                "SELECT * FROM shapes where uniquename = \"" + uniqueName + "\";", null);
         if(cursorPrev.moveToFirst() == false) return false;
         String page    = cursorPrev.getString(cursorPrev.getColumnIndex("page"));
 
@@ -333,7 +333,8 @@ public final class GameDatabase {
         if (db == null) return;
         Cursor cursorPrev = db.rawQuery(
                 "SELECT * FROM games where name = \"" + name + "\";", null);
-        String game    = cursorPrev.getString(cursorPrev.getColumnIndex("game"));
+        cursorPrev.moveToFirst();
+        String game    = cursorPrev.getString(cursorPrev.getColumnIndex("uniquename"));
 
         String deleteShape = "DELETE FROM shapes WHERE page in "
                 + "(SELECT uniquename from pages WHERE game = \"" + game + "\");";

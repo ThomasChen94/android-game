@@ -2,6 +2,7 @@ package edu.stanford.cs108.rabbit;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
@@ -193,11 +194,7 @@ public class EditActivity extends Activity {
         builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String changedPageName = editText.getText().toString();
-                if (!changedPageName.isEmpty()) {
-                    editView.pageUserList.set(editView.curPageIndex, changedPageName);
-                    resetPageList();
-                }
+
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -207,9 +204,34 @@ public class EditActivity extends Activity {
             }
         });
         builder.setCancelable(true);
-        AlertDialog dialog = builder.create();
+        final AlertDialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String changedPageName = editText.getText().toString();
+                if (editView.gameDatabase.renamePage(editView.pageUniqueList.get(editView.curPageIndex), changedPageName)) {
+                    editView.setCurPageName(changedPageName);
+                    editView.pageUserList.set(editView.curPageIndex, changedPageName);
+                    resetPageList();
+                    dialog.dismiss();
+                } else {
+                    AlertDialog.Builder builderWarning = new AlertDialog.Builder(EditActivity.this);
+                    builderWarning.setTitle("Duplicated Page Name");
+                    builderWarning.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    builderWarning.setCancelable(true);
+                    AlertDialog dialogWarning = builderWarning.create();
+                    dialogWarning.setCanceledOnTouchOutside(false);
+                    dialogWarning.show();
+                }
+            }
+        });
 
     }
 
@@ -568,4 +590,25 @@ public class EditActivity extends Activity {
         });
     }
 
+
+    public void deletePage(View view) {
+        final EditView editView = (EditView) findViewById(R.id.editView);
+        editView.gameDatabase.deletePage(editView.pageUniqueList.get(editView.curPageIndex));
+        editView.pageUserList.remove(editView.curPageIndex);
+        editView.pageUniqueList.remove(editView.curPageIndex);
+        Page newPage = editView.gameDatabase.getPage(editView.pageUniqueList.get(0));
+        editView.setCurPageName(editView.pageUserList.get(0));
+        editView.curPageIndex = 0;
+        editView.updateCurPage(newPage);
+        resetPageList();
+    }
+
+
+
+    public void deleteGame(View view) {
+        final EditView editView = (EditView) findViewById(R.id.editView);
+        editView.gameDatabase.deleteGame(editView.curGameName);
+        Intent intent = new Intent(this, FullscreenActivity.class);
+        startActivity(intent);
+    }
 }
