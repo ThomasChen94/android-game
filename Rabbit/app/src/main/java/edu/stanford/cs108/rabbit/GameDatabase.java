@@ -348,4 +348,11 @@ public final class GameDatabase {
                 + "\"" + name + "\";";
         db.execSQL(deleteGame);
     }
+
+    public boolean containsGame(String name) {
+        Cursor cursorPrev = db.rawQuery(
+                "SELECT * FROM games where name = \"" + name + "\";", null);
+        if(cursorPrev.moveToFirst() == false) return false;
+        return true;
+    }
 }
