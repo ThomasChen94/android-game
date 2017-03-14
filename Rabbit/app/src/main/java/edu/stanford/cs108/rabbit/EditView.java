@@ -189,9 +189,33 @@ public class EditView extends View {
                     }
                 });
                 builderGame.setCancelable(true);
-                AlertDialog dialogGame = builderGame.create();
+                final AlertDialog dialogGame = builderGame.create();
                 dialogGame.setCanceledOnTouchOutside(false);
                 dialogGame.show();
+                dialogGame.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String changedGameName = editTextGame.getText().toString();
+                        if (gameDatabase.renameGame(getCurGameName(), changedGameName)) {
+                            setCurGameName(changedGameName);
+                            dialogGame.dismiss();
+                        } else {
+                            final EditView editView = (EditView) findViewById(R.id.editView);
+                            AlertDialog.Builder builderWarning = new AlertDialog.Builder(getContext());
+                            builderWarning.setTitle("Duplicated Game Name");
+                            builderWarning.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+                            builderWarning.setCancelable(true);
+                            AlertDialog dialogWarning = builderWarning.create();
+                            dialogWarning.setCanceledOnTouchOutside(false);
+                            dialogWarning.show();
+                        }
+                    }
+                });
 
             }
         });
@@ -224,7 +248,8 @@ public class EditView extends View {
                             pageUserList.add(dummyPageList.get(i).getName());
                         }
                         ((EditActivity)getContext()).resetPageList();
-                        Page newPage = gameDatabase.getPage(getCurGameName() + pageUserList.get(0));
+                        Page newPage = gameDatabase.getPage(pageUniqueList.get(0));
+                        //Page newPage = gameDatabase.getPage(getCurGameName() + pageUserList.get(0));
                         setCurPageName(pageUserList.get(0));
                         updateCurPage(newPage);
                     }

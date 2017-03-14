@@ -546,11 +546,23 @@ public class EditActivity extends Activity {
             @Override
             public void onClick(View v) {
                 String changedGameName = editText.getText().toString();
-                if (editView.gameDatabase.renameGameName(editView.getCurGameName(), changedGameName)) {
+                if (editView.gameDatabase.renameGame(editView.getCurGameName(), changedGameName)) {
                     editView.setCurGameName(changedGameName);
                     dialog.dismiss();
                 } else {
+                    final EditView editView = (EditView) findViewById(R.id.editView);
+                    AlertDialog.Builder builderWarning = new AlertDialog.Builder(EditActivity.this);
+                    builderWarning.setTitle("Duplicated Game Name");
+                    builderWarning.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
+                        }
+                    });
+                    builderWarning.setCancelable(true);
+                    AlertDialog dialogWarning = builderWarning.create();
+                    dialogWarning.setCanceledOnTouchOutside(false);
+                    dialogWarning.show();
                 }
             }
         });
