@@ -113,6 +113,7 @@ public final class GameDatabase {
     // updata the given shape
     public void updateShape(Shape shape) {
         //gameName = "shapes";   // hard code the game name
+
         String updateSQL = "UPDATE " + "shapes" + " SET"
                             + " name = \" " + shape.getName() + "\","
                             + " page = \"" + shape.getPage() + "\","
@@ -131,7 +132,6 @@ public final class GameDatabase {
                             + "WHERE uniquename = \"" + shape.getUniqueName() + "\";";
         db.execSQL(updateSQL);
     }
-
 
 
     public boolean ifExistShape (Shape shape) {
@@ -266,6 +266,56 @@ public final class GameDatabase {
                 + " name = \" " + newName + "\" "
                 + "WHERE uniquename = \"" + uniqueName  + "\"; ";
         db.execSQL(updateSQL);
+    }
+
+    public boolean renameGame(String prevName, String newName) {
+        Cursor cursorPrev = db.rawQuery(
+                "SELECT * FROM games where name = \"" + prevName + "\";", null);
+        if(cursorPrev.moveToFirst() == false) return false;
+
+        Cursor cursorNew = db.rawQuery(
+                "SELECT * FROM games where name = \"" + newName + "\";", null);
+        if(cursorNew.moveToFirst()) return false;
+
+        String uniquename    = cursorPrev.getString(cursorPrev.getColumnIndex("uniquename"));
+        String updateGameName = "UPDATE " + "games" + " SET"
+                + " name = \" " + newName + "\""
+                + "WHERE uniquename = \"" + uniquename  + "\"; ";
+        db.execSQL(updateGameName);
+        return true;
+    }
+
+    public boolean renamePage(String uniqueName, String newName) {
+        Cursor cursorPrev = db.rawQuery(
+                "SELECT * FROM pages where name = \"" + uniqueName + "\";", null);
+        if(cursorPrev.moveToFirst() == false) return false;
+        String game    = cursorPrev.getString(cursorPrev.getColumnIndex("game"));
+
+        Cursor cursorNew = db.rawQuery(
+                "SELECT * FROM pages where name = \"" + newName + "\" and game = \"" + game + "\";", null);
+        if(cursorNew.moveToFirst()) return false;
+        String updatePageName = "UPDATE " + "pages" + " SET"
+                + " name = \" " + newName + "\""
+                + "WHERE uniquename = \"" + uniqueName  + "\"; ";
+        db.execSQL(updatePageName);
+        return true;
+    }
+
+    public boolean renameShape(String uniqueName, String newName) {
+        Cursor cursorPrev = db.rawQuery(
+                "SELECT * FROM shapes where name = \"" + uniqueName + "\";", null);
+        if(cursorPrev.moveToFirst() == false) return false;
+        String page    = cursorPrev.getString(cursorPrev.getColumnIndex("page"));
+
+        Cursor cursorNew = db.rawQuery(
+                "SELECT * FROM shapes where name = \"" + newName + "\"" +
+                        "and page IN (" + "SELECT * FROM pages where uniquename = \"" + page + "\"" + ");", null);
+        if(cursorNew.moveToFirst()) return false;
+        String updatePageName = "UPDATE " + "pages" + " SET"
+                + " name = \" " + newName + "\""
+                + "WHERE uniquename = \"" + uniqueName  + "\"; ";
+        db.execSQL(updatePageName);
+        return true;
     }
 
 }
