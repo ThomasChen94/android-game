@@ -299,9 +299,14 @@ public final class GameDatabase {
         if(cursorPrev.moveToFirst() == false) return false;
         String page    = cursorPrev.getString(cursorPrev.getColumnIndex("page"));
 
+        Cursor cursorGame = db.rawQuery(
+                "SELECT game FROM pages where uniquename = \"" + page + "\";", null);
+        if(cursorGame.moveToFirst() == false) return false;
+        String game    = cursorGame.getString(cursorPrev.getColumnIndex("game"));
+
         Cursor cursorNew = db.rawQuery(
                 "SELECT * FROM shapes where name = \"" + newName + "\"" +
-                        "and page IN (" + "SELECT * FROM pages where uniquename = \"" + page + "\"" + ");", null);
+                        "and page IN (" + "SELECT uniquename FROM pages where game = \"" + game + "\"" + ");", null);
         if(cursorNew.moveToFirst()) return false;
 
         String updateShapeName = "UPDATE " + "shapes" + " SET"
@@ -355,4 +360,38 @@ public final class GameDatabase {
         if(cursorPrev.moveToFirst() == false) return false;
         return true;
     }
+
+    public List<Shape> getAllShape(String gameName) {
+        Cursor cursorGame = db.rawQuery(
+                "SELECT * FROM games where name = \"" + gameName + "\";", null);
+        if(cursorGame.moveToFirst() == false) return new ArrayList<Shape>();
+        String game   = cursorGame.getString(cursorGame.getColumnIndex("game"));
+
+        Cursor cursorShape = db.rawQuery(
+                "SELECT * FROM shapes where" +
+                        " page IN (" + "SELECT uniquename FROM pages where game = \"" + game + "\"" + ");", null);
+
+        List<Shape> shapeList = new ArrayList<Shape>();
+        while(cursorShape.moveToNext()) {
+            String sound    = cursorShape.getString(cursorShape.getColumnIndex("sound"));
+            String image    = cursorShape.getString(cursorShape.getColumnIndex("image"));
+            String text     = cursorShape.getString(cursorShape.getColumnIndex("text"));
+            String uniqueName    = cursorShape.getString(cursorShape.getColumnIndex("uniquename"));
+            String name    = cursorShape.getString(cursorShape.getColumnIndex("name"));
+            String page    = cursorShape.getString(cursorShape.getColumnIndex("page"));
+            String script   = cursorShape.getString(cursorShape.getColumnIndex("script"));
+            boolean hidden  = (cursorShape.getString(cursorShape.getColumnIndex("hidden")).equals("0")) ? false:true;
+            boolean movable = (cursorShape.getString(cursorShape.getColumnIndex("movable")).equals("0")) ? false:true;
+            int myorder    = cursorShape.getShort(cursorShape.getColumnIndex("myorder"));
+            float left     = cursorShape.getFloat(cursorShape.getColumnIndex("left")) * Shape.viewWidth;
+            float top      = cursorShape.getFloat(cursorShape.getColumnIndex("top")) * Shape.viewHeight;
+            float right    = cursorShape.getFloat(cursorShape.getColumnIndex("right")) * Shape.viewWidth;
+            float bottom   = cursorShape.getFloat(cursorShape.getColumnIndex("bottom")) * Shape.viewHeight;
+
+            Shape newShape = new Shape(image, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
+            shapeList.add(newShape);
+        }
+        return shapeList;
+    }
+
 }
