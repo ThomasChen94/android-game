@@ -285,6 +285,7 @@ public final class GameDatabase {
         Cursor cursorNew = db.rawQuery(
                 "SELECT * FROM pages where name = \"" + newName + "\" and game = \"" + game + "\";", null);
         if(cursorNew.moveToFirst()) return false;
+
         String updatePageName = "UPDATE " + "pages" + " SET"
                 + " name = \" " + newName + "\""
                 + "WHERE uniquename = \"" + uniqueName  + "\"; ";
@@ -342,5 +343,8 @@ public final class GameDatabase {
                 + "\"" + game + "\";";
         db.execSQL(deletePage);
 
+        String deleteGame = "DELETE FROM games WHERE name = "
+                + "\"" + name + "\";";
+        db.execSQL(deleteGame);
     }
 }
