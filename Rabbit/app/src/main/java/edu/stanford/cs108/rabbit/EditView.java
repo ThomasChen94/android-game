@@ -3,6 +3,7 @@ package edu.stanford.cs108.rabbit;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -261,7 +262,14 @@ public class EditView extends View {
                         updateCurPage(newPage);
                     }
                 });
-                builderLoad.setCancelable(true);
+                builderLoad.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(getContext(), FullscreenActivity.class);
+                        ((EditActivity)getContext()).startActivity(intent);
+                    }
+                });
+                builderLoad.setCancelable(false);
                 AlertDialog dialogLoad = builderLoad.create();
                 dialogLoad.setCanceledOnTouchOutside(false);
                 dialogLoad.show();
