@@ -3,6 +3,7 @@ package edu.stanford.cs108.rabbit;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -15,13 +16,18 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -47,17 +53,25 @@ public class EditView extends View {
     float relativeX;
     float relativeY;
     PopupWindow popupWindowMain;
+    PopupWindow popupWindowPage;
     PopupWindow popupWindowAttribute;
     PopupWindow popupWindowScript;
     PopupWindow popupWindowAction;
+    PopupWindow popupWindowSettings;
     String shapeDefaultPrefix = "Shape";
 
+    int curPageIndex;
     String curPageName;
     String curGameName;
     GameDatabase gameDatabase;
 
 
+    Switch hidden;
+    Switch movable;
+    Switch position;
+    Switch pageSwitch;
 
+    static final String[] GAMEICONLIST = {"gba_icon", "controller_icon", "xbox_icon", "steam_icon", "playstation_icon"};
     static final String DRAWABLE = "drawable";
     protected static final String RAW = "raw";
     static final String PACKAGENAME = "edu.stanford.cs108.rabbit";
@@ -99,19 +113,19 @@ public class EditView extends View {
         initPopupWindowAttribute();
         initPopupWindowScript();
         initPopupWindowAction();
-
+        initPopupWindowPage();
+        initPopupWindowSettings();
 
         Display display = ((Activity)getContext()).getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        System.out.println("width: " + size.x + " height: " + size.y);
         Shape.setViewHeight(size.y);
         Shape.setViewWidth(size.x);
-
 //        initPopupWindow(popupWindowMain, R.layout.popupwindow_main);
 //        initPopupWindow(popupWindowAttribute, R.layout.popupwindow_attributes);
 //        initPopupWindow(popupWindowScript, R.layout.popupwindow_script);
 //        initPopupWindow(popupWindowAction, R.layout.popupwindow_action);
+
 
     }
 
@@ -128,32 +142,33 @@ public class EditView extends View {
 
                 gameList = gameDatabase.getGameNameList();
 
-                final EditText editTextPage = new EditText(getContext());
-                final int newPageIndex = pageUserList.size() + 1;
-                editTextPage.setText("Page" + newPageIndex);
-                AlertDialog.Builder builderPage = new AlertDialog.Builder(getContext());
-                builderPage.setTitle("Rename");
-                builderPage.setView(editTextPage);
-                builderPage.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        insertPage(editTextPage.getText().toString());
-                        setCurPageName(editTextPage.getText().toString());
-                    }
-                });
-                builderPage.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        insertPage("Page" + newPageIndex);
-                        setCurPageName("Page" + newPageIndex);
-                    }
-                });
-                builderPage.setCancelable(true);
-                AlertDialog dialogPage = builderPage.create();
-                dialogPage.setCanceledOnTouchOutside(false);
-                dialogPage.show();
+//                final EditText editTextPage = new EditText(getContext());
+//                final int newPageIndex = pageUserList.size() + 1;
+//                editTextPage.setText("Page" + newPageIndex);
+//                AlertDialog.Builder builderPage = new AlertDialog.Builder(getContext());
+//                builderPage.setTitle("Rename");
+//                builderPage.setView(editTextPage);
+//                builderPage.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        insertPage(editTextPage.getText().toString());
+//                        setCurPageName(editTextPage.getText().toString());
+//                    }
+//                });
+//                builderPage.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        insertPage("Page" + newPageIndex);
+//                        setCurPageName("Page" + newPageIndex);
+//                    }
+//                });
+//                builderPage.setCancelable(true);
+//                AlertDialog dialogPage = builderPage.create();
+//                dialogPage.setCanceledOnTouchOutside(false);
+//                dialogPage.show();
 
-
+//                insertPage("Page1");
+//                setCurPageName("Page1");
 
                 final EditText editTextGame = new EditText(getContext());
                 final String gameUniqueName = "Game" + String.valueOf(gameList.size() + 1);
@@ -164,21 +179,52 @@ public class EditView extends View {
                 builderGame.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        setCurGameName(editTextGame.getText().toString());
-                        gameDatabase.addGame(gameUniqueName, editTextGame.getText().toString());
+//                        setCurGameName(editTextGame.getText().toString());
+//                        gameDatabase.addGame(gameUniqueName, editTextGame.getText().toString());
+//                        insertPage("Page1");
+//                        setCurPageName("Page1");
                     }
                 });
                 builderGame.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        setCurPageName(gameUniqueName);
-                        gameDatabase.addGame(gameUniqueName, gameUniqueName);
+//                        setCurPageName(gameUniqueName);
+//                        gameDatabase.addGame(gameUniqueName, gameUniqueName);
+//                        insertPage("Page1");
+//                        setCurPageName("Page1");
                     }
                 });
                 builderGame.setCancelable(true);
-                AlertDialog dialogGame = builderGame.create();
+                final AlertDialog dialogGame = builderGame.create();
                 dialogGame.setCanceledOnTouchOutside(false);
                 dialogGame.show();
+                dialogGame.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String curNewGameName = editTextGame.getText().toString();
+                        if (!gameDatabase.containsGame(curNewGameName)) {
+                            setCurGameName(curNewGameName);
+                            gameDatabase.addGame(gameUniqueName, curNewGameName);
+                            insertPage("Page1");
+                            setCurPageName("Page1");
+                            dialogGame.dismiss();
+                        } else {
+                            final EditView editView = (EditView) findViewById(R.id.editView);
+                            AlertDialog.Builder builderWarning = new AlertDialog.Builder(getContext());
+                            builderWarning.setTitle("Duplicated Game Name");
+                            builderWarning.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+                            builderWarning.setCancelable(true);
+                            AlertDialog dialogWarning = builderWarning.create();
+                            dialogWarning.setCanceledOnTouchOutside(false);
+                            dialogWarning.show();
+                        }
+                    }
+                });
 
             }
         });
@@ -190,7 +236,7 @@ public class EditView extends View {
                 Integer[] gameImageID = new Integer[EditView.this.gameList.size()];
                 for (int i = 0; i < gameList.size(); i++) {
                     // 暂时用萝卜图
-                    gameImageID[i] = getResources().getIdentifier("carrot", DRAWABLE, PACKAGENAME);
+                    gameImageID[i] = getResources().getIdentifier(GAMEICONLIST[i % GAMEICONLIST.length], DRAWABLE, PACKAGENAME);
                 }
                 String[] gameName = new String[gameList.size()];
                 for (int i = 0; i < gameList.size(); i++) {
@@ -211,12 +257,20 @@ public class EditView extends View {
                             pageUserList.add(dummyPageList.get(i).getName());
                         }
                         ((EditActivity)getContext()).resetPageList();
+                        // Page newPage = gameDatabase.getPage(pageUniqueList.get(0));
                         Page newPage = gameDatabase.getPage(getCurGameName() + pageUserList.get(0));
                         setCurPageName(pageUserList.get(0));
                         updateCurPage(newPage);
                     }
                 });
-                builderLoad.setCancelable(true);
+                builderLoad.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(getContext(), FullscreenActivity.class);
+                        ((EditActivity)getContext()).startActivity(intent);
+                    }
+                });
+                builderLoad.setCancelable(false);
                 AlertDialog dialogLoad = builderLoad.create();
                 dialogLoad.setCanceledOnTouchOutside(false);
                 dialogLoad.show();
@@ -233,6 +287,7 @@ public class EditView extends View {
         for (Shape shape : shapeList) {
             shape.draw(canvas);
         }
+        if (isClick && curShape != null) curShape.drawBorder(canvas);
     }
 
     @Override
@@ -275,11 +330,8 @@ public class EditView extends View {
         hsv.setVisibility(View.INVISIBLE);
         HorizontalScrollView hsvPage = (HorizontalScrollView) ((Activity) getContext()).findViewById(R.id.hsv_page);
         hsvPage.setVisibility(View.INVISIBLE);
-        String curPos = "x: " + downX + " y: " +downY;
-        System.out.println(curPos);
         curShape = findShape(downX, downY);
         if (curShape != null) {
-            System.out.println(getLastShape().getRectF().left + " " + getLastShape().getRectF().top + " " + getLastShape().getRectF().right + " " + getLastShape().getRectF().bottom);
             if (!curShape.getText().isEmpty()) {
                 relativeX = downX - curShape.getRectF().left;
                 relativeY = downY - curShape.getRectF().bottom;
@@ -288,6 +340,18 @@ public class EditView extends View {
                 relativeY = downY - curShape.getRectF().top;
             }
 
+        }
+
+        TextView textView = (TextView) ((Activity)getContext()).findViewById(R.id.position_textview);
+        if (textView.getVisibility() == VISIBLE) {
+            if (curShape != null) {
+                float width = curShape.rectF.right - curShape.rectF.left;
+                float height = curShape.rectF.bottom - curShape.rectF.top;
+                textView.setText("LEFT: " + curShape.rectF.left + " TOP: " + curShape.rectF.top + " WIDTH: "
+                        + width + " HEIGHT: " + height);
+            } else {
+                textView.setText("X: " + downX + " Y: " +downY);
+            }
         }
 
     }
@@ -305,21 +369,34 @@ public class EditView extends View {
                 float rectX = downX - relativeX;
                 float rectY = downY - relativeY;
                 curShape.setRectFLeftTop(rectX, rectY);
+                curShape.setRectF();
             }
 
         }
 
         invalidate();
+
+        TextView textView = (TextView) ((Activity)getContext()).findViewById(R.id.position_textview);
+        if (textView.getVisibility() == VISIBLE) {
+            if (curShape != null) {
+                float width = curShape.rectF.right - curShape.rectF.left;
+                float height = curShape.rectF.bottom - curShape.rectF.top;
+                textView.setText("LEFT: " + curShape.rectF.left + " TOP: " + curShape.rectF.top + " WIDTH: "
+                        + width + " HEIGHT: " + height);
+            } else {
+                textView.setText("X: " + downX + " Y: " +downY);
+            }
+        }
     }
     public void upEventHandler(MotionEvent event) {
         if (isClick && curShape != null) {
             //popupWindowMain.showAsDropDown(((Activity) getContext()).findViewById(R.id.insert_shape));
             popupWindowMain.showAsDropDown(((Activity) getContext()).findViewById(R.id.hidden),0,0);
-
         }
         if (curShape != null) {
             gameDatabase.updateShape(curShape);
         }
+        invalidate();
     }
     public void initPopupWindow(PopupWindow popupWindow, int layout) {
         View popupView = LayoutInflater.from(getContext()).inflate(layout, null);
@@ -342,6 +419,18 @@ public class EditView extends View {
         popupWindowMain.setAnimationStyle(R.style.AnimationFade);
     }
 
+    public void initPopupWindowPage() {
+        View popupView = LayoutInflater.from(getContext()).inflate(R.layout.popupwindow_page, null);
+        popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        popupWindowPage = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        popupWindowPage.setContentView(popupView);
+        popupWindowPage.setTouchable(true);
+        popupWindowPage.setOutsideTouchable(true);
+        popupWindowPage.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
+        popupWindowPage.setAnimationStyle(R.style.AnimationFade);
+    }
+
+
     public void initPopupWindowAttribute() {
         View popupView = LayoutInflater.from(getContext()).inflate(R.layout.popupwindow_attributes, null);
         popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
@@ -351,6 +440,12 @@ public class EditView extends View {
         popupWindowAttribute.setOutsideTouchable(true);
         popupWindowAttribute.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
         popupWindowAttribute.setAnimationStyle(R.style.AnimationFade);
+
+        hidden = (Switch) popupView.findViewById(R.id.hidden_switch);
+        movable = (Switch) popupView.findViewById(R.id.movable_switch);
+
+
+
     }
 
     public void initPopupWindowScript() {
@@ -374,6 +469,21 @@ public class EditView extends View {
         popupWindowAction.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
         popupWindowAction.setAnimationStyle(R.style.AnimationFade);
     }
+
+    public void initPopupWindowSettings() {
+        View popupView = LayoutInflater.from(getContext()).inflate(R.layout.popupwindow_settings, null);
+        popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        popupWindowSettings = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        popupWindowSettings.setContentView(popupView);
+        popupWindowSettings.setTouchable(true);
+        popupWindowSettings.setOutsideTouchable(true);
+        popupWindowSettings.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
+        popupWindowSettings.setAnimationStyle(R.style.AnimationFade);
+        position = (Switch) popupView.findViewById(R.id.position_switch);
+        pageSwitch = (Switch) popupView.findViewById(R.id.page_switch);
+    }
+
+
     public Shape getCurShape() {
         return curShape;
     }
@@ -396,12 +506,40 @@ public class EditView extends View {
     public void expandAttributeMenu() {
         int width = popupWindowMain.getContentView().getMeasuredWidth();
         popupWindowAttribute.showAsDropDown(((Activity) getContext()).findViewById(R.id.hidden), width, 0);
+        hidden.setChecked(getCurShape().hidden);
+        movable.setChecked(getCurShape().movable);
+
+
+
+        hidden.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    curShape.setHidden(true);
+                } else {
+                    curShape.setHidden(false);
+                }
+                gameDatabase.updateShape(curShape);
+            }
+        });
+
+        movable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    curShape.setMovable(true);
+                } else {
+                    curShape.setMovable(false);
+                }
+                gameDatabase.updateShape(curShape);
+            }
+        });
         //popupWindowAttribute.showAtLocation(this, Gravity.LEFT, width, 0);
 
     }
 
-
     public void expandScriptMenu() {
+
         int width = popupWindowMain.getContentView().getMeasuredWidth();
         popupWindowScript.showAsDropDown(((Activity) getContext()).findViewById(R.id.hidden), width, 0);
         //popupWindowScript.showAtLocation(this, Gravity.LEFT, width, 0);
@@ -439,16 +577,48 @@ public class EditView extends View {
     }
 
     public void showShapeScript() {
-        Toast toast = Toast.makeText(getContext(), curShape.getRawScript(), Toast.LENGTH_SHORT);
-        toast.show();
-        System.out.println(curShape.getRawScript());
+//        Toast toast = Toast.makeText(getContext(), curShape.getScript(), Toast.LENGTH_SHORT);
+//        toast.show();
+//        System.out.println(curShape.getRawScript());
+
+        final EditView editView = (EditView) findViewById(R.id.editView);
+        String curScript = editView.getCurShape().getScript();
+        final EditText editText = new EditText(getContext());
+        editText.setText(curScript);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("View or Change Script");
+        builder.setView(editText);
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String changedScript = editText.getText().toString();
+                if (!changedScript.isEmpty()) {
+                    editView.getCurShape().setScript(changedScript);
+                    editView.gameDatabase.updateShape(editView.getCurShape());
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.setCancelable(true);
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+
+
     }
 
     public void flushTmpScriptToRawScript() {
         for (String s : tmpScript) {
             if (s.isEmpty()) continue;
-            getCurShape().rawScript += s + " ";
+            getCurShape().script += s + " ";
         }
+        //getCurShape().script = getCurShape().rawScript;
+        gameDatabase.updateShape(curShape);
         //getCurShape().setScript(getCurShape().rawScript);
     }
 
@@ -493,5 +663,34 @@ public class EditView extends View {
     public void testReadDb() {
         List<Page> pageList = gameDatabase.getGame("game1");
 
+    }
+
+    public void showSettings() {
+        int width = popupWindowSettings.getContentView().getMeasuredWidth();
+        popupWindowSettings.showAsDropDown(((Activity) getContext()).findViewById(R.id.hidden), 0, 0);
+        position.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    TextView textView = (TextView) ((Activity)getContext()).findViewById(R.id.position_textview);
+                    textView.setVisibility(VISIBLE);
+                } else {
+                    TextView textView = (TextView) ((Activity)getContext()).findViewById(R.id.position_textview);
+                    textView.setVisibility(INVISIBLE);
+                }
+            }
+        });
+        pageSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    TextView textView = (TextView) ((Activity)getContext()).findViewById(R.id.page_textview);
+                    textView.setVisibility(VISIBLE);
+                } else {
+                    TextView textView = (TextView) ((Activity)getContext()).findViewById(R.id.page_textview);
+                    textView.setVisibility(INVISIBLE);
+                }
+            }
+        });
     }
 }

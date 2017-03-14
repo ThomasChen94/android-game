@@ -26,6 +26,9 @@ public abstract class Action {
         context = Shape.context;
         gameDatabase = GameDatabase.getInstance();
         gameDatabase.getDb(context);
+    }
+
+    public void setPage() {
         currPage = gameView.getCurrPage();
         currShapeList = currPage.getShapeList();
     }

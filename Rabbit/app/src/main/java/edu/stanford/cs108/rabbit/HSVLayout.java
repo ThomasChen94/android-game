@@ -54,7 +54,7 @@ public class HSVLayout extends LinearLayout {
                                 String text = editText.getText().toString();
                                 int curShapeCount = editView.getShapeCount() + 1;
                                 String curShapeName = editView.shapeDefaultPrefix + curShapeCount;
-                                editView.insertShape("",text, curShapeName,
+                                editView.insertShape(EditActivity.images[0],text, curShapeName,
                                         editView.getCurGameName() + editView.getCurPageName() + curShapeName, editView.getCurGameName() + editView.getCurPageName());
                                 editView.invalidate();
                                 editView.gameDatabase.addShape(editView.getLastShape());

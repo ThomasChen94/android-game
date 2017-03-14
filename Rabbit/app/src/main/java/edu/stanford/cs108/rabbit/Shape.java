@@ -29,8 +29,10 @@ import android.content.Context;
 import org.json.JSONObject;
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 
@@ -61,6 +63,7 @@ public class Shape {
 
     Paint textPaint;
     Bitmap imageBitmap;
+    List<Action> triggerActionList;
 
     static float viewWidth;
     static float viewHeight;
@@ -101,12 +104,12 @@ public class Shape {
         this.hidden = hidden;
         this.movable = movable;
         this.script = script;
-
+        parseScript();
         rectF = new RectF(left, top, right, bottom);
-        setRectF();
 
         initPaint();
         initBitmapDrawable();
+        setRectF();
 
 
     }
@@ -130,9 +133,9 @@ public class Shape {
             e.printStackTrace();
         }
 
-        setRectF();
         initPaint();
         initBitmapDrawable();
+        setRectF();
 
     }
 
@@ -226,59 +229,40 @@ public class Shape {
     }
 
     public void setScript(String script) {
-        String formatScript = parseScript(script);
-        this.script = formatScript;
-        this.rawScript = formatScript;
+        this.script = script;
+        parseScript();
     }
 
-
     // parse the script into command, and also the correct format
-    public String parseScript(String script) {
+    public void parseScript() {
+        triggerActionList = new ArrayList<Action>();
         command = new HashMap<String, Map<String, String>>();
+        if(script == null) return;
         String[] rawCommand = script.split("\\s+");
         for (int i = 0; i < rawCommand.length; i++) {
+            List<String> actionlist = new ArrayList<String>();
+            Action a;
             switch (rawCommand[i]) {
+                // for different triggers
                 case "ONCLICK":
-                    parserScriptHelper(rawCommand[i], rawCommand[i + 1], rawCommand[i + 2]);
+                    actionlist.add(rawCommand[i + 1] + " " + rawCommand[i + 2]);
+                    a = new OnClickAction(actionlist);
                     break;
                 case "ONENTER":
-                    parserScriptHelper(rawCommand[i], rawCommand[i + 1], rawCommand[i + 2]);
+                    actionlist.add(rawCommand[i + 1] + " " + rawCommand[i + 2]);
+                    a = new OnEnterAction(actionlist);
                     break;
                 case "ONDROP":
-                    String trigger = rawCommand[i] + " " + rawCommand[i + 1];
-                    parserScriptHelper(trigger, rawCommand[i + 2], rawCommand[i + 3]);
+                    String targetShape = rawCommand[i + 1];
+                    actionlist.add(rawCommand[i + 2] + " " + rawCommand[i + 3]);
+                    a = new OnDropAction(actionlist, targetShape);
                     break;
                 default:
                     continue;
             }
+            triggerActionList.add(a); // add to the action list
         }
-        // parse the command map to string for storing in the database
-        String formatScript = "";
-        for(String trigger : command.keySet()) {
-            formatScript += trigger + " ";
-            for(String action : command.get(trigger).keySet()) {
-                formatScript += action + " " + command.get(trigger).get(action);
-            }
-        }
-        return formatScript;
-    }
 
-    private void parserScriptHelper(String trigger, String commandNext, String obj) {
-        Map<String, String> followCommand = null;
-        if(command.containsKey(trigger)) {
-            followCommand = command.get(trigger);
-        } else {
-            followCommand = new HashMap<String, String>();
-        }
-        if(followCommand.containsKey(commandNext)) {
-            // chain the same command
-            followCommand.put(commandNext,
-                    followCommand.get(commandNext) + " " + obj + " ");
-        } else {
-            followCommand.put(commandNext,
-                    obj + " ");
-        }
-        command.put(trigger, followCommand);
     }
 
 
@@ -420,8 +404,8 @@ public class Shape {
 
     //initialize BitmapDrawable of the shape's associated image
 
-    private void initBitmapDrawable() {
-        if (image == null || image.equals("")) {
+    public void initBitmapDrawable() {
+        if (image == null || image.equals("") || !text.isEmpty()) {
             Rect rect = new Rect();
             textPaint.getTextBounds(text, 0, text.length(), rect);
             setRectF(getRectF().left, getRectF().top, getRectF().left + rect.width(), getRectF().top + rect.height());
@@ -442,10 +426,18 @@ public class Shape {
 
     //initialize the paint for the shape's associate text (can be made a static varaible of shape)
 
-    private void initPaint() {
+    public void initPaint() {
         textPaint = new Paint();
         textPaint.setColor(Color.BLACK);
         textPaint.setTextSize(60);
+    }
+
+    public void drawBorder(Canvas canvas) {
+        Paint pt = new Paint();
+        pt.setColor(Color.BLACK);
+        pt.setStyle(Paint.Style.STROKE);
+        pt.setStrokeWidth(5.0f);
+        canvas.drawRect(rectF, pt);
     }
 
     //Draw the shape-self; text takes precedence over image
