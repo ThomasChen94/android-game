@@ -3,6 +3,7 @@ package edu.stanford.cs108.rabbit;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.View;
@@ -60,6 +61,7 @@ public class Shape {
     String soundName = null;
     int order;
     int fontsize;
+    float size;
 
     Paint textPaint;
     Bitmap imageBitmap;
@@ -124,6 +126,7 @@ public class Shape {
         rawScript = "";
         hidden = false;
         movable = true;
+        size = 1;
 
         script = "";
 
@@ -203,6 +206,20 @@ public class Shape {
             rectF.bottom = rectF.top + imageBitmap.getHeight();
         }
     }
+
+    public void setSize(float size) {
+        this.size = size;
+        rectF.set(rectF.left,
+                rectF.top,
+                rectF.left + (rectF.right - rectF.left) * size,
+                rectF.top + (rectF.bottom - rectF.top) * size);
+    }
+
+    public float getSize() {
+        return size;
+    }
+
+
 
     public void setRectF(RectF rectF) {
         this.rectF = rectF;
@@ -305,13 +322,6 @@ public class Shape {
     public void setSoundName(String soundName) {
         this.soundName = soundName;
     }
-
-
-
-
-
-
-
 
 
     //test script in json format.
@@ -442,10 +452,13 @@ public class Shape {
 
     //Draw the shape-self; text takes precedence over image
     public void draw(Canvas canvas) {
+        Matrix matrix = new Matrix();
         if (text != null && !text.equals("")) {
             canvas.drawText(text, rectF.left, rectF.bottom, textPaint);
         } else if (imageBitmap != null)
-            canvas.drawBitmap(imageBitmap, rectF.left, rectF.top, new Paint());
+            matrix.postScale(size,size);
+            Bitmap resizeBmp = Bitmap.createBitmap(imageBitmap,0,0,imageBitmap.getWidth(),imageBitmap.getHeight(),matrix,true);
+            canvas.drawBitmap(resizeBmp, rectF.left, rectF.top, new Paint());
     }
 
 

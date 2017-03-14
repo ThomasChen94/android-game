@@ -34,7 +34,7 @@ public final class GameDatabase {
         if (shapeTablesCursor.getCount() == 0) {
             String setupStr = "CREATE TABLE shapes ("
                     + "uniquename TEXT, name TEXT, page Text, image TEXT, sound TEXT, text TEXT, fontsize INTEGER, script TEXT,"
-                    + "left FLOAT, top FLOAT, right FLOAT, bottom FLOAT, hidden BOOLEAN, movable BOOLEAN, myorder INTEGER"
+                    + "left FLOAT, top FLOAT, right FLOAT, bottom FLOAT, hidden BOOLEAN, movable BOOLEAN, myorder INTEGER, size DOUBLE"
                     + ");";
 
             //System.out.println(setupStr);
@@ -128,7 +128,8 @@ public final class GameDatabase {
                             + " bottom = " + shape.getRectF().bottom / Shape.viewHeight + ","
                             + " hidden = " + (shape.isHidden() ? 1 : 0) + ","
                             + " movable = " + (shape.isMovable() ? 1 : 0) + ","
-                             + " myorder = " + shape.getOrder() + " "
+                             + " myorder = " + shape.getOrder() + ","
+                            + " size = " + shape.getSize() + " "
                             + "WHERE uniquename = \"" + shape.getUniqueName() + "\";";
         db.execSQL(updateSQL);
     }
