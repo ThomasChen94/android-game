@@ -24,6 +24,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_gravity="right|bottom"
+        android:visibility="invisible"
+        android:id="@+id/unique_page_textview"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/hidden"/>
 
     <Button

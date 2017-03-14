@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.PopupWindow;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -130,7 +131,10 @@ public class EditActivity extends Activity {
         }
 
         hsvLayoutPage.setAdapter(hsvAdapterPage);
-
+        TextView textView1 = (TextView) findViewById(R.id.page_textview);
+        textView1.setText(editView.curGameName + editView.curPageName);
+        TextView textView2 = (TextView) findViewById(R.id.unique_page_textview);
+        textView2.setText(editView.pageUniqueList.get(editView.curPageIndex));
     }
 
     public void showInsertMenu(View view) {
@@ -626,6 +630,7 @@ public class EditActivity extends Activity {
         editView.curPageIndex = 0;
         editView.updateCurPage(newPage);
         resetPageList();
+        editView.popupWindowPage.dismiss();
     }
 
 

@@ -311,7 +311,7 @@ public final class GameDatabase {
 
         String updateShapeName = "UPDATE " + "shapes" + " SET"
                 + " name = \" " + newName + "\""
-                + "WHERE uniquename = \"" + uniqueName  + "\"; ";
+                + " WHERE uniquename = \"" + uniqueName  + "\"; ";
         db.execSQL(updateShapeName);
         return true;
     }
@@ -394,4 +394,9 @@ public final class GameDatabase {
         return shapeList;
     }
 
+    public boolean containsPage(String curNewGameName) {
+        // Put your codes here
+        
+        return false;
+    }
 }
