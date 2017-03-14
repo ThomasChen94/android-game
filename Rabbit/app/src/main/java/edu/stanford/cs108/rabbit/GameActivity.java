@@ -29,19 +29,19 @@ public class GameActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_game);
-        //Shape.setContext(getApplicationContext());   setContext has been moved to GameView's constructor
+
         gameView = (GameView) findViewById(R.id.gameView);
         inventoryView = (InventoryView) findViewById(R.id.inventory);
         Shape.setGameView(gameView);
+        System.out.println("if has gameview:" + Shape.gameView == null);
 
+        //Shape.setContext(getApplicationContext());   setContext has been moved to GameView's constructor
     }
 
     @Override

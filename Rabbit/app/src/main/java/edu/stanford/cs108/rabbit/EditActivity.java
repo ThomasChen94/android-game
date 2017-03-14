@@ -413,11 +413,6 @@ public class EditActivity extends Activity {
         AlertDialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
-
-
-
-
-
     }
     public void hideAction(View view) {
 

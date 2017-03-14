@@ -30,15 +30,15 @@ public class GameView extends View {
 
         Shape.setContext(context);
 
-
-
         Display display = ((Activity)getContext()).getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         System.out.println("width: " + size.x + " height: " + size.y);
+        Shape.setGameView(this);
         Shape.setViewHeight(size.y);
         Shape.setViewWidth(size.x);
-        currPage = gameDatabase.getPage("3"); // get the first page
+        currPage = gameDatabase.getPage("4"); // get the first page
+        System.out.print("");
     }
 
     @Override

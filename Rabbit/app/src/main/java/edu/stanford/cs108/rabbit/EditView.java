@@ -119,11 +119,11 @@ public class EditView extends View {
         display.getSize(size);
         Shape.setViewHeight(size.y);
         Shape.setViewWidth(size.x);
-
 //        initPopupWindow(popupWindowMain, R.layout.popupwindow_main);
 //        initPopupWindow(popupWindowAttribute, R.layout.popupwindow_attributes);
 //        initPopupWindow(popupWindowScript, R.layout.popupwindow_script);
 //        initPopupWindow(popupWindowAction, R.layout.popupwindow_action);
+
 
     }
 
