@@ -201,6 +201,10 @@ public class Shape {
         }
     }
 
+    public void setRectF(RectF rectF) {
+        this.rectF = rectF;
+    }
+
     public void setRectFLeftTop(float left, float top) {
         this.rectF.left = left;
         this.rectF.top = top;
@@ -465,5 +469,27 @@ public class Shape {
 
     public String getRawScript() {
         return rawScript;
+    }
+
+    private void setUniqueName(String uniqueName) {
+        this.uniqueName = uniqueName;
+    }
+
+
+    public static Shape deepCopyShape(Shape shape) {
+        Shape newShape = new Shape(shape.getImage(), "", "", "", "");
+
+        newShape.setImage(shape.getImage());
+        newShape.setText(shape.getText());
+        newShape.setSoundName(shape.getSoundName());
+        newShape.setUniqueName(shape.getUniqueName());
+        newShape.setName(shape.getName());
+        newShape.setPage(shape.getPage());
+        newShape.setScript(shape.getScript());
+        newShape.setHidden(shape.hidden);
+        newShape.setMovable(shape.movable);
+        newShape.setRectF(shape.getRectF().left, shape.getRectF().top, shape.getRectF().right, shape.getRectF().bottom);
+
+        return newShape;
     }
 }

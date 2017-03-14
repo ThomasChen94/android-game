@@ -30,7 +30,7 @@ public class InventoryView extends View {
         super(context, attrs);
         inventoryShapes = new ArrayList<>();
         Shape img = new Shape("carrot", "", "", "","");
-        //img.setRectF(0, 568, 100, 788);
+        img.setRectF(200, 0, 100, 200);
         inventoryShapes.add(img);
     }
 
@@ -41,7 +41,25 @@ public class InventoryView extends View {
 
         for (Shape shape : inventoryShapes) {
             shape.draw(canvas);
+            System.out.println(shape.rectF.toString());
+
         }
+    }
+
+    float viewWidth, viewHeight;
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        viewWidth = w;
+        viewHeight = h;
+    }
+
+    public float getViewHeight() {
+        return viewHeight;
+    }
+
+    public float getViewWidth() {
+        return viewWidth;
     }
 
     public void addShape(Shape shape) {

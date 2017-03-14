@@ -86,4 +86,5 @@ public class WrappingSlidingDrawer extends SlidingDrawer {
 
     private boolean mVertical;
     private int mTopOffset;
+
 }

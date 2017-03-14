@@ -30,11 +30,11 @@ public class GameView extends View {
 
         Shape.setContext(context);
 
-<<<<<<< HEAD
+
         currPage = gameDatabase.getPage("3"); // get the first page
 
         ViewTreeObserver vto = this.getViewTreeObserver();
-=======
+
 /*        ViewTreeObserver vto = this.getViewTreeObserver();
 >>>>>>> origin/master
         vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
