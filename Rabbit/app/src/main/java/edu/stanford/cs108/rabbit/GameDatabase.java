@@ -191,7 +191,8 @@ public final class GameDatabase {
                 + shape.getRectF().bottom / Shape.viewHeight + ","
                 + (shape.isHidden() ? 1 : 0) + ","
                 + (shape.isMovable() ? 1 : 0) + ","
-                + shape.getOrder()
+                + shape.getOrder() + ","
+                + shape.getSize()
                 + ");";
         //System.out.println(dataStr);
         db.execSQL(dataStr);
