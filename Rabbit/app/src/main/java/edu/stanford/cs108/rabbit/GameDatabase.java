@@ -198,15 +198,6 @@ public final class GameDatabase {
         count++;
     }
 
-    public void deleteShape(Shape shape) {
-        if (db == null) return;
-        String queryStr = "DELETE FROM shapes WHERE uniquename = "
-                + "\"" + shape.getUniqueName() + "\";";
-        db.execSQL(queryStr);
-
-        count--;
-    }
-
     // add a new page
     public void addPage(Page page) {
         String insertSQL = "INSERT INTO pages VALUES ("
@@ -311,11 +302,45 @@ public final class GameDatabase {
                 "SELECT * FROM shapes where name = \"" + newName + "\"" +
                         "and page IN (" + "SELECT * FROM pages where uniquename = \"" + page + "\"" + ");", null);
         if(cursorNew.moveToFirst()) return false;
-        String updatePageName = "UPDATE " + "pages" + " SET"
+
+        String updateShapeName = "UPDATE " + "shapes" + " SET"
                 + " name = \" " + newName + "\""
                 + "WHERE uniquename = \"" + uniqueName  + "\"; ";
-        db.execSQL(updatePageName);
+        db.execSQL(updateShapeName);
         return true;
     }
 
+    public void deleteShape(Shape shape) {
+        if (db == null) return;
+        String queryStr = "DELETE FROM shapes WHERE uniquename = "
+                + "\"" + shape.getUniqueName() + "\";";
+        db.execSQL(queryStr);
+    }
+
+    public void deletePage(String uniquename) {
+        if (db == null) return;
+        String deletePage = "DELETE FROM pages WHERE uniquename = "
+                + "\"" + uniquename + "\";";
+        db.execSQL(deletePage);
+
+        String deleteShape = "DELETE FROM shapes WHERE page = "
+                + "\"" + uniquename + "\";";
+        db.execSQL(deleteShape);
+    }
+
+    public void deleteGame(String name) {
+        if (db == null) return;
+        Cursor cursorPrev = db.rawQuery(
+                "SELECT * FROM games where name = \"" + name + "\";", null);
+        String game    = cursorPrev.getString(cursorPrev.getColumnIndex("game"));
+
+        String deleteShape = "DELETE FROM shapes WHERE page in "
+                + "(SELECT uniquename from pages WHERE game = \"" + game + "\");";
+        db.execSQL(deleteShape);
+
+        String deletePage = "DELETE FROM pages WHERE game = "
+                + "\"" + game + "\";";
+        db.execSQL(deletePage);
+
+    }
 }
