@@ -529,8 +529,7 @@ public class EditActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // game name要写入数据库
-                String changedGameName = editText.getText().toString();
-                editView.setCurGameName(changedGameName);
+
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -540,9 +539,21 @@ public class EditActivity extends Activity {
             }
         });
         builder.setCancelable(true);
-        AlertDialog dialog = builder.create();
+        final AlertDialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String changedGameName = editText.getText().toString();
+                if (editView.gameDatabase.renameGameName(editView.getCurGameName(), changedGameName)) {
+                    editView.setCurGameName(changedGameName);
+                    dialog.dismiss();
+                } else {
+
+                }
+            }
+        });
     }
 
 }
