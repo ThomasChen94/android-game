@@ -35,23 +35,38 @@ public abstract class Action {
 
     //Actions handlers: onGoto, onShow, onHide, onPlay.
     public void onGoto(String pageName) {
-        Page newPage = gameDatabase.getPage(pageName);  //Implemented a dummy selectPage() in GameDatabase, should delete that.
+        setPage();
+        Page newPage = gameDatabase.getPage(pageName.trim());  //Implemented a dummy selectPage() in GameDatabase, should delete that.
         gameView.setCurrentPage(newPage);
-        gameView.invalidate();
+        String prevPageName = currPage.getUniqueName();
+        //gameView.invalidate();
+//        if (!newPage.equals(prevPageName)) {
+//            setPage();
+//            processOnEnter();
+//        }
     }
 
+//    private void processOnEnter() {
+//
+//    }
+
     public void onShow(String shapeName) {
+        System.out.println("shapeName is: " + shapeName );
+        setPage();
         Shape targetShape = null;
         for (int i = 0; i<currShapeList.size(); i++) {
+            System.out.println("current shape name is: " + currShapeList.get(i).getUniqueName() );
             if (currShapeList.get(i).getUniqueName().equals(shapeName)) {
                 targetShape = currShapeList.get(i);
+                System.out.println("targetShape found" );
+                break;
             }
         }
         if (targetShape == null) {
             targetShape = gameDatabase.getShape(shapeName);
         }
         targetShape.setHidden(false);
-        gameDatabase.updateShape(targetShape);
+        //gameDatabase.updateShape(targetShape);
         gameView.invalidate();
         //need to see if this shape "shapeName" is in the current page, if so, invalidate();
     }
@@ -67,7 +82,7 @@ public abstract class Action {
             targetShape = gameDatabase.getShape(shapeName);
         }
         targetShape.setHidden(true);
-        gameDatabase.updateShape(targetShape);
+        //gameDatabase.updateShape(targetShape);
         gameView.invalidate();
         //need to see if this shape "shapeName" is in the current page, if so, invalidate();
 

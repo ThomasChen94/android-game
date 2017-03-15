@@ -69,6 +69,7 @@ public final class GameDatabase {
         this.db = db;
     }
 
+
     public Page getPage(String page) {
         Cursor cursor = db.rawQuery(
                 "SELECT * FROM shapes WHERE page = \"" + page + "\" and name not like '%info';", null);
@@ -95,18 +96,20 @@ public final class GameDatabase {
             float right    = cursor.getFloat(cursor.getColumnIndex("right")) * Shape.viewWidth;
             float bottom   = cursor.getFloat(cursor.getColumnIndex("bottom")) * Shape.viewHeight;
 
+            float size     = cursor.getFloat(cursor.getColumnIndex("size"));
             Shape newShape = null;
             System.out.println(image);
 
-            newShape = new Shape(image, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
+            newShape = new Shape(image, size, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
             shapeList.add(newShape);
         } while(cursor.moveToNext());
         Cursor pageCursor = db.rawQuery(
                 "SELECT * FROM pages WHERE uniquename = " + page + ";", null);
-        String sound    = cursor.getString(cursor.getColumnIndex("sound"));
-        String image    = cursor.getString(cursor.getColumnIndex("image"));
-        String game     = cursor.getString(cursor.getColumnIndex("game"));
-        String name    = cursor.getString(cursor.getColumnIndex("name"));
+        pageCursor.moveToNext();
+        String sound    = pageCursor.getString(pageCursor.getColumnIndex("sound"));
+        String image    = pageCursor.getString(pageCursor.getColumnIndex("image"));
+        String game     = pageCursor.getString(pageCursor.getColumnIndex("game"));
+        String name    = pageCursor.getString(pageCursor.getColumnIndex("name"));
 
         return new Page(image, sound, shapeList, name, page, game);
     }
@@ -169,9 +172,9 @@ public final class GameDatabase {
         float top      = cursor.getFloat(cursor.getColumnIndex("top")) * Shape.viewHeight;
         float right    = cursor.getFloat(cursor.getColumnIndex("right")) * Shape.viewWidth;
         float bottom   = cursor.getFloat(cursor.getColumnIndex("bottom")) * Shape.viewHeight;
+        float size     = cursor.getFloat(cursor.getColumnIndex("size"));
 
-
-        Shape newShape = new Shape(image, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
+        Shape newShape = new Shape(image, size, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
         return newShape;
     }
 
@@ -390,8 +393,8 @@ public final class GameDatabase {
             float top      = cursorShape.getFloat(cursorShape.getColumnIndex("top")) * Shape.viewHeight;
             float right    = cursorShape.getFloat(cursorShape.getColumnIndex("right")) * Shape.viewWidth;
             float bottom   = cursorShape.getFloat(cursorShape.getColumnIndex("bottom")) * Shape.viewHeight;
-
-            Shape newShape = new Shape(image, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
+            float size     = cursorShape.getFloat(cursorShape.getColumnIndex("size"));
+            Shape newShape = new Shape(image, size, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
             shapeList.add(newShape);
         }
         return shapeList;

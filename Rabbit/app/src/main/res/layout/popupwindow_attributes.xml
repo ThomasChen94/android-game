@@ -28,26 +28,15 @@
                 android:drawableLeft="@drawable/change_content_icon"
                 android:drawableRight="@drawable/forward_icon"
                 android:onClick="changeContent"/>
-            <LinearLayout
-                android:orientation="horizontal"
+            <Button
+                android:gravity="center|left"
+                android:background="@drawable/button_border"
                 android:layout_width="230dp"
-                android:layout_height="wrap_content">
-                <Button
-                    android:gravity="center|left"
-                    android:background="@drawable/button_border"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="Resize"
-                    android:drawableLeft="@drawable/resize_icon"
-                    android:onClick="resize"/>
-                <SeekBar
-                    android:background="@drawable/button_border"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:thumbOffset="0dp"
-                    android:progress="50"
-                    android:id="@+id/resize_seekbar"/>
-            </LinearLayout>
+                android:layout_height="wrap_content"
+                android:text="Resize"
+                android:drawableLeft="@drawable/resize_icon"
+                android:drawableRight="@drawable/forward_icon"
+                android:onClick="resize"/>
             <Switch
                 android:gravity="center|left"
                 android:background="@drawable/button_border"

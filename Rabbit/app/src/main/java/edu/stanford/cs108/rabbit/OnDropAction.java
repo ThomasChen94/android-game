@@ -19,4 +19,8 @@ public class OnDropAction extends Action {
     public boolean existDropShapeMatch(Shape droppingShape) {
         return droppingShape.getUniqueName().equals(droppingShapeUniqueName);
     }
+
+    public boolean hasOnDropForShape(Shape shape1) {
+        return droppingShapeUniqueName.equals(shape1.getUniqueName());
+    }
 }

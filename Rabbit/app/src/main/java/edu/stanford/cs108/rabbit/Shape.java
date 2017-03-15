@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.text.TextPaint;
 import android.view.View;
 
 import android.app.Activity;
@@ -44,6 +45,7 @@ import java.util.Map;
 public class Shape {
     // fields
 
+    static Canvas canvas = null;
     String rawScript;
     String gameName;
 
@@ -51,6 +53,7 @@ public class Shape {
     String uniqueName;
     String page;
     RectF rectF;
+    RectF originalTextRectF;
     //JSONObject script;
     Map<String, Map<String, String>> command;
     String script;  // we no longer use Json
@@ -60,7 +63,7 @@ public class Shape {
     boolean movable;
     String soundName = null;
     int order;
-    int fontsize;
+    int fontsize = 60;
     float size;
 
     Paint textPaint;
@@ -93,7 +96,7 @@ public class Shape {
         return order;
     }
 
-    public Shape(String image, String text, String soundName, String uniqueName, String name, String page, String script, int order, boolean hidden, boolean movable, float left, float top, float right, float bottom) {
+    public Shape(String image, float size, String text, String soundName, String uniqueName, String name, String page, String script, int order, boolean hidden, boolean movable, float left, float top, float right, float bottom) {
         //currentShapeNumber++; // every time constructing a new shape, increment the counter
 
         this.image = image;
@@ -108,6 +111,8 @@ public class Shape {
         this.script = script;
         parseScript();
         rectF = new RectF(left, top, right, bottom);
+
+        this.size = size;
 
         initPaint();
         initBitmapDrawable();
@@ -209,10 +214,21 @@ public class Shape {
 
     public void setSize(float size) {
         this.size = size;
-        rectF.set(rectF.left,
-                rectF.top,
-                rectF.left + (rectF.right - rectF.left) * size,
-                rectF.top + (rectF.bottom - rectF.top) * size);
+        if (text.isEmpty()) {
+            rectF.set(rectF.left,
+                    rectF.top,
+                    rectF.left + (imageBitmap.getWidth()) * size,
+                    rectF.top + (imageBitmap.getHeight()) * size);
+        } else {
+            Paint tmpTextPaint = new Paint();
+            tmpTextPaint.setColor(Color.BLACK);
+            tmpTextPaint.setTextSize(60);
+            Rect rect = new Rect();
+            tmpTextPaint.getTextBounds(text, 0, text.length(), rect);
+            setRectF(getRectF().left, getRectF().top, getRectF().left + rect.width() * size, getRectF().top + rect.height() * size);
+            // setRectF(getRectF().left, getRectF().top, getRectF().left + rect.width(), getRectF().top + rect.height());
+            initPaint();
+        }
     }
 
     public float getSize() {
@@ -229,8 +245,8 @@ public class Shape {
         this.rectF.left = left;
         this.rectF.top = top;
         if (imageBitmap != null) {
-            rectF.right = rectF.left + imageBitmap.getWidth();
-            rectF.bottom = rectF.top + imageBitmap.getHeight();
+            rectF.right = rectF.left + size * imageBitmap.getWidth();
+            rectF.bottom = rectF.top + size * imageBitmap.getHeight();
         }
     }
     public void setRectFLeftBottom(float left, float bottom) {
@@ -415,7 +431,7 @@ public class Shape {
     //initialize BitmapDrawable of the shape's associated image
 
     public void initBitmapDrawable() {
-        if (image == null || image.equals("") || !text.isEmpty()) {
+        if (image == null || image.equals("") || (text != null &&!text.isEmpty())) {
             Rect rect = new Rect();
             textPaint.getTextBounds(text, 0, text.length(), rect);
             setRectF(getRectF().left, getRectF().top, getRectF().left + rect.width(), getRectF().top + rect.height());
@@ -439,7 +455,7 @@ public class Shape {
     public void initPaint() {
         textPaint = new Paint();
         textPaint.setColor(Color.BLACK);
-        textPaint.setTextSize(60);
+        textPaint.setTextSize((int)fontsize * size);
     }
 
     public void drawBorder(Canvas canvas) {
@@ -455,10 +471,18 @@ public class Shape {
         Matrix matrix = new Matrix();
         if (text != null && !text.equals("")) {
             canvas.drawText(text, rectF.left, rectF.bottom, textPaint);
-        } else if (imageBitmap != null)
-            matrix.postScale(size,size);
-            Bitmap resizeBmp = Bitmap.createBitmap(imageBitmap,0,0,imageBitmap.getWidth(),imageBitmap.getHeight(),matrix,true);
+        } else if (imageBitmap != null) {
+            matrix.postScale(size, size);
+            Bitmap resizeBmp = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
             canvas.drawBitmap(resizeBmp, rectF.left, rectF.top, new Paint());
+            if (highlightBoarder) {
+                Paint pt = new Paint();
+                pt.setColor(Color.GREEN);
+                pt.setStyle(Paint.Style.STROKE);
+                pt.setStrokeWidth(5.0f);
+                canvas.drawRect(rectF, pt);
+            }
+        }
     }
 
 
@@ -497,4 +521,25 @@ public class Shape {
 
         return newShape;
     }
+
+    public List<Action> getTriggerActionList() {
+        return triggerActionList;
+    }
+
+
+    public boolean hasOnDropForShape(Shape shape1) {
+        for (Action action : triggerActionList) {
+            if (action instanceof OnDropAction) {
+                System.out.println("Has on drop action");
+                if (((OnDropAction)action).droppingShapeUniqueName.equals(shape1.getUniqueName())) return true;
+            }
+        }
+        return false;
+    }
+
+    boolean highlightBoarder = false;
+    public void highlightBoarder(boolean highlight) {
+        highlightBoarder = highlight;
+    }
+
 }

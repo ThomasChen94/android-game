@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -72,7 +73,7 @@ public class EditView extends View {
     Switch position;
     Switch pageSwitch;
     Switch uniquePageSwitch;
-    SeekBar resizeSeekbar;
+
     static final String[] GAMEICONLIST = {"gba_icon", "controller_icon", "xbox_icon", "steam_icon", "playstation_icon"};
     static final String DRAWABLE = "drawable";
     protected static final String RAW = "raw";
@@ -351,7 +352,12 @@ public class EditView extends View {
             }
 
         }
-
+        if (curShape == null) {
+            RelativeLayout relativeLayout = (RelativeLayout) ((Activity)getContext()).findViewById(R.id.resize_component);
+            relativeLayout.setVisibility(INVISIBLE);
+//            SeekBar seekbar = (SeekBar) ((Activity)getContext()).findViewById(R.id.resize_seekbar_edit);
+//            seekbar.setVisibility(INVISIBLE);
+        }
         TextView textView = (TextView) ((Activity)getContext()).findViewById(R.id.position_textview);
         if (textView.getVisibility() == VISIBLE) {
             if (curShape != null) {
@@ -379,7 +385,7 @@ public class EditView extends View {
                 float rectX = downX - relativeX;
                 float rectY = downY - relativeY;
                 curShape.setRectFLeftTop(rectX, rectY);
-                curShape.setRectF();
+                //curShape.setRectF();
             }
 
         }
@@ -453,7 +459,6 @@ public class EditView extends View {
 
         hidden = (Switch) popupView.findViewById(R.id.hidden_switch);
         movable = (Switch) popupView.findViewById(R.id.movable_switch);
-        resizeSeekbar = (SeekBar) popupView.findViewById(R.id.resize_seekbar);
 
 
     }
@@ -546,22 +551,7 @@ public class EditView extends View {
                 gameDatabase.updateShape(curShape);
             }
         });
-        resizeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
         //popupWindowAttribute.showAtLocation(this, Gravity.LEFT, width, 0);
 
     }
