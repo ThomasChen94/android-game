@@ -410,7 +410,8 @@ public class EditActivity extends Activity {
         builder.setSingleChoiceItems(pageNameList, -1, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                editView.togoPageSelected = pageNameList[which];
+                //editView.togoPageSelected = pageNameList[which];
+                editView.togoPageSelected = editView.pageUniqueList.get(which);
             }
         });
         builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
@@ -466,7 +467,7 @@ public class EditActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 editView.tmpScript[2] = "SHOW";
-                editView.tmpScript[3] = editView.shapeList.get(which).name + "";
+                editView.tmpScript[3] = editView.shapeList.get(which).uniqueName + "";
                 editView.flushTmpScriptToRawScript();
 
               //  editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
@@ -499,7 +500,7 @@ public class EditActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 editView.tmpScript[2] = "HIDE";
-                editView.tmpScript[3] = editView.shapeList.get(which).name + "";
+                editView.tmpScript[3] = editView.shapeList.get(which).uniqueName + "";
                 editView.flushTmpScriptToRawScript();
 
                 //editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
