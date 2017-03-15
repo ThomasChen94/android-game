@@ -12,6 +12,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import java.util.List;
+
 /**
  * Created by qianyu on 2017/3/3.
  */
@@ -20,6 +22,7 @@ public class GameView extends View {
 
     static Page currPage;
     GameDatabase gameDatabase;
+    boolean pageChanged;
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -30,7 +33,7 @@ public class GameView extends View {
 
         Shape.setContext(context);
 
-<<<<<<< HEAD
+
 
         currPage = gameDatabase.getPage("3"); // get the first page
 
@@ -50,8 +53,7 @@ public class GameView extends View {
             }
         });*/
 
-=======
->>>>>>> origin/master
+
         Display display = ((Activity)getContext()).getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -59,21 +61,77 @@ public class GameView extends View {
         Shape.setGameView(this);
         Shape.setViewHeight(size.y);
         Shape.setViewWidth(size.x);
-        currPage = gameDatabase.getPage("4"); // get the first page
+        currPage = gameDatabase.getPage("1"); // get the first page
         System.out.print("");
+
+        pageChanged = true;//for first page on enter actions
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         //System.out.println(getWidth() + " " + getHeight());
+//        System.out.println("I am in onDraw!!!!!!" );
+//        System.out.println("pageChanged!!!!!!" + pageChanged );
+
+        if (pageChanged == true) {
+            processOnEnter();
+            pageChanged = false;
+        }
         currPage.draw(canvas);
+
     }
 
     public void setCurrentPage(Page newPage) {
+//        System.out.println("currPage unique name!!!!!!" + currPage.getUniqueName() );
+//        System.out.println("newPage unique name!!!!!!" + newPage.getUniqueName() );
+
+        pageChanged = true;
+        if (!newPage.getUniqueName().equals(currPage.getUniqueName())) pageChanged = true; //TODO now both curr and new page's uniquename is "".
         currPage = newPage;
         invalidate(); //Once the page is changed, redraw the view.
+
+    }
+    int count = 0;
+
+    private void processOnEnter() {
+        count++;
+        System.out.println("I am in onEnter!!!!!!" + count);
+        List<Shape> currPageShapeList= currPage.getShapeList();
+        for (Shape shape : currPageShapeList) {
+            List<Action> triggerActionList = shape.getTriggerActionList();
+            for (Action action : triggerActionList) {
+                if (action instanceof OnEnterAction) {
+                    System.out.println("found onEnter Action");
+                    List<String> actionList = action.actionList;
+                    for (String str : actionList) {
+                        System.out.println(str);
+
+                        if (str.contains("GOTO")) {
+                            System.out.println("calling GOTO");
+
+                            action.onGoto(str.trim().substring(5));
+                        }
+                        if (str.contains("SHOW")) {  //Tested; it is working
+                            System.out.println("calling SHOW");
+                            action.onShow(str.trim().substring(5));
+                            //action.onHide("page2_shape1");
+                            action.onPlay("munching");
+                        }
+                        if (str.contains("HIDE")) {
+                            System.out.println("calling HIDE");
+
+                            action.onHide(str.trim().substring(5));
+                        }
+                        if (str.contains("PLAY")) {
+                            System.out.println("calling PLAY");
+                            System.out.println("The song is: " + str.trim().substring(5));
+                            action.onPlay(str.trim().substring(5));
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public Page getCurrPage() {

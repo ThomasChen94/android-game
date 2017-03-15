@@ -43,6 +43,7 @@ import java.util.Map;
 public class Shape {
     // fields
 
+    static Canvas canvas = null;
     String rawScript;
     String gameName;
 
@@ -405,7 +406,7 @@ public class Shape {
     //initialize BitmapDrawable of the shape's associated image
 
     public void initBitmapDrawable() {
-        if (image == null || image.equals("") || !text.isEmpty()) {
+        if (image == null || image.equals("") || (text != null &&!text.isEmpty())) {
             Rect rect = new Rect();
             textPaint.getTextBounds(text, 0, text.length(), rect);
             setRectF(getRectF().left, getRectF().top, getRectF().left + rect.width(), getRectF().top + rect.height());
@@ -442,10 +443,20 @@ public class Shape {
 
     //Draw the shape-self; text takes precedence over image
     public void draw(Canvas canvas) {
+        //if (Shape.canvas == null) Shape.canvas = canvas;
         if (text != null && !text.equals("")) {
             canvas.drawText(text, rectF.left, rectF.bottom, textPaint);
-        } else if (imageBitmap != null)
+        } else if (imageBitmap != null && hidden == false) {
             canvas.drawBitmap(imageBitmap, rectF.left, rectF.top, new Paint());
+
+            if (highlightBoarder) {
+                Paint pt = new Paint();
+                pt.setColor(Color.GREEN);
+                pt.setStyle(Paint.Style.STROKE);
+                pt.setStrokeWidth(5.0f);
+                canvas.drawRect(rectF, pt);
+            }
+        }
     }
 
 
@@ -484,4 +495,25 @@ public class Shape {
 
         return newShape;
     }
+
+    public List<Action> getTriggerActionList() {
+        return triggerActionList;
+    }
+
+
+    public boolean hasOnDropForShape(Shape shape1) {
+        for (Action action : triggerActionList) {
+            if (action instanceof OnDropAction) {
+                System.out.println("Has on drop action");
+                if (((OnDropAction)action).droppingShapeUniqueName.equals(shape1.getUniqueName())) return true;
+            }
+        }
+        return false;
+    }
+
+    boolean highlightBoarder = false;
+    public void highlightBoarder(boolean highlight) {
+        highlightBoarder = highlight;
+    }
+
 }

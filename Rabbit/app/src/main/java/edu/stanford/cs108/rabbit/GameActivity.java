@@ -4,6 +4,7 @@ package edu.stanford.cs108.rabbit;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -42,13 +43,13 @@ public class GameActivity extends Activity {
         Shape.setGameView(gameView);
         System.out.println("if has gameview:" + Shape.gameView == null);
 
-<<<<<<< HEAD
+
         gameDatabase = GameDatabase.getInstance();
         gameDatabase.getDb(Shape.context);
 
-=======
+
         //Shape.setContext(getApplicationContext());   setContext has been moved to GameView's constructor
->>>>>>> origin/master
+
     }
 
     @Override
@@ -87,7 +88,6 @@ public class GameActivity extends Activity {
 
     private void downEventHandler(MotionEvent event) {
 
-
         isClick = true;
         selectInventoryItem = false;
         inventoryIsOn = wrappingSlidingDrawer.isOpened();
@@ -98,7 +98,6 @@ public class GameActivity extends Activity {
         inventoryHeightOffset = inventoryRect.top;
         isDragToInventory = false;
         isDragToPage = false;
-
 
 
         float downX = event.getX();
@@ -145,7 +144,8 @@ public class GameActivity extends Activity {
 
     private void dragEventHandler(MotionEvent event) {
         isClick = false;
-        if (selectedShape != null && selectedShape.movable == true) { //Selected a shape
+        System.out.println("selectedShape.movable" + selectedShape.movable);
+        if (selectedShape != null && !selectedShape.isHidden() && selectedShape.movable) { //Selected a shape
             if (!selectInventoryItem) { //Selected a shape in page
                 moveShapeInPage(event);
 //                if (inventoryIsOn && enterInventory()) { //moving the shape from page to inventory
@@ -157,16 +157,44 @@ public class GameActivity extends Activity {
 //
 //                }
                 if (inventoryIsOn) moveShapeToInventory();
-
-
             }
             else { //Selected a shape in inventory
                 moveShapeInInventory(event);
                 moveShapeToPage();
             }
         }
+        processOnDropAction();
+
         gameView.invalidate();
         inventoryView.invalidate();
+    }
+
+    private void processOnDropAction() {
+        Shape droppingShape;
+        if (selectInventoryItem) droppingShape = selectedShapeCopy;
+        else droppingShape = selectedShape;
+
+        //comment these two line when using working database.
+        droppingShape.uniqueName = "carrot";  //this line is to give the shape in inventory a unique name
+        System.out.println("uniquename is ?" + droppingShape.getUniqueName());
+
+        if (droppingShape == null) return;
+        for (int i = pageShapeList.size()-1; i>=0; i--) {
+            Shape shape = pageShapeList.get(i);
+            if (shape == droppingShape || (shape.text!=null && !shape.text.equals(""))) continue;
+            if (isTouching(droppingShape, shape)) {
+                if (shape.hasOnDropForShape(droppingShape)) {
+                    shape.highlightBoarder(true);
+                }
+            } else {
+                shape.highlightBoarder(false);
+            }
+        }
+    }
+
+
+    private boolean isTouching(Shape shape1, Shape shape2) {
+        return RectF.intersects(shape1.getRectF(), shape2.getRectF());
     }
 
     private void moveShapeToInventory() {
@@ -223,13 +251,16 @@ public class GameActivity extends Activity {
         selectedShape.setRectFLeftTop(rectX, rectY);
     }
 
+    List<Action> triggerActionList;
     private void upEventHandler(MotionEvent event) {
         if (selectedShape == null) return;
+        if (selectedShape.isHidden()) return;
         float downX = event.getX();
         float downY = event.getY();
 
         if (isClick) {
-            //selectedShape.onClick();
+            triggerActionList = selectedShape.getTriggerActionList();
+            processOnClickAction();
         } else {
             //selectedShape.onDrop();
         }
@@ -257,6 +288,25 @@ public class GameActivity extends Activity {
         selectedShape = null;
         gameView.invalidate();
         inventoryView.invalidate();
+    }
+
+    private void processOnClickAction() {
+
+        for (Action action : triggerActionList) {
+            if (action instanceof OnClickAction) {
+                List<String> actionList = action.actionList;
+                for (String str : actionList) {
+                    //System.out.println(str);
+                    if (str.contains("GOTO")) action.onGoto(str.trim().substring(5));
+                    if (str.contains("SHOW")) action.onShow(str.trim().substring(5));
+                    if (str.contains("HIDE")) action.onHide(str.trim().substring(5));
+                    if (str.contains("PLAY")) {
+                        System.out.println("The song is: " + str.trim().substring(5));
+                        action.onPlay(str.trim().substring(5));
+                    }
+                }
+            }
+        }
     }
 
     private boolean isInPage(int downX, int downY) {
