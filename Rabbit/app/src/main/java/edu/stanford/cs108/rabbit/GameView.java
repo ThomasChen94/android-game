@@ -34,6 +34,7 @@ public class GameView extends View {
         Shape.setContext(context);
 
 
+<<<<<<< HEAD
 
         currPage = gameDatabase.getPage("3"); // get the first page
 
@@ -54,6 +55,8 @@ public class GameView extends View {
         });*/
 
 
+=======
+>>>>>>> origin/master
         Display display = ((Activity)getContext()).getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);

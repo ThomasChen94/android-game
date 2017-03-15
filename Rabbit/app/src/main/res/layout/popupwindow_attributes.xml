@@ -13,7 +13,7 @@
             <Button
                 android:gravity="center|left"
                 android:background="@drawable/button_border"
-                android:layout_width="180dp"
+                android:layout_width="230dp"
                 android:layout_height="wrap_content"
                 android:text="rename"
                 android:drawableLeft="@drawable/rename_icon"
@@ -22,16 +22,25 @@
             <Button
                 android:gravity="center|left"
                 android:background="@drawable/button_border"
-                android:layout_width="180dp"
+                android:layout_width="230dp"
                 android:layout_height="wrap_content"
                 android:text="Content"
                 android:drawableLeft="@drawable/change_content_icon"
                 android:drawableRight="@drawable/forward_icon"
                 android:onClick="changeContent"/>
+            <Button
+                android:gravity="center|left"
+                android:background="@drawable/button_border"
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:text="Resize"
+                android:drawableLeft="@drawable/resize_icon"
+                android:drawableRight="@drawable/forward_icon"
+                android:onClick="resize"/>
             <Switch
                 android:gravity="center|left"
                 android:background="@drawable/button_border"
-                android:layout_width="180dp"
+                android:layout_width="230dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/hidden_switch"
                 android:drawableLeft="@drawable/show_icon"
@@ -39,7 +48,7 @@
             <Switch
                 android:gravity="center|left"
                 android:background="@drawable/button_border"
-                android:layout_width="180dp"
+                android:layout_width="230dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/movable_switch"
                 android:drawableLeft="@drawable/movable_icon"

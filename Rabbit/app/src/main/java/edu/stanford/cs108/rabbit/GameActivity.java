@@ -47,9 +47,12 @@ public class GameActivity extends Activity {
         gameDatabase = GameDatabase.getInstance();
         gameDatabase.getDb(Shape.context);
 
+<<<<<<< HEAD
 
         //Shape.setContext(getApplicationContext());   setContext has been moved to GameView's constructor
 
+=======
+>>>>>>> origin/master
     }
 
     @Override

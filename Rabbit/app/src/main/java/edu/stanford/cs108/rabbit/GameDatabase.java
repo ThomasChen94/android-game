@@ -34,7 +34,7 @@ public final class GameDatabase {
         if (shapeTablesCursor.getCount() == 0) {
             String setupStr = "CREATE TABLE shapes ("
                     + "uniquename TEXT, name TEXT, page Text, image TEXT, sound TEXT, text TEXT, fontsize INTEGER, script TEXT,"
-                    + "left FLOAT, top FLOAT, right FLOAT, bottom FLOAT, hidden BOOLEAN, movable BOOLEAN, myorder INTEGER"
+                    + "left FLOAT, top FLOAT, right FLOAT, bottom FLOAT, hidden BOOLEAN, movable BOOLEAN, myorder INTEGER, size DOUBLE"
                     + ");";
 
             //System.out.println(setupStr);
@@ -136,10 +136,11 @@ public final class GameDatabase {
             float right    = cursor.getFloat(cursor.getColumnIndex("right")) * Shape.viewWidth;
             float bottom   = cursor.getFloat(cursor.getColumnIndex("bottom")) * Shape.viewHeight;
 
+            float size     = cursor.getFloat(cursor.getColumnIndex("size"));
             Shape newShape = null;
             System.out.println(image);
 
-            newShape = new Shape(image, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
+            newShape = new Shape(image, size, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
             shapeList.add(newShape);
         } while(cursor.moveToNext());
         Cursor pageCursor = db.rawQuery(
@@ -158,7 +159,7 @@ public final class GameDatabase {
         //gameName = "shapes";   // hard code the game name
 
         String updateSQL = "UPDATE " + "shapes" + " SET"
-                            + " name = \" " + shape.getName() + "\","
+                            + " name = \"" + shape.getName() + "\","
                             + " page = \"" + shape.getPage() + "\","
                             + " image = \"" + shape.getImage() + "\","
                             + " sound = \"" + shape.getSoundName() + "\","
@@ -171,7 +172,8 @@ public final class GameDatabase {
                             + " bottom = " + shape.getRectF().bottom / Shape.viewHeight + ","
                             + " hidden = " + (shape.isHidden() ? 1 : 0) + ","
                             + " movable = " + (shape.isMovable() ? 1 : 0) + ","
-                             + " myorder = " + shape.getOrder() + " "
+                             + " myorder = " + shape.getOrder() + ","
+                            + " size = " + shape.getSize() + " "
                             + "WHERE uniquename = \"" + shape.getUniqueName() + "\";";
         db.execSQL(updateSQL);
     }
@@ -210,9 +212,9 @@ public final class GameDatabase {
         float top      = cursor.getFloat(cursor.getColumnIndex("top")) * Shape.viewHeight;
         float right    = cursor.getFloat(cursor.getColumnIndex("right")) * Shape.viewWidth;
         float bottom   = cursor.getFloat(cursor.getColumnIndex("bottom")) * Shape.viewHeight;
+        float size     = cursor.getFloat(cursor.getColumnIndex("size"));
 
-
-        Shape newShape = new Shape(image, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
+        Shape newShape = new Shape(image, size, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
         return newShape;
     }
 
@@ -233,7 +235,8 @@ public final class GameDatabase {
                 + shape.getRectF().bottom / Shape.viewHeight + ","
                 + (shape.isHidden() ? 1 : 0) + ","
                 + (shape.isMovable() ? 1 : 0) + ","
-                + shape.getOrder()
+                + shape.getOrder() + ","
+                + shape.getSize()
                 + ");";
         //System.out.println(dataStr);
         db.execSQL(dataStr);
@@ -254,7 +257,7 @@ public final class GameDatabase {
 
     public void updatePage(Page page) {
         String updateSQL = "UPDATE " + "pages" + " SET"
-                + " name = \" " + page.getUniqueName() + "\","
+                + " name = \"" + page.getUniqueName() + "\","
                 + " page = \"" + page.getName() + "\","
                 + " image = \"" + page.getBackground() + "\","
                 + " sound = \"" + page.getSoundName() + "\" "
@@ -297,7 +300,7 @@ public final class GameDatabase {
 
     public void updateGame(String uniqueName, String newName) {
         String updateSQL = "UPDATE " + "games" + " SET"
-                + " name = \" " + newName + "\" "
+                + " name = \"" + newName + "\" "
                 + "WHERE uniquename = \"" + uniqueName  + "\"; ";
         db.execSQL(updateSQL);
     }
@@ -313,7 +316,7 @@ public final class GameDatabase {
 
         String uniquename    = cursorPrev.getString(cursorPrev.getColumnIndex("uniquename"));
         String updateGameName = "UPDATE " + "games" + " SET"
-                + " name = \" " + newName + "\""
+                + " name = \"" + newName + "\""
                 + "WHERE uniquename = \"" + uniquename  + "\"; ";
         db.execSQL(updateGameName);
         return true;
@@ -330,7 +333,7 @@ public final class GameDatabase {
         if(cursorNew.moveToFirst()) return false;
 
         String updatePageName = "UPDATE " + "pages" + " SET"
-                + " name = \" " + newName + "\""
+                + " name = \"" + newName + "\""
                 + "WHERE uniquename = \"" + uniqueName  + "\"; ";
         db.execSQL(updatePageName);
         return true;
@@ -353,8 +356,8 @@ public final class GameDatabase {
         if(cursorNew.moveToFirst()) return false;
 
         String updateShapeName = "UPDATE " + "shapes" + " SET"
-                + " name = \" " + newName + "\""
-                + "WHERE uniquename = \"" + uniqueName  + "\"; ";
+                + " name = \"" + newName + "\""
+                + " WHERE uniquename = \"" + uniqueName  + "\"; ";
         db.execSQL(updateShapeName);
         return true;
     }
@@ -430,11 +433,22 @@ public final class GameDatabase {
             float top      = cursorShape.getFloat(cursorShape.getColumnIndex("top")) * Shape.viewHeight;
             float right    = cursorShape.getFloat(cursorShape.getColumnIndex("right")) * Shape.viewWidth;
             float bottom   = cursorShape.getFloat(cursorShape.getColumnIndex("bottom")) * Shape.viewHeight;
-
-            Shape newShape = new Shape(image, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
+            float size     = cursorShape.getFloat(cursorShape.getColumnIndex("size"));
+            Shape newShape = new Shape(image, size, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
             shapeList.add(newShape);
         }
         return shapeList;
     }
 
+    public boolean containsPage(String gameName, String newPageName) {
+        Cursor cursorGame = db.rawQuery(
+                "SELECT * FROM games where name = \"" + gameName + "\";", null);
+        cursorGame.moveToFirst();
+        String game    = cursorGame.getString(cursorGame.getColumnIndex("uniquename"));
+
+        Cursor cursorPage = db.rawQuery(
+                "SELECT * FROM pages where name = \"" + newPageName + "\" and game = \"" + game + "\";", null);
+        if(cursorPage.moveToFirst()) return true;
+        return false;
+    }
 }

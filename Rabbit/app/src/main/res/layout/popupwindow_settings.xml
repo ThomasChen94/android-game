@@ -42,7 +42,15 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/page_switch"
                 android:drawableLeft="@drawable/hsv_page_icon"
-                android:text="SHOW PAGE"/>
+                android:text="USER NAME"/>
+            <Switch
+                android:gravity="center|left"
+                android:background="@drawable/button_border"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/unique_page_switch"
+                android:drawableLeft="@drawable/unique_icon"
+                android:text="UNIQUE NAME"/>
         </LinearLayout>
 
     </ScrollView>
