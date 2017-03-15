@@ -29,6 +29,8 @@
         android:visibility="invisible"
         android:id="@+id/unique_page_textview"/>
 
+
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -92,5 +94,33 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"></edu.stanford.cs108.rabbit.HSVLayoutPage>
     </HorizontalScrollView>
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="30dp"
+        android:visibility="invisible"
+        android:id="@+id/resize_component">
+        <TextView
+            android:gravity="center|left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/resize_icon"
+            android:id="@+id/resize_textview"
+            android:text="RESIZE"/>
+        <SeekBar
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/resize_seekbar_edit"
+            android:max="200"
+            android:progress="100"
+            android:layout_toRightOf="@id/resize_textview"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
+
 
 </FrameLayout>

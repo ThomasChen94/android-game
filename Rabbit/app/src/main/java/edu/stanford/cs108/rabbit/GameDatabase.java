@@ -95,10 +95,11 @@ public final class GameDatabase {
             float right    = cursor.getFloat(cursor.getColumnIndex("right")) * Shape.viewWidth;
             float bottom   = cursor.getFloat(cursor.getColumnIndex("bottom")) * Shape.viewHeight;
 
+            float size     = cursor.getFloat(cursor.getColumnIndex("size"));
             Shape newShape = null;
             System.out.println(image);
 
-            newShape = new Shape(image, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
+            newShape = new Shape(image, size, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
             shapeList.add(newShape);
         } while(cursor.moveToNext());
 //
@@ -168,9 +169,9 @@ public final class GameDatabase {
         float top      = cursor.getFloat(cursor.getColumnIndex("top")) * Shape.viewHeight;
         float right    = cursor.getFloat(cursor.getColumnIndex("right")) * Shape.viewWidth;
         float bottom   = cursor.getFloat(cursor.getColumnIndex("bottom")) * Shape.viewHeight;
+        float size     = cursor.getFloat(cursor.getColumnIndex("size"));
 
-
-        Shape newShape = new Shape(image, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
+        Shape newShape = new Shape(image, size, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
         return newShape;
     }
 
@@ -389,8 +390,8 @@ public final class GameDatabase {
             float top      = cursorShape.getFloat(cursorShape.getColumnIndex("top")) * Shape.viewHeight;
             float right    = cursorShape.getFloat(cursorShape.getColumnIndex("right")) * Shape.viewWidth;
             float bottom   = cursorShape.getFloat(cursorShape.getColumnIndex("bottom")) * Shape.viewHeight;
-
-            Shape newShape = new Shape(image, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
+            float size     = cursorShape.getFloat(cursorShape.getColumnIndex("size"));
+            Shape newShape = new Shape(image, size, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
             shapeList.add(newShape);
         }
         return shapeList;

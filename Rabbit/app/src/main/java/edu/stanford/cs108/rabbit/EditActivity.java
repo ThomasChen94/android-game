@@ -28,6 +28,8 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +52,10 @@ public class EditActivity extends Activity {
     protected static final String RAW = "raw";
     HorizontalScrollView hsv;
     HorizontalScrollView hsvPage;
+
+    SeekBar resizeSeekbar;
+    RelativeLayout relativeLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +102,7 @@ public class EditActivity extends Activity {
         hsv = (HorizontalScrollView) findViewById(R.id.hsv);
         hsvPage = (HorizontalScrollView) findViewById(R.id.hsv_page);
 
-
+        initResizeSeekbar();
     }
 
 
@@ -321,11 +327,18 @@ public class EditActivity extends Activity {
         Integer[] shapeImageID = new Integer[allShapeList.size()];
         String[] shapeName = new String[allShapeList.size()];
         for (int i = 0; i < allShapeList.size(); i++) {
-            shapeImageID[i] = getResources().getIdentifier(allShapeList.get(i).image, DRAWABLE, getPackageName());
-            shapeName[i] = allShapeList.get(i).name;
+            if (allShapeList.get(i).text.isEmpty()) {
+                shapeImageID[i] = getResources().getIdentifier(allShapeList.get(i).image, DRAWABLE, getPackageName());
+                shapeName[i] = allShapeList.get(i).name;
+            } else {
+                shapeImageID[i] = getResources().getIdentifier("textbox_icon", DRAWABLE, getPackageName());
+                shapeName[i] = allShapeList.get(i).name + "\n" + allShapeList.get(i).text;
+            }
         }
+
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Choose Shape to Hide");
+        builder.setTitle("Choose Shape to Drop");
         ListAdapter adapter = new ArrayAdapterWithIcon(this, shapeName, shapeImageID);
         builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
             @Override
@@ -642,5 +655,40 @@ public class EditActivity extends Activity {
         editView.gameDatabase.deleteGame(editView.curGameName);
         Intent intent = new Intent(this, FullscreenActivity.class);
         startActivity(intent);
+    }
+
+    public void initResizeSeekbar() {
+        relativeLayout = (RelativeLayout) findViewById(R.id.resize_component);
+        resizeSeekbar = (SeekBar) findViewById(R.id.resize_seekbar_edit);
+        resizeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                final EditView editView = (EditView) findViewById(R.id.editView);
+                float size = (float ) 1.0 * progress / 100;
+                if (size > 0.3) {
+                    editView.curShape.setSize(size);
+                }
+                editView.invalidate();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                final EditView editView = (EditView) findViewById(R.id.editView);
+                editView.gameDatabase.updateShape(editView.curShape);
+            }
+        });
+    }
+
+    public void resize(View view) {
+        relativeLayout.setVisibility(View.VISIBLE);
+        final EditView editView = (EditView) findViewById(R.id.editView);
+        resizeSeekbar.setProgress((int)(editView.getCurShape().size * 100));
+        editView.popupWindowMain.dismiss();
+        editView.popupWindowAttribute.dismiss();
     }
 }
