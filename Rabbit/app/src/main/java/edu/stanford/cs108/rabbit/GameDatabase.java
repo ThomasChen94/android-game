@@ -101,13 +101,14 @@ public final class GameDatabase {
             newShape = new Shape(image, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
             shapeList.add(newShape);
         } while(cursor.moveToNext());
-//
-//            Cursor pageCursor = db.rawQuery(
-//                "SELECT * FROM shapes WHERE page = \"" + page + "\" and name like '%info';", null);
-//        pageCursor.moveToNext();
-//        String sound    = pageCursor.getString(pageCursor.getColumnIndex("sound"));
-//        String image    = pageCursor.getString(pageCursor.getColumnIndex("image"));
-        return new Page("", "", shapeList, "", "", "");
+        Cursor pageCursor = db.rawQuery(
+                "SELECT * FROM pages WHERE uniquename = " + page + ";", null);
+        String sound    = cursor.getString(cursor.getColumnIndex("sound"));
+        String image    = cursor.getString(cursor.getColumnIndex("image"));
+        String game     = cursor.getString(cursor.getColumnIndex("game"));
+        String name    = cursor.getString(cursor.getColumnIndex("name"));
+
+        return new Page(image, sound, shapeList, name, page, game);
     }
 
     // updata the given shape
