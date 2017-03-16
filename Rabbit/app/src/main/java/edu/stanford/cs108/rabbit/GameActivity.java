@@ -3,8 +3,11 @@ package edu.stanford.cs108.rabbit;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -13,11 +16,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.Toast;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -38,22 +44,125 @@ public class GameActivity extends Activity {
 
         setContentView(R.layout.activity_game);
 
+        gameDatabase = GameDatabase.getInstance();
+        gameDatabase.getDb(Shape.context);
+
+
+        loadGame();
+
         gameView = (GameView) findViewById(R.id.gameView);
         inventoryView = (InventoryView) findViewById(R.id.inventory);
         Shape.setGameView(gameView);
         System.out.println("if has gameview:" + Shape.gameView == null);
 
 
-        gameDatabase = GameDatabase.getInstance();
-        gameDatabase.getDb(Shape.context);
 
-<<<<<<< HEAD
+
 
         //Shape.setContext(getApplicationContext());   setContext has been moved to GameView's constructor
 
-=======
->>>>>>> origin/master
     }
+
+
+
+
+
+    public void loadGame() {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+//        builder.setMessage("Load Game");
+//        builder.setTitle("");
+//
+//        // Create Game
+//        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//
+//            }
+//        });
+//        // Load Game
+//        builder.setNegativeButton("Load", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                final List<String> gameList = gameDatabase.getGameNameList();
+//                final Integer[] gameImageID = new Integer[gameList.size()];
+//                for (int i = 0; i < gameList.size(); i++) {
+//                    gameImageID[i] = getResources().getIdentifier(EditView.GAMEICONLIST[i % EditView.GAMEICONLIST.length], EditView.DRAWABLE, EditView.PACKAGENAME);
+//                }
+//                final String[] gameName = new String[gameList.size()];
+//                for (int i = 0; i < gameList.size(); i++) {
+//                    gameName[i] = gameList.get(i);
+//                }
+//                AlertDialog.Builder builderLoad = new AlertDialog.Builder(GameActivity.this);
+//                builderLoad.setTitle("Choose Game to Load");
+//                ListAdapter adapter = new ArrayAdapterWithIcon(GameActivity.this, gameName, gameImageID);
+//                builderLoad.setAdapter(adapter, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        String gameName = gameList.get(which);
+//                        List<Page> curPageList = gameDatabase.getGameByName(gameName);
+//                        String firstPageUniqueName = curPageList.get(0).uniqueName;
+//                        GameView gameView = (GameView) findViewById(R.id.gameView);
+//                        gameView.initFirstPage(gameView.gameDatabase.getPage(firstPageUniqueName));
+//                        gameView.loaded = true;
+//                        gameView.invalidate();
+//                    }
+//                });
+//                builderLoad.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        Intent intent = new Intent(GameActivity.this, FullscreenActivity.class);
+//                        startActivity(intent);
+//                    }
+//                });
+//                builderLoad.setCancelable(false);
+//                AlertDialog dialogLoad = builderLoad.create();
+//                dialogLoad.setCanceledOnTouchOutside(false);
+//                dialogLoad.show();
+//            }
+//        });
+//        AlertDialog dialogLoadOrCreate = builder.create();
+//        dialogLoadOrCreate.setCanceledOnTouchOutside(false);
+//        dialogLoadOrCreate.show();
+
+
+
+        final List<String> gameList = gameDatabase.getGameNameList();
+        final Integer[] gameImageID = new Integer[gameList.size()];
+        for (int i = 0; i < gameList.size(); i++) {
+            gameImageID[i] = getResources().getIdentifier(EditView.GAMEICONLIST[i % EditView.GAMEICONLIST.length], EditView.DRAWABLE, EditView.PACKAGENAME);
+        }
+        final String[] gameName = new String[gameList.size()];
+        for (int i = 0; i < gameList.size(); i++) {
+            gameName[i] = gameList.get(i);
+        }
+        AlertDialog.Builder builderLoad = new AlertDialog.Builder(GameActivity.this);
+        builderLoad.setTitle("Choose Game to Load");
+        ListAdapter adapter = new ArrayAdapterWithIcon(GameActivity.this, gameName, gameImageID);
+        builderLoad.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String gameName = gameList.get(which);
+                List<Page> curPageList = gameDatabase.getGameByName(gameName);
+                String firstPageUniqueName = curPageList.get(0).uniqueName;
+                GameView gameView = (GameView) findViewById(R.id.gameView);
+                gameView.initFirstPage(gameView.gameDatabase.getPage(firstPageUniqueName));
+                gameView.loaded = true;
+                gameView.invalidate();
+            }
+        });
+        builderLoad.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(GameActivity.this, FullscreenActivity.class);
+                startActivity(intent);
+            }
+        });
+        builderLoad.setCancelable(false);
+        AlertDialog dialogLoad = builderLoad.create();
+        dialogLoad.setCanceledOnTouchOutside(false);
+        dialogLoad.show();
+    }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -147,7 +256,7 @@ public class GameActivity extends Activity {
 
     private void dragEventHandler(MotionEvent event) {
         isClick = false;
-        System.out.println("selectedShape.movable" + selectedShape.movable);
+        if (selectedShape != null) System.out.println("selectedShape.movable" + selectedShape.movable);
         if (selectedShape != null && !selectedShape.isHidden() && selectedShape.movable) { //Selected a shape
             if (!selectInventoryItem) { //Selected a shape in page
                 moveShapeInPage(event);
@@ -166,29 +275,42 @@ public class GameActivity extends Activity {
                 moveShapeToPage();
             }
         }
-        processOnDropAction();
+        processOnDrop();
 
         gameView.invalidate();
         inventoryView.invalidate();
     }
 
-    private void processOnDropAction() {
+
+    List<Action> onDropActions = null;
+    private void processOnDrop() {
         Shape droppingShape;
+        onDropActions = null;
+
         if (selectInventoryItem) droppingShape = selectedShapeCopy;
         else droppingShape = selectedShape;
 
         //comment these two line when using working database.
-        droppingShape.uniqueName = "carrot";  //this line is to give the shape in inventory a unique name
-        System.out.println("uniquename is ?" + droppingShape.getUniqueName());
+//        droppingShape.uniqueName = "carrot";  //this line is to give the shape in inventory a unique name
+//        System.out.println("uniquename is ?" + droppingShape.getUniqueName());
 
         if (droppingShape == null) return;
+        boolean foundTouchingShape = false;
         for (int i = pageShapeList.size()-1; i>=0; i--) {
             Shape shape = pageShapeList.get(i);
-            if (shape == droppingShape || (shape.text!=null && !shape.text.equals(""))) continue;
-            if (isTouching(droppingShape, shape)) {
-                if (shape.hasOnDropForShape(droppingShape)) {
+            if (shape == droppingShape || shape.isHidden() || (shape.text!=null && !shape.text.equals(""))) continue;
+            if (isTouching(droppingShape, shape) && !foundTouchingShape) {
+                foundTouchingShape = true;
+                if (onDropActions == null) onDropActions = shape.getOnDropActionsForShape(droppingShape);
+                if (onDropActions != null) {
+                    System.out.println("onDropActions has size : " + onDropActions.size());
                     shape.highlightBoarder(true);
                 }
+                else {
+                    foundTouchingShape = false;
+                    shape.highlightBoarder(false);
+                }
+
             } else {
                 shape.highlightBoarder(false);
             }
@@ -268,6 +390,15 @@ public class GameActivity extends Activity {
             //selectedShape.onDrop();
         }
 
+        System.out.println("onDropActions == null? ");
+        System.out.println("" + onDropActions == null);
+
+
+        if (onDropActions != null) {
+            System.out.println("(in upHandler) onDropActions has size : " + onDropActions.size());
+            processOnDropAction();
+        }
+
         if (isDragToInventory) {
             if (isInInventory((int)downX, (int)downY)) { //If ACTION_UP happens inside inventory, add the shape to inventory and remove it from page
                 dragToInventory();
@@ -293,16 +424,56 @@ public class GameActivity extends Activity {
         inventoryView.invalidate();
     }
 
+    private void processOnDropAction() {
+        for (Action action : onDropActions) {
+            if (action instanceof OnDropAction) {
+                System.out.println("there is a onDrop action object");
+                List<String> actionList = action.actionList;
+                for (String str : actionList) {
+                    System.out.println(str);
+                    if (str.contains("GOTO")) {
+                        System.out.println(str);
+                        action.onGoto(str.trim().substring(5));
+                    }
+                    if (str.contains("SHOW")) {
+                        System.out.println(str);
+                        action.onShow(str.trim().substring(5));
+                    }
+                    if (str.contains("HIDE")) {
+                        System.out.println(str);
+                        action.onHide(str.trim().substring(5));
+                    }
+                    if (str.contains("PLAY")) {
+                        System.out.println("The song is: " + str.trim().substring(5));
+                        action.onPlay(str.trim().substring(5));
+                    }
+                }
+            }
+        }
+        onDropActions = null;  //Set to null once done processing it
+        for (Shape shape : pageShapeList) shape.highlightBoarder(false);
+    }
+
     private void processOnClickAction() {
 
         for (Action action : triggerActionList) {
             if (action instanceof OnClickAction) {
+                System.out.println("there is a onCLick action object");
                 List<String> actionList = action.actionList;
                 for (String str : actionList) {
                     //System.out.println(str);
-                    if (str.contains("GOTO")) action.onGoto(str.trim().substring(5));
-                    if (str.contains("SHOW")) action.onShow(str.trim().substring(5));
-                    if (str.contains("HIDE")) action.onHide(str.trim().substring(5));
+                    if (str.contains("GOTO")) {
+                        System.out.println(str);
+                        action.onGoto(str.trim().substring(5));
+                    }
+                    if (str.contains("SHOW")) {
+                        System.out.println(str);
+                        action.onShow(str.trim().substring(5));
+                    }
+                    if (str.contains("HIDE")) {
+                        System.out.println(str);
+                        action.onHide(str.trim().substring(5));
+                    }
                     if (str.contains("PLAY")) {
                         System.out.println("The song is: " + str.trim().substring(5));
                         action.onPlay(str.trim().substring(5));

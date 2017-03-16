@@ -290,7 +290,8 @@ public class EditView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         for (Shape shape : shapeList) {
-            shape.draw(canvas);
+            if (shape.hidden) shape.drawAlpha(canvas);
+            else shape.draw(canvas);
         }
         if (isClick && curShape != null) curShape.drawBorder(canvas);
         if (curShape != null) {
@@ -536,6 +537,7 @@ public class EditView extends View {
                 } else {
                     curShape.setHidden(false);
                 }
+                invalidate();
                 gameDatabase.updateShape(curShape);
             }
         });
@@ -610,10 +612,9 @@ public class EditView extends View {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String changedScript = editText.getText().toString();
-                if (!changedScript.isEmpty()) {
-                    editView.getCurShape().setScript(changedScript);
-                    editView.gameDatabase.updateShape(editView.getCurShape());
-                }
+                editView.getCurShape().setScript(changedScript);
+                editView.gameDatabase.updateShape(editView.getCurShape());
+
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

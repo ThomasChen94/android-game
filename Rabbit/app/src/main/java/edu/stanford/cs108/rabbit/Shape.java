@@ -1,3 +1,4 @@
+
 package edu.stanford.cs108.rabbit;
 
 import android.content.Context;
@@ -45,7 +46,6 @@ import java.util.Map;
 public class Shape {
     // fields
 
-    static Canvas canvas = null;
     String rawScript;
     String gameName;
 
@@ -431,7 +431,7 @@ public class Shape {
     //initialize BitmapDrawable of the shape's associated image
 
     public void initBitmapDrawable() {
-        if (image == null || image.equals("") || (text != null &&!text.isEmpty())) {
+        if (image == null || image.equals("") || !text.isEmpty()) {
             Rect rect = new Rect();
             textPaint.getTextBounds(text, 0, text.length(), rect);
             setRectF(getRectF().left, getRectF().top, getRectF().left + rect.width(), getRectF().top + rect.height());
@@ -468,13 +468,13 @@ public class Shape {
 
     //Draw the shape-self; text takes precedence over image
     public void draw(Canvas canvas) {
-<<<<<<< HEAD
-        //if (Shape.canvas == null) Shape.canvas = canvas;
-        if (text != null && !text.equals("")) {
+        Matrix matrix = new Matrix();
+        if (text != null && !text.equals("") ) {
             canvas.drawText(text, rectF.left, rectF.bottom, textPaint);
-        } else if (imageBitmap != null && hidden == false) {
-            canvas.drawBitmap(imageBitmap, rectF.left, rectF.top, new Paint());
-
+        } else if (imageBitmap != null) {
+            matrix.postScale(size, size);
+            Bitmap resizeBmp = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
+            canvas.drawBitmap(resizeBmp, rectF.left, rectF.top, new Paint());
             if (highlightBoarder) {
                 Paint pt = new Paint();
                 pt.setColor(Color.GREEN);
@@ -482,15 +482,26 @@ public class Shape {
                 pt.setStrokeWidth(5.0f);
                 canvas.drawRect(rectF, pt);
             }
-=======
+        }
+    }
+
+    public void drawAlpha(Canvas canvas) {
         Matrix matrix = new Matrix();
-        if (text != null && !text.equals("")) {
+        if (text != null && !text.equals("") ) {
             canvas.drawText(text, rectF.left, rectF.bottom, textPaint);
         } else if (imageBitmap != null) {
             matrix.postScale(size, size);
             Bitmap resizeBmp = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
-            canvas.drawBitmap(resizeBmp, rectF.left, rectF.top, new Paint());
->>>>>>> origin/master
+            Paint ptt = new Paint();
+            ptt.setAlpha(30);
+            canvas.drawBitmap(resizeBmp, rectF.left, rectF.top, ptt);
+            if (highlightBoarder) {
+                Paint pt = new Paint();
+                pt.setColor(Color.GREEN);
+                pt.setStyle(Paint.Style.STROKE);
+                pt.setStrokeWidth(5.0f);
+                canvas.drawRect(rectF, pt);
+            }
         }
     }
 
@@ -535,20 +546,21 @@ public class Shape {
         return triggerActionList;
     }
 
-
-    public boolean hasOnDropForShape(Shape shape1) {
+    public List<Action> getOnDropActionsForShape(Shape shape1) {
+        List<Action> onDropActions = new ArrayList<>();
         for (Action action : triggerActionList) {
             if (action instanceof OnDropAction) {
                 System.out.println("Has on drop action");
-                if (((OnDropAction)action).droppingShapeUniqueName.equals(shape1.getUniqueName())) return true;
+                if (((OnDropAction)action).droppingShapeUniqueName.equals(shape1.getUniqueName()))
+                    onDropActions.add(action);
             }
         }
-        return false;
+        if (onDropActions.size() == 0) return null;
+        return onDropActions;
     }
 
     boolean highlightBoarder = false;
     public void highlightBoarder(boolean highlight) {
         highlightBoarder = highlight;
     }
-
 }

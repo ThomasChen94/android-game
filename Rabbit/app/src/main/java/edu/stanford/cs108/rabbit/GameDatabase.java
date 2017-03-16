@@ -69,47 +69,6 @@ public final class GameDatabase {
         this.db = db;
     }
 
-//    public Page getPage(String page) {
-//        Cursor cursor = db.rawQuery(
-//                "SELECT * FROM shapes WHERE page = \"" + page + "\" and name not like '%info';", null);
-//        if(cursor.moveToFirst() == false) return new Page("", "", null, "", "", ""); // if nothing is selected, return an empty page
-//        List<Shape> shapeList= new LinkedList<Shape>();
-//        do {
-//            String sound    = cursor.getString(cursor.getColumnIndex("sound"));
-//            String image    = cursor.getString(cursor.getColumnIndex("image"));
-//            String text     = cursor.getString(cursor.getColumnIndex("text"));
-//            String uniqueName    = cursor.getString(cursor.getColumnIndex("uniquename"));
-//            String name    = cursor.getString(cursor.getColumnIndex("name"));
-//            String script   = cursor.getString(cursor.getColumnIndex("script"));
-//            boolean hidden  = (cursor.getString(cursor.getColumnIndex("hidden")).equals("0")) ? false:true;
-//            boolean movable = (cursor.getString(cursor.getColumnIndex("movable")).equals("0")) ? false:true;
-//            //boolean hidden  = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("hidden")));
-//            //boolean movable = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("movable")));
-//            //Eric modified this.
-//            //int order    = cursor.getShort(cursor.getColumnIndex("myorder"));
-//            int myorder    = cursor.getShort(cursor.getColumnIndex("myorder"));
-//            //Eric modified this.
-//
-//            float left     = cursor.getFloat(cursor.getColumnIndex("left")) * Shape.viewWidth;
-//            float top      = cursor.getFloat(cursor.getColumnIndex("top")) * Shape.viewHeight;
-//            float right    = cursor.getFloat(cursor.getColumnIndex("right")) * Shape.viewWidth;
-//            float bottom   = cursor.getFloat(cursor.getColumnIndex("bottom")) * Shape.viewHeight;
-//
-//            Shape newShape = null;
-//            System.out.println(image);
-//
-//            newShape = new Shape(image, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
-//            shapeList.add(newShape);
-//        } while(cursor.moveToNext());
-////
-////            Cursor pageCursor = db.rawQuery(
-////                "SELECT * FROM shapes WHERE page = \"" + page + "\" and name like '%info';", null);
-////        pageCursor.moveToNext();
-////        String sound    = pageCursor.getString(pageCursor.getColumnIndex("sound"));
-////        String image    = pageCursor.getString(pageCursor.getColumnIndex("image"));
-//        return new Page("", "", shapeList, "", "", "");
-//    }
-
     public Page getPage(String page) {
         Cursor cursor = db.rawQuery(
                 "SELECT * FROM shapes WHERE page = \"" + page + "\" and name not like '%info';", null);
@@ -144,7 +103,7 @@ public final class GameDatabase {
             shapeList.add(newShape);
         } while(cursor.moveToNext());
         Cursor pageCursor = db.rawQuery(
-                "SELECT * FROM pages WHERE uniquename = " + page + ";", null);
+                "SELECT * FROM pages WHERE uniquename = \"" + page + "\";", null);
         pageCursor.moveToNext();
         String sound    = pageCursor.getString(pageCursor.getColumnIndex("sound"));
         String image    = pageCursor.getString(pageCursor.getColumnIndex("image"));
@@ -153,6 +112,48 @@ public final class GameDatabase {
 
         return new Page(image, sound, shapeList, name, page, game);
     }
+
+//    public Page getPage(String page) {
+//        Cursor cursor = db.rawQuery(
+//                "SELECT * FROM shapes WHERE page = \"" + page + "\" and name not like '%info';", null);
+//        if(cursor.moveToFirst() == false) return new Page("", "", null, "", "", ""); // if nothing is selected, return an empty page
+//        List<Shape> shapeList= new LinkedList<Shape>();
+//        do {
+//            String sound    = cursor.getString(cursor.getColumnIndex("sound"));
+//            String image    = cursor.getString(cursor.getColumnIndex("image"));
+//            String text     = cursor.getString(cursor.getColumnIndex("text"));
+//            String uniqueName    = cursor.getString(cursor.getColumnIndex("uniquename"));
+//            String name    = cursor.getString(cursor.getColumnIndex("name"));
+//            String script   = cursor.getString(cursor.getColumnIndex("script"));
+//            boolean hidden  = (cursor.getString(cursor.getColumnIndex("hidden")).equals("0")) ? false:true;
+//            boolean movable = (cursor.getString(cursor.getColumnIndex("movable")).equals("0")) ? false:true;
+//            //boolean hidden  = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("hidden")));
+//            //boolean movable = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("movable")));
+//            //Eric modified this.
+//            //int order    = cursor.getShort(cursor.getColumnIndex("myorder"));
+//            int myorder    = cursor.getShort(cursor.getColumnIndex("myorder"));
+//            //Eric modified this.
+//
+//            float left     = cursor.getFloat(cursor.getColumnIndex("left")) * Shape.viewWidth;
+//            float top      = cursor.getFloat(cursor.getColumnIndex("top")) * Shape.viewHeight;
+//            float right    = cursor.getFloat(cursor.getColumnIndex("right")) * Shape.viewWidth;
+//            float bottom   = cursor.getFloat(cursor.getColumnIndex("bottom")) * Shape.viewHeight;
+//
+//            float size     = cursor.getFloat(cursor.getColumnIndex("size"));
+//            Shape newShape = null;
+//            System.out.println(image);
+//
+//            newShape = new Shape(image, size, text, sound, uniqueName, name, page, script, myorder, hidden, movable, left, top, right, bottom);
+//            shapeList.add(newShape);
+//        } while(cursor.moveToNext());
+////
+////            Cursor pageCursor = db.rawQuery(
+////                "SELECT * FROM shapes WHERE page = \"" + page + "\" and name like '%info';", null);
+////        pageCursor.moveToNext();
+////        String sound    = pageCursor.getString(pageCursor.getColumnIndex("sound"));
+////        String image    = pageCursor.getString(pageCursor.getColumnIndex("image"));
+//        return new Page("", "", shapeList, "", "", "");
+//    }
 
     // updata the given shape
     public void updateShape(Shape shape) {
@@ -192,7 +193,7 @@ public final class GameDatabase {
 
     public Shape getShape(String uniquename) {
         Cursor cursor = db.rawQuery(
-                "SELECT * FROM shapes WHERE uniquename = " + uniquename + ";", null);
+                "SELECT * FROM shapes WHERE uniquename = \"" + uniquename + "\";", null);
         cursor.moveToFirst();
         String sound    = cursor.getString(cursor.getColumnIndex("sound"));
         String image    = cursor.getString(cursor.getColumnIndex("image"));
@@ -450,5 +451,25 @@ public final class GameDatabase {
                 "SELECT * FROM pages where name = \"" + newPageName + "\" and game = \"" + game + "\";", null);
         if(cursorPage.moveToFirst()) return true;
         return false;
+    }
+
+
+    public List<Page> getGameByName(String gameName) {
+        Cursor cursorGame = db.rawQuery(
+                "SELECT * FROM games where name = \"" + gameName + "\";", null);
+        cursorGame.moveToFirst();
+        String gameUniqueName    = cursorGame.getString(cursorGame.getColumnIndex("uniquename"));
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM pages WHERE game = \"" + gameUniqueName + "\";", null);
+        List<Page> pageList = new ArrayList<Page>();
+        while(cursor.moveToNext()) {
+            String name    = cursor.getString(cursor.getColumnIndex("name"));
+            String uniquename    = cursor.getString(cursor.getColumnIndex("uniquename"));
+            String game    = cursor.getString(cursor.getColumnIndex("game"));
+            String sound    = cursor.getString(cursor.getColumnIndex("sound"));
+            String image    = cursor.getString(cursor.getColumnIndex("image"));
+            pageList.add(new Page(image, sound, null, name, uniquename, game));
+        }
+        return pageList;
     }
 }

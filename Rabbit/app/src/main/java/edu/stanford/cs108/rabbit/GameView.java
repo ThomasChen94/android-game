@@ -2,16 +2,22 @@ package edu.stanford.cs108.rabbit;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.EditText;
+import android.widget.ListAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,30 +39,8 @@ public class GameView extends View {
 
         Shape.setContext(context);
 
+        //currPage = gameDatabase.getPage("3"); // get the first page
 
-<<<<<<< HEAD
-
-        currPage = gameDatabase.getPage("3"); // get the first page
-
-        ViewTreeObserver vto = this.getViewTreeObserver();
-
-/*        ViewTreeObserver vto = this.getViewTreeObserver();
->>>>>>> origin/master
-        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            public boolean onPreDraw() {
-                GameView.this.getViewTreeObserver().removeOnPreDrawListener(this);
-                int height = GameView.this.getMeasuredHeight();
-                int width  = GameView.this.getMeasuredWidth();
-                Shape.setViewHeight(height);
-                Shape.setViewWidth(width);
-                //System.out.println(height + " " + width);
-                return true;
-            }
-        });*/
-
-
-=======
->>>>>>> origin/master
         Display display = ((Activity)getContext()).getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -64,11 +48,13 @@ public class GameView extends View {
         Shape.setGameView(this);
         Shape.setViewHeight(size.y);
         Shape.setViewWidth(size.x);
-        currPage = gameDatabase.getPage("1"); // get the first page
+        // currPage = gameDatabase.getPage("Game1Page1"); // get the first page
         System.out.print("");
 
         pageChanged = true;//for first page on enter actions
     }
+
+boolean loaded = false;
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -78,18 +64,23 @@ public class GameView extends View {
 //        System.out.println("pageChanged!!!!!!" + pageChanged );
 
         if (pageChanged == true) {
-            processOnEnter();
+            if (loaded) processOnEnter();
             pageChanged = false;
         }
-        currPage.draw(canvas);
+        if (loaded) currPage.draw(canvas);
 
     }
+
+    public static void initFirstPage(Page firstPage) {
+        currPage = firstPage;
+    }
+
 
     public void setCurrentPage(Page newPage) {
 //        System.out.println("currPage unique name!!!!!!" + currPage.getUniqueName() );
 //        System.out.println("newPage unique name!!!!!!" + newPage.getUniqueName() );
 
-        pageChanged = true;
+        pageChanged = true;  //this line should be commented out when the next line works
         if (!newPage.getUniqueName().equals(currPage.getUniqueName())) pageChanged = true; //TODO now both curr and new page's uniquename is "".
         currPage = newPage;
         invalidate(); //Once the page is changed, redraw the view.
@@ -119,7 +110,6 @@ public class GameView extends View {
                             System.out.println("calling SHOW");
                             action.onShow(str.trim().substring(5));
                             //action.onHide("page2_shape1");
-                            action.onPlay("munching");
                         }
                         if (str.contains("HIDE")) {
                             System.out.println("calling HIDE");

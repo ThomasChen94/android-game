@@ -59,8 +59,10 @@ public class Page {
 
     public void draw(Canvas canvas) {
         for (Shape shape : shapeList) {
-            shape.setRectF();
-            shape.draw(canvas);
+            if (!shape.hidden) {
+                shape.setRectF();
+                shape.draw(canvas);
+            }
         }
     }
 

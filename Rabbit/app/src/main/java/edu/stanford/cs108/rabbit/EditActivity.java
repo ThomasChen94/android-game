@@ -41,8 +41,8 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 public class EditActivity extends Activity {
-    public static String[] images = {"carrot_icon", "carrot2_icon", "death_icon", "duck_icon", "fire_icon", "textbox_icon"};
-    public static String[] SHAPENAME = {"Carrot", "Carrot2", "Death", "Duck", "Fire", "Textbox"};
+    public static String[] images = {"carrot_icon", "carrot2_icon", "mystic_icon", "death_icon", "duck_icon", "fire_icon", "door", "textbox_icon"};
+    public static String[] SHAPENAME = {"Carrot", "Carrot2", "Mystic", "Death", "Duck", "Fire", "Door", "Textbox"};
     public static String[] sounds = {"carrotcarrotcarrot", "evillaugh", "fire", "hooray", "munch", "munching", "woof"};
     HSVAdapter hsvAdapter;
     HSVLayout hsvLayout;
@@ -323,13 +323,13 @@ public class EditActivity extends Activity {
             editView.tmpScript[0] = "ONDROP";
             //editView.curShape.rawScript += "ONDROP,";
         }
-        List<Shape> allShapeList = editView.gameDatabase.getAllShape(editView.getCurGameName());
+        final List<Shape> allShapeList = editView.gameDatabase.getAllShape(editView.getCurGameName());
         Integer[] shapeImageID = new Integer[allShapeList.size()];
         String[] shapeName = new String[allShapeList.size()];
         for (int i = 0; i < allShapeList.size(); i++) {
             if (allShapeList.get(i).text.isEmpty()) {
                 shapeImageID[i] = getResources().getIdentifier(allShapeList.get(i).image, DRAWABLE, getPackageName());
-                shapeName[i] = allShapeList.get(i).name;
+                shapeName[i] = allShapeList.get(i).name + "\n" + allShapeList.get(i).uniqueName;
             } else {
                 shapeImageID[i] = getResources().getIdentifier("textbox_icon", DRAWABLE, getPackageName());
                 shapeName[i] = allShapeList.get(i).name + "\n" + allShapeList.get(i).text;
@@ -343,7 +343,7 @@ public class EditActivity extends Activity {
         builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                editView.tmpScript[1] += images[which] + "";
+                editView.tmpScript[1] += allShapeList.get(which).getUniqueName() + "";
                 //editView.getCurShape().rawScript += images[which] + ",";
             }
         });
@@ -417,7 +417,7 @@ public class EditActivity extends Activity {
         builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                editView.tmpScript[2] = "TOGO";
+                editView.tmpScript[2] = "GOTO";
                 editView.tmpScript[3] = editView.togoPageSelected + "";
                 editView.flushTmpScriptToRawScript();
 
@@ -443,21 +443,21 @@ public class EditActivity extends Activity {
     public void showAction(View view) {
 
         final EditView editView = (EditView) findViewById(R.id.editView);
-
-        Integer[] shapeImageID = new Integer[editView.shapeList.size()];
-        for (int i = 0; i < editView.shapeList.size(); i++) {
-            if (editView.shapeList.get(i).getText().isEmpty()) {
-                shapeImageID[i] = getResources().getIdentifier(editView.shapeList.get(i).image, DRAWABLE, getPackageName());
+        final List<Shape> allShapeList = editView.gameDatabase.getAllShape(editView.curGameName);
+        Integer[] shapeImageID = new Integer[allShapeList.size()];
+        for (int i = 0; i < allShapeList.size(); i++) {
+            if (allShapeList.get(i).getText().isEmpty()) {
+                shapeImageID[i] = getResources().getIdentifier(allShapeList.get(i).image, DRAWABLE, getPackageName());
             } else {
                 shapeImageID[i] = getResources().getIdentifier("textbox_icon", DRAWABLE, getPackageName());
             }
         }
-        String[] shapeImageName = new String[editView.shapeList.size()];
-        for (int i = 0; i < editView.shapeList.size(); i++) {
-            if (editView.shapeList.get(i).getText().isEmpty()) {
-                shapeImageName[i] = editView.shapeList.get(i).name;
+        String[] shapeImageName = new String[allShapeList.size()];
+        for (int i = 0; i < allShapeList.size(); i++) {
+            if (allShapeList.get(i).getText().isEmpty()) {
+                shapeImageName[i] = allShapeList.get(i).name + "\n" + allShapeList.get(i).uniqueName;
             } else {
-                shapeImageName[i] = editView.shapeList.get(i).name + "\n" + editView.shapeList.get(i).getText();
+                shapeImageName[i] = allShapeList.get(i).name + "\n" + allShapeList.get(i).getText();
             }
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -467,7 +467,7 @@ public class EditActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 editView.tmpScript[2] = "SHOW";
-                editView.tmpScript[3] = editView.shapeList.get(which).uniqueName + "";
+                editView.tmpScript[3] = allShapeList.get(which).uniqueName + "";
                 editView.flushTmpScriptToRawScript();
 
               //  editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
@@ -484,15 +484,22 @@ public class EditActivity extends Activity {
     public void hideAction(View view) {
 
         final EditView editView = (EditView) findViewById(R.id.editView);
+        final List<Shape> allShapeList = editView.gameDatabase.getAllShape(editView.curGameName);
 
-        Integer[] shapeImageID = new Integer[editView.shapeList.size()];
-        for (int i = 0; i < editView.shapeList.size(); i++) {
-            shapeImageID[i] = getResources().getIdentifier(editView.shapeList.get(i).image, DRAWABLE, getPackageName());
-        }
-        String[] shapeImageName = new String[editView.shapeList.size()];
-        for (int i = 0; i < editView.shapeList.size(); i++) {
-            shapeImageName[i] = editView.shapeList.get(i).name;
-        }
+        Integer[] shapeImageID = new Integer[allShapeList.size()];
+        for (int i = 0; i < allShapeList.size(); i++) {
+            if (allShapeList.get(i).getText().isEmpty()) {
+                shapeImageID[i] = getResources().getIdentifier(allShapeList.get(i).image, DRAWABLE, getPackageName());
+            } else {
+                shapeImageID[i] = getResources().getIdentifier("textbox_icon", DRAWABLE, getPackageName());
+            }        }
+        String[] shapeImageName = new String[allShapeList.size()];
+        for (int i = 0; i < allShapeList.size(); i++) {
+            if (allShapeList.get(i).getText().isEmpty()) {
+                shapeImageName[i] = allShapeList.get(i).name + "\n" + allShapeList.get(i).uniqueName;
+            } else {
+                shapeImageName[i] = allShapeList.get(i).name + "\n" + allShapeList.get(i).getText();
+            }        }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Choose Shape to Hide");
         ListAdapter adapter = new ArrayAdapterWithIcon(this, shapeImageName, shapeImageID);
@@ -500,7 +507,7 @@ public class EditActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 editView.tmpScript[2] = "HIDE";
-                editView.tmpScript[3] = editView.shapeList.get(which).uniqueName + "";
+                editView.tmpScript[3] = allShapeList.get(which).uniqueName + "";
                 editView.flushTmpScriptToRawScript();
 
                 //editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());

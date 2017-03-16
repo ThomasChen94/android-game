@@ -29,9 +29,9 @@ public class InventoryView extends View {
     public InventoryView(Context context, AttributeSet attrs) {
         super(context, attrs);
         inventoryShapes = new ArrayList<>();
-        Shape img = new Shape("carrot", "", "", "","");
-        img.setRectF(200, 0, 100, 200);
-        inventoryShapes.add(img);
+//        Shape img = new Shape("carrot", "", "", "","");
+//        img.setRectF(200, 0, 100, 200);
+//        inventoryShapes.add(img);
     }
 
 

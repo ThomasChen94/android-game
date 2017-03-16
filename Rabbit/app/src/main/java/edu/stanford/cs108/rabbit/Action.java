@@ -73,6 +73,7 @@ public abstract class Action {
 
     public void onHide(String shapeName) {
         Shape targetShape = null;
+        setPage();
         for (int i = 0; i<currShapeList.size(); i++) {
             if (currShapeList.get(i).getUniqueName().equals(shapeName)) {
                 targetShape = currShapeList.get(i);
