@@ -117,6 +117,7 @@ public class Shape {
         initPaint();
         initBitmapDrawable();
         setRectF();
+        setSize(size);
 
 
     }
