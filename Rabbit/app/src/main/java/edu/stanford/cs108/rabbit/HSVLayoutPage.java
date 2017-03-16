@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Map;
@@ -53,15 +52,8 @@ public class HSVLayoutPage extends LinearLayout {
                         builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-//                                editView.curPageIndex = newPageIndex - 1;
-//                                editView.insertPage(editText.getText().toString());
-//                                editView.setCurPageName(editText.getText().toString());
-//
-//
-//                                TextView textView1 = (TextView) ((Activity)getContext()).findViewById(R.id.page_textview);
-//                                textView1.setText(editView.curGameName + editView.curPageName);
-//                                TextView textView2 = (TextView) ((Activity)getContext()).findViewById(R.id.unique_page_textview);
-//                                textView2.setText(editView.pageUniqueList.get(editView.curPageIndex));
+                                editView.insertPage(editText.getText().toString());
+                                editView.setCurPageName(editText.getText().toString());
                             }
                         });
                         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -72,50 +64,13 @@ public class HSVLayoutPage extends LinearLayout {
                             }
                         });
                         builder.setCancelable(true);
-                        final AlertDialog dialog = builder.create();
+                        AlertDialog dialog = builder.create();
                         dialog.setCanceledOnTouchOutside(true);
                         dialog.show();
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                String curNewPageName = editText.getText().toString();
-                                if (!editView.gameDatabase.containsPage(editView.curGameName, curNewPageName)) {
-                                    editView.curPageIndex = newPageIndex - 1;
-                                    editView.insertPage(editText.getText().toString());
-                                    editView.setCurPageName(editText.getText().toString());
-
-
-                                    TextView textView1 = (TextView) ((Activity)getContext()).findViewById(R.id.page_textview);
-                                    textView1.setText(editView.curGameName + editView.curPageName);
-                                    TextView textView2 = (TextView) ((Activity)getContext()).findViewById(R.id.unique_page_textview);
-                                    textView2.setText(editView.pageUniqueList.get(editView.curPageIndex));
-
-                                    dialog.dismiss();
-                                } else {
-                                    final EditView editView = (EditView) findViewById(R.id.editView);
-                                    AlertDialog.Builder builderWarning = new AlertDialog.Builder(getContext());
-                                    builderWarning.setTitle("Duplicated Game Name");
-                                    builderWarning.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-
-                                        }
-                                    });
-                                    builderWarning.setCancelable(true);
-                                    AlertDialog dialogWarning = builderWarning.create();
-                                    dialogWarning.setCanceledOnTouchOutside(false);
-                                    dialogWarning.show();
-                                }
-                            }
-                        });
-
 
                         editView.createNewEmptyPage();
                         HorizontalScrollView hsvPage = (HorizontalScrollView) ((Activity) getContext()).findViewById(R.id.hsv_page);
                         hsvPage.setVisibility(View.INVISIBLE);
-
-
-
                     } else {
                         // choose page
                         int indexInList = index - 1;
@@ -123,10 +78,6 @@ public class HSVLayoutPage extends LinearLayout {
                         editView.setCurPageName(editView.pageUserList.get(indexInList));
                         editView.curPageIndex = indexInList;
                         editView.updateCurPage(newPage);
-                        TextView textView1 = (TextView) ((Activity)getContext()).findViewById(R.id.page_textview);
-                        textView1.setText(editView.curGameName + editView.curPageName);
-                        TextView textView2 = (TextView) ((Activity)getContext()).findViewById(R.id.unique_page_textview);
-                        textView2.setText(editView.pageUniqueList.get(editView.curPageIndex));
                     }
 
                 }

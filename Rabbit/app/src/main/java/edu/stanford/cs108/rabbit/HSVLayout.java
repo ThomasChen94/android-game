@@ -12,7 +12,6 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,8 +52,7 @@ public class HSVLayout extends LinearLayout {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String text = editText.getText().toString();
-                                List<Shape> allShapeList = editView.gameDatabase.getAllShape(editView.getCurGameName());
-                                int curShapeCount = allShapeList.size() + 1;
+                                int curShapeCount = editView.getShapeCount() + 1;
                                 String curShapeName = editView.shapeDefaultPrefix + curShapeCount;
                                 editView.insertShape(EditActivity.images[0],text, curShapeName,
                                         editView.getCurGameName() + editView.getCurPageName() + curShapeName, editView.getCurGameName() + editView.getCurPageName());
@@ -69,18 +67,16 @@ public class HSVLayout extends LinearLayout {
                             }
                         });
                         builder.setCancelable(true);
-                        final AlertDialog dialog = builder.create();
+                        AlertDialog dialog = builder.create();
                         dialog.setCanceledOnTouchOutside(true);
                         dialog.show();
 
-
                     } else {
                         // Insert image shape
-                        List<Shape> allShapeList = editView.gameDatabase.getAllShape(editView.getCurGameName());
-                        int curShapeCount = allShapeList.size() + 1;
+                        int curShapeCount = editView.getShapeCount() + 1;
                         String curShapeName = editView.shapeDefaultPrefix + curShapeCount;
                         editView.insertShape(EditActivity.images[index], "", curShapeName,
-                                editView.pageUniqueList.get(editView.curPageIndex) + curShapeName, editView.pageUniqueList.get(editView.curPageIndex));
+                                editView.getCurGameName() + editView.getCurPageName() + curShapeName, editView.getCurGameName() + editView.getCurPageName());
                         editView.invalidate();
                         editView.gameDatabase.addShape(editView.getLastShape());
 

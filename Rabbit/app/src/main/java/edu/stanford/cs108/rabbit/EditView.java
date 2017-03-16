@@ -26,8 +26,6 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,7 +70,6 @@ public class EditView extends View {
     Switch movable;
     Switch position;
     Switch pageSwitch;
-    Switch uniquePageSwitch;
 
     static final String[] GAMEICONLIST = {"gba_icon", "controller_icon", "xbox_icon", "steam_icon", "playstation_icon"};
     static final String DRAWABLE = "drawable";
@@ -90,12 +87,7 @@ public class EditView extends View {
         pageUniqueList.add(pageUniqueName);
         // background picture and background music is ignored here
         gameDatabase.addPage(new Page("", "", null, pageName, pageUniqueName, curGameName));
-
         ((EditActivity)getContext()).updatePageList();
-        TextView textView1 = (TextView) ((Activity)getContext()).findViewById(R.id.page_textview);
-        textView1.setText(curGameName + curPageName);
-        TextView textView2 = (TextView) ((Activity)getContext()).findViewById(R.id.unique_page_textview);
-        textView2.setText(pageUniqueList.get(curPageIndex));
     }
 
     public EditView(Context context, AttributeSet attrs) {
@@ -196,11 +188,13 @@ public class EditView extends View {
                 builderGame.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(getContext(), FullscreenActivity.class);
-                        ((EditActivity)getContext()).startActivity(intent);
+//                        setCurPageName(gameUniqueName);
+//                        gameDatabase.addGame(gameUniqueName, gameUniqueName);
+//                        insertPage("Page1");
+//                        setCurPageName("Page1");
                     }
                 });
-                builderGame.setCancelable(false);
+                builderGame.setCancelable(true);
                 final AlertDialog dialogGame = builderGame.create();
                 dialogGame.setCanceledOnTouchOutside(false);
                 dialogGame.show();
@@ -241,6 +235,7 @@ public class EditView extends View {
                 gameList = gameDatabase.getGameNameList();
                 Integer[] gameImageID = new Integer[EditView.this.gameList.size()];
                 for (int i = 0; i < gameList.size(); i++) {
+                    // 暂时用萝卜图
                     gameImageID[i] = getResources().getIdentifier(GAMEICONLIST[i % GAMEICONLIST.length], DRAWABLE, PACKAGENAME);
                 }
                 String[] gameName = new String[gameList.size()];
@@ -293,12 +288,6 @@ public class EditView extends View {
             shape.draw(canvas);
         }
         if (isClick && curShape != null) curShape.drawBorder(canvas);
-        if (curShape != null) {
-            TextView textView1 = (TextView) ((Activity)getContext()).findViewById(R.id.page_textview);
-            textView1.setText(curGameName + curPageName + curShape.name);
-            TextView textView2 = (TextView) ((Activity)getContext()).findViewById(R.id.unique_page_textview);
-            textView2.setText(curShape.uniqueName);
-        }
     }
 
     @Override
@@ -352,12 +341,7 @@ public class EditView extends View {
             }
 
         }
-        if (curShape == null) {
-            RelativeLayout relativeLayout = (RelativeLayout) ((Activity)getContext()).findViewById(R.id.resize_component);
-            relativeLayout.setVisibility(INVISIBLE);
-//            SeekBar seekbar = (SeekBar) ((Activity)getContext()).findViewById(R.id.resize_seekbar_edit);
-//            seekbar.setVisibility(INVISIBLE);
-        }
+
         TextView textView = (TextView) ((Activity)getContext()).findViewById(R.id.position_textview);
         if (textView.getVisibility() == VISIBLE) {
             if (curShape != null) {
@@ -385,7 +369,7 @@ public class EditView extends View {
                 float rectX = downX - relativeX;
                 float rectY = downY - relativeY;
                 curShape.setRectFLeftTop(rectX, rectY);
-                //curShape.setRectF();
+                curShape.setRectF();
             }
 
         }
@@ -461,6 +445,7 @@ public class EditView extends View {
         movable = (Switch) popupView.findViewById(R.id.movable_switch);
 
 
+
     }
 
     public void initPopupWindowScript() {
@@ -496,8 +481,6 @@ public class EditView extends View {
         popupWindowSettings.setAnimationStyle(R.style.AnimationFade);
         position = (Switch) popupView.findViewById(R.id.position_switch);
         pageSwitch = (Switch) popupView.findViewById(R.id.page_switch);
-        uniquePageSwitch = (Switch) popupView.findViewById(R.id.unique_page_switch);
-
     }
 
 
@@ -551,7 +534,6 @@ public class EditView extends View {
                 gameDatabase.updateShape(curShape);
             }
         });
-
         //popupWindowAttribute.showAtLocation(this, Gravity.LEFT, width, 0);
 
     }
@@ -704,22 +686,8 @@ public class EditView extends View {
                 if (isChecked) {
                     TextView textView = (TextView) ((Activity)getContext()).findViewById(R.id.page_textview);
                     textView.setVisibility(VISIBLE);
-                    textView.setText(curGameName+curPageName);
                 } else {
                     TextView textView = (TextView) ((Activity)getContext()).findViewById(R.id.page_textview);
-                    textView.setVisibility(INVISIBLE);
-                }
-            }
-        });
-        uniquePageSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    TextView textView = (TextView) ((Activity)getContext()).findViewById(R.id.unique_page_textview);
-                    textView.setVisibility(VISIBLE);
-                    textView.setText(pageUniqueList.get(curPageIndex));
-                } else {
-                    TextView textView = (TextView) ((Activity)getContext()).findViewById(R.id.unique_page_textview);
                     textView.setVisibility(INVISIBLE);
                 }
             }
