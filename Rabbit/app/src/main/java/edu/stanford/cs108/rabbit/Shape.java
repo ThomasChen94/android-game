@@ -443,17 +443,12 @@ public class Shape {
 
     //Draw the shape-self; text takes precedence over image
     public void draw(Canvas canvas) {
-<<<<<<< HEAD
         //if (Shape.canvas == null) Shape.canvas = canvas;
-=======
-        Matrix matrix = new Matrix();
->>>>>>> origin/master
         if (text != null && !text.equals("")) {
             canvas.drawText(text, rectF.left, rectF.bottom, textPaint);
-        } else if (imageBitmap != null) {
-            matrix.postScale(size, size);
-            Bitmap resizeBmp = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
-            canvas.drawBitmap(resizeBmp, rectF.left, rectF.top, new Paint());
+        } else if (imageBitmap != null && hidden == false) {
+            canvas.drawBitmap(imageBitmap, rectF.left, rectF.top, new Paint());
+
             if (highlightBoarder) {
                 Paint pt = new Paint();
                 pt.setColor(Color.GREEN);

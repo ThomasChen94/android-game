@@ -69,7 +69,6 @@ public final class GameDatabase {
         this.db = db;
     }
 
-<<<<<<< HEAD
     public Page getPage(String page) {
         Cursor cursor = db.rawQuery(
                 "SELECT * FROM shapes WHERE page = \"" + page + "\" and name not like '%info';", null);
@@ -153,8 +152,6 @@ public final class GameDatabase {
 //
 //        return new Page(image, sound, shapeList, name, page, game);
 //    }
-=======
->>>>>>> origin/master
 
     // updata the given shape
     public void updateShape(Shape shape) {
