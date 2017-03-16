@@ -154,6 +154,10 @@ public final class GameDatabase {
 ////        String image    = pageCursor.getString(pageCursor.getColumnIndex("image"));
 //        return new Page("", "", shapeList, "", "", "");
 //    }
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 
     // updata the given shape
     public void updateShape(Shape shape) {

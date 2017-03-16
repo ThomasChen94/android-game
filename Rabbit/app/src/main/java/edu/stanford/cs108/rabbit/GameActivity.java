@@ -57,10 +57,14 @@ public class GameActivity extends Activity {
 
 
 
+<<<<<<< Updated upstream
 
 
         //Shape.setContext(getApplicationContext());   setContext has been moved to GameView's constructor
 
+=======
+
+>>>>>>> Stashed changes
     }
 
 
