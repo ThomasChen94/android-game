@@ -574,4 +574,11 @@ public class GameActivity extends Activity {
         System.out.println("Inventory local: " + "left: " + rect.left + ", right: " + rect.right + ", top: " + rect.top + ", bottom: " + rect.bottom);
 
     }
+
+    public void restart(View view) {
+        GameView gameView = (GameView) findViewById(R.id.gameView);
+        gameView.loaded = false;
+        loadGame();
+
+    }
 }
