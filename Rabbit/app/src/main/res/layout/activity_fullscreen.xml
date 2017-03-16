@@ -2,26 +2,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#eeeeee"
+    android:background="@drawable/background"
     tools:context="edu.stanford.cs108.rabbit.FullscreenActivity">
 
     <LinearLayout
-        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="3dp">
         <Button
             android:id="@+id/start_button"
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:background="@drawable/playgame_icon"
+            android:background="@drawable/pz_start_icon"
             android:onClick="click"/>
-
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"/>
         <Button
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:layout_gravity="top"
-            android:background="@drawable/editor_icon"
+            android:background="@drawable/pz_editor_icon"
             android:id="@+id/edit_button"
             android:onClick="editClick"/>
 
