@@ -34,6 +34,7 @@ public class GameView extends View {
         Shape.setContext(context);
 
 
+<<<<<<< HEAD
 
         currPage = gameDatabase.getPage("3"); // get the first page
 
@@ -54,6 +55,8 @@ public class GameView extends View {
         });*/
 
 
+=======
+>>>>>>> origin/master
         Display display = ((Activity)getContext()).getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -86,7 +89,7 @@ public class GameView extends View {
 //        System.out.println("currPage unique name!!!!!!" + currPage.getUniqueName() );
 //        System.out.println("newPage unique name!!!!!!" + newPage.getUniqueName() );
 
-        pageChanged = true;  //this line should be commented out when the next line works
+        pageChanged = true;
         if (!newPage.getUniqueName().equals(currPage.getUniqueName())) pageChanged = true; //TODO now both curr and new page's uniquename is "".
         currPage = newPage;
         invalidate(); //Once the page is changed, redraw the view.

@@ -28,7 +28,10 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -49,6 +52,10 @@ public class EditActivity extends Activity {
     protected static final String RAW = "raw";
     HorizontalScrollView hsv;
     HorizontalScrollView hsvPage;
+
+    SeekBar resizeSeekbar;
+    RelativeLayout relativeLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +102,7 @@ public class EditActivity extends Activity {
         hsv = (HorizontalScrollView) findViewById(R.id.hsv);
         hsvPage = (HorizontalScrollView) findViewById(R.id.hsv_page);
 
-
+        initResizeSeekbar();
     }
 
 
@@ -130,7 +137,10 @@ public class EditActivity extends Activity {
         }
 
         hsvLayoutPage.setAdapter(hsvAdapterPage);
-
+        TextView textView1 = (TextView) findViewById(R.id.page_textview);
+        textView1.setText(editView.curGameName + editView.curPageName);
+        TextView textView2 = (TextView) findViewById(R.id.unique_page_textview);
+        textView2.setText(editView.pageUniqueList.get(editView.curPageIndex));
     }
 
     public void showInsertMenu(View view) {
@@ -185,11 +195,13 @@ public class EditActivity extends Activity {
             public void onClick(View v) {
                 String changedShapeName = editText.getText().toString();
                 if (editView.gameDatabase.renameShape(editView.getCurShape().uniqueName, changedShapeName)) {
+                    editView.getCurShape().setName(changedShapeName);
+                    // editView.gameDatabase.updateShape(editView.getCurShape());
                     dialog.dismiss();
                 } else {
                     final EditView editView = (EditView) findViewById(R.id.editView);
                     AlertDialog.Builder builderWarning = new AlertDialog.Builder(EditActivity.this);
-                    builderWarning.setTitle("Duplicated Game Name");
+                    builderWarning.setTitle("Duplicated Shape Name");
                     builderWarning.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -315,11 +327,18 @@ public class EditActivity extends Activity {
         Integer[] shapeImageID = new Integer[allShapeList.size()];
         String[] shapeName = new String[allShapeList.size()];
         for (int i = 0; i < allShapeList.size(); i++) {
-            shapeImageID[i] = getResources().getIdentifier(allShapeList.get(i).image, DRAWABLE, getPackageName());
-            shapeName[i] = allShapeList.get(i).name;
+            if (allShapeList.get(i).text.isEmpty()) {
+                shapeImageID[i] = getResources().getIdentifier(allShapeList.get(i).image, DRAWABLE, getPackageName());
+                shapeName[i] = allShapeList.get(i).name;
+            } else {
+                shapeImageID[i] = getResources().getIdentifier("textbox_icon", DRAWABLE, getPackageName());
+                shapeName[i] = allShapeList.get(i).name + "\n" + allShapeList.get(i).text;
+            }
         }
+
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Choose Shape to Hide");
+        builder.setTitle("Choose Shape to Drop");
         ListAdapter adapter = new ArrayAdapterWithIcon(this, shapeName, shapeImageID);
         builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
             @Override
@@ -391,7 +410,8 @@ public class EditActivity extends Activity {
         builder.setSingleChoiceItems(pageNameList, -1, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                editView.togoPageSelected = pageNameList[which];
+                //editView.togoPageSelected = pageNameList[which];
+                editView.togoPageSelected = editView.pageUniqueList.get(which);
             }
         });
         builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
@@ -447,7 +467,7 @@ public class EditActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 editView.tmpScript[2] = "SHOW";
-                editView.tmpScript[3] = editView.shapeList.get(which).name + "";
+                editView.tmpScript[3] = editView.shapeList.get(which).uniqueName + "";
                 editView.flushTmpScriptToRawScript();
 
               //  editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
@@ -480,7 +500,7 @@ public class EditActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 editView.tmpScript[2] = "HIDE";
-                editView.tmpScript[3] = editView.shapeList.get(which).name + "";
+                editView.tmpScript[3] = editView.shapeList.get(which).uniqueName + "";
                 editView.flushTmpScriptToRawScript();
 
                 //editView.gameDatabase.updateShape(editView.getCurShape(), editView.getCurGameName());
@@ -626,6 +646,7 @@ public class EditActivity extends Activity {
         editView.curPageIndex = 0;
         editView.updateCurPage(newPage);
         resetPageList();
+        editView.popupWindowPage.dismiss();
     }
 
 
@@ -635,5 +656,40 @@ public class EditActivity extends Activity {
         editView.gameDatabase.deleteGame(editView.curGameName);
         Intent intent = new Intent(this, FullscreenActivity.class);
         startActivity(intent);
+    }
+
+    public void initResizeSeekbar() {
+        relativeLayout = (RelativeLayout) findViewById(R.id.resize_component);
+        resizeSeekbar = (SeekBar) findViewById(R.id.resize_seekbar_edit);
+        resizeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                final EditView editView = (EditView) findViewById(R.id.editView);
+                float size = (float ) 1.0 * progress / 100;
+                if (size > 0.3) {
+                    editView.curShape.setSize(size);
+                }
+                editView.invalidate();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                final EditView editView = (EditView) findViewById(R.id.editView);
+                editView.gameDatabase.updateShape(editView.curShape);
+            }
+        });
+    }
+
+    public void resize(View view) {
+        relativeLayout.setVisibility(View.VISIBLE);
+        final EditView editView = (EditView) findViewById(R.id.editView);
+        resizeSeekbar.setProgress((int)(editView.getCurShape().size * 100));
+        editView.popupWindowMain.dismiss();
+        editView.popupWindowAttribute.dismiss();
     }
 }

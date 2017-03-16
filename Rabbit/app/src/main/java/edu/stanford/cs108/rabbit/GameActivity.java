@@ -47,9 +47,12 @@ public class GameActivity extends Activity {
         gameDatabase = GameDatabase.getInstance();
         gameDatabase.getDb(Shape.context);
 
+<<<<<<< HEAD
 
         //Shape.setContext(getApplicationContext());   setContext has been moved to GameView's constructor
 
+=======
+>>>>>>> origin/master
     }
 
     @Override
@@ -163,18 +166,14 @@ public class GameActivity extends Activity {
                 moveShapeToPage();
             }
         }
-        processOnDrop();
+        processOnDropAction();
 
         gameView.invalidate();
         inventoryView.invalidate();
     }
 
-
-    List<Action> onDropActions = null;
-    private void processOnDrop() {
+    private void processOnDropAction() {
         Shape droppingShape;
-        onDropActions = null;
-
         if (selectInventoryItem) droppingShape = selectedShapeCopy;
         else droppingShape = selectedShape;
 
@@ -183,22 +182,13 @@ public class GameActivity extends Activity {
         System.out.println("uniquename is ?" + droppingShape.getUniqueName());
 
         if (droppingShape == null) return;
-        boolean foundTouchingShape = false;
         for (int i = pageShapeList.size()-1; i>=0; i--) {
             Shape shape = pageShapeList.get(i);
-            if (shape == droppingShape || shape.isHidden() || (shape.text!=null && !shape.text.equals(""))) continue;
-            if (isTouching(droppingShape, shape) && !foundTouchingShape) {
-                foundTouchingShape = true;
-                if (onDropActions == null) onDropActions = shape.getOnDropActionsForShape(droppingShape);
-                if (onDropActions != null) {
-                    System.out.println("onDropActions has size : " + onDropActions.size());
+            if (shape == droppingShape || (shape.text!=null && !shape.text.equals(""))) continue;
+            if (isTouching(droppingShape, shape)) {
+                if (shape.hasOnDropForShape(droppingShape)) {
                     shape.highlightBoarder(true);
                 }
-                else {
-                    foundTouchingShape = false;
-                    shape.highlightBoarder(false);
-                }
-
             } else {
                 shape.highlightBoarder(false);
             }
@@ -278,15 +268,6 @@ public class GameActivity extends Activity {
             //selectedShape.onDrop();
         }
 
-        System.out.println("onDropActions == null? ");
-        System.out.println("" + onDropActions == null);
-
-
-        if (onDropActions != null) {
-            System.out.println("(in upHandler) onDropActions has size : " + onDropActions.size());
-            processOnDropAction();
-        }
-
         if (isDragToInventory) {
             if (isInInventory((int)downX, (int)downY)) { //If ACTION_UP happens inside inventory, add the shape to inventory and remove it from page
                 dragToInventory();
@@ -312,55 +293,16 @@ public class GameActivity extends Activity {
         inventoryView.invalidate();
     }
 
-    private void processOnDropAction() {
-        for (Action action : onDropActions) {
-            if (action instanceof OnDropAction) {
-                System.out.println("there is a onDrop action object");
-                List<String> actionList = action.actionList;
-                for (String str : actionList) {
-                    //System.out.println(str);
-                    if (str.contains("GOTO")) {
-                        System.out.println(str);
-                        action.onGoto(str.trim().substring(5));
-                    }
-                    if (str.contains("SHOW")) {
-                        System.out.println(str);
-                        action.onShow(str.trim().substring(5));
-                    }
-                    if (str.contains("HIDE")) {
-                        System.out.println(str);
-                        action.onHide(str.trim().substring(5));
-                    }
-                    if (str.contains("PLAY")) {
-                        System.out.println("The song is: " + str.trim().substring(5));
-                        action.onPlay(str.trim().substring(5));
-                    }
-                }
-            }
-        }
-        onDropActions = null;  //Set to null once done processing it
-    }
-
     private void processOnClickAction() {
 
         for (Action action : triggerActionList) {
             if (action instanceof OnClickAction) {
-                System.out.println("there is a onCLick action object");
                 List<String> actionList = action.actionList;
                 for (String str : actionList) {
                     //System.out.println(str);
-                    if (str.contains("GOTO")) {
-                        System.out.println(str);
-                        action.onGoto(str.trim().substring(5));
-                    }
-                    if (str.contains("SHOW")) {
-                        System.out.println(str);
-                        action.onShow(str.trim().substring(5));
-                    }
-                    if (str.contains("HIDE")) {
-                        System.out.println(str);
-                        action.onHide(str.trim().substring(5));
-                    }
+                    if (str.contains("GOTO")) action.onGoto(str.trim().substring(5));
+                    if (str.contains("SHOW")) action.onShow(str.trim().substring(5));
+                    if (str.contains("HIDE")) action.onHide(str.trim().substring(5));
                     if (str.contains("PLAY")) {
                         System.out.println("The song is: " + str.trim().substring(5));
                         action.onPlay(str.trim().substring(5));
