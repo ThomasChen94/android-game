@@ -73,6 +73,7 @@ public class Shape {
     static float viewWidth;
     static float viewHeight;
     static GameView gameView;
+    static InventoryView inventoryView;
     static int currentShapeNumber = 0; // counting the current shapes in our app
 
     final String[] scriptPrimitives = new String[] {"GOTO", "PLAY", "HIDE", "SHOW"};
@@ -162,6 +163,10 @@ public class Shape {
 
     public static void setGameView(GameView gameViewPass) {
         gameView = gameViewPass;
+    }
+
+    public static void setInventoryView(InventoryView inventoryViewPass) {
+        inventoryView = inventoryViewPass;
     }
 
     public JSONObject parseStringToJson(String script) {
@@ -510,7 +515,7 @@ public class Shape {
     //TODO: can be merged with onPlay();
     //e.g. pass this when creating
     public void playSound() {
-        System.out.println(context == null);
+        //System.out.println(context == null);
         int soundId = context.getResources().getIdentifier(soundName, RAW, context.getPackageName());
         mp = MediaPlayer.create(context, soundId);
         mp.start();
@@ -551,7 +556,7 @@ public class Shape {
         List<Action> onDropActions = new ArrayList<>();
         for (Action action : triggerActionList) {
             if (action instanceof OnDropAction) {
-                System.out.println("Has on drop action");
+                //System.out.println("Has on drop action");
                 if (((OnDropAction)action).droppingShapeUniqueName.equals(shape1.getUniqueName()))
                     onDropActions.add(action);
             }

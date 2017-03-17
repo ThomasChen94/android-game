@@ -44,12 +44,12 @@ public class GameView extends View {
         Display display = ((Activity)getContext()).getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        System.out.println("width: " + size.x + " height: " + size.y);
+        //System.out.println("width: " + size.x + " height: " + size.y);
         Shape.setGameView(this);
         Shape.setViewHeight(size.y);
         Shape.setViewWidth(size.x);
         // currPage = gameDatabase.getPage("Game1Page1"); // get the first page
-        System.out.print("");
+        //System.out.print("");
 
         pageChanged = true;//for first page on enter actions
     }
@@ -90,35 +90,35 @@ boolean loaded = false;
 
     private void processOnEnter() {
         count++;
-        System.out.println("I am in onEnter!!!!!!" + count);
+        //System.out.println("I am in onEnter!!!!!!" + count);
         List<Shape> currPageShapeList= currPage.getShapeList();
         for (Shape shape : currPageShapeList) {
             List<Action> triggerActionList = shape.getTriggerActionList();
             for (Action action : triggerActionList) {
                 if (action instanceof OnEnterAction) {
-                    System.out.println("found onEnter Action");
+                    //System.out.println("found onEnter Action");
                     List<String> actionList = action.actionList;
                     for (String str : actionList) {
-                        System.out.println(str);
+                        //System.out.println(str);
 
                         if (str.contains("GOTO")) {
-                            System.out.println("calling GOTO");
+                            //System.out.println("calling GOTO");
 
                             action.onGoto(str.trim().substring(5));
                         }
                         if (str.contains("SHOW")) {  //Tested; it is working
-                            System.out.println("calling SHOW");
+                            //System.out.println("calling SHOW");
                             action.onShow(str.trim().substring(5));
                             //action.onHide("page2_shape1");
                         }
                         if (str.contains("HIDE")) {
-                            System.out.println("calling HIDE");
+                            //System.out.println("calling HIDE");
 
                             action.onHide(str.trim().substring(5));
                         }
                         if (str.contains("PLAY")) {
-                            System.out.println("calling PLAY");
-                            System.out.println("The song is: " + str.trim().substring(5));
+                            //System.out.println("calling PLAY");
+                            //System.out.println("The song is: " + str.trim().substring(5));
                             action.onPlay(str.trim().substring(5));
                         }
                     }

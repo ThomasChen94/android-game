@@ -40,8 +40,10 @@ public class InventoryView extends View {
         super.onDraw(canvas);
 
         for (Shape shape : inventoryShapes) {
-            shape.draw(canvas);
-            System.out.println(shape.rectF.toString());
+            if (!shape.hidden) {
+                shape.draw(canvas);
+                //System.out.println(shape.rectF.toString());
+            }
 
         }
     }

@@ -53,7 +53,8 @@ public class GameActivity extends Activity {
         gameView = (GameView) findViewById(R.id.gameView);
         inventoryView = (InventoryView) findViewById(R.id.inventory);
         Shape.setGameView(gameView);
-        System.out.println("if has gameview:" + Shape.gameView == null);
+        Shape.setInventoryView(inventoryView);
+        //System.out.println("if has gameview:" + Shape.gameView == null);
 
 
 
@@ -170,7 +171,7 @@ public class GameActivity extends Activity {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: {
                 downEventHandler(event);
-                System.out.println("Action_down!!!!");
+                //System.out.println("Action_down!!!!");
                 break;
             }
             case MotionEvent.ACTION_MOVE: {
@@ -226,18 +227,21 @@ public class GameActivity extends Activity {
         } //|| !isClickOnInventory((int)downX, (int)downY)
 
         if (selectedShape != null) {
+            //System.out.println("clicked on carrort");
+            //System.out.println("Carrot's uniquename?" + selectedShape.getUniqueName());
+            //System.out.println("Carrot hidden?" + selectedShape.hidden);
             relativeX = downX - selectedShape.getRectF().left;
             relativeY = downY - selectedShape.getRectF().top;
         }
 
-        testInventoryDimension();
+        //testInventoryDimension();
     }
 
     private void findShape(List<Shape> shapeList, float downX, float downY) {
         for (int i = shapeList.size()-1; i>=0; i--) {
             if (shapeList.get(i).getRectF().contains(downX, downY)) {
                 selectedShape =  shapeList.get(i);
-                System.out.println(selectedShape.getName());
+                //System.out.println(selectedShape.getName());
                 //uncomment this to allow selection to appear on top of all. Problematic when selection is big and not movable ,
                 // so selection will cover and hide other shape
 //                shapeList.remove(i);
@@ -303,7 +307,7 @@ public class GameActivity extends Activity {
                 foundTouchingShape = true;
                 if (onDropActions == null) onDropActions = shape.getOnDropActionsForShape(droppingShape);
                 if (onDropActions != null) {
-                    System.out.println("onDropActions has size : " + onDropActions.size());
+                    //System.out.println("onDropActions has size : " + onDropActions.size());
                     shape.highlightBoarder(true);
                 }
                 else {
@@ -390,12 +394,12 @@ public class GameActivity extends Activity {
             //selectedShape.onDrop();
         }
 
-        System.out.println("onDropActions == null? ");
-        System.out.println("" + onDropActions == null);
+        //System.out.println("onDropActions == null? ");
+        //System.out.println("" + onDropActions == null);
 
 
         if (onDropActions != null) {
-            System.out.println("(in upHandler) onDropActions has size : " + onDropActions.size());
+            //System.out.println("(in upHandler) onDropActions has size : " + onDropActions.size());
             processOnDropAction();
         }
 
@@ -408,7 +412,7 @@ public class GameActivity extends Activity {
                     selectedShape.setRectFLeftTop(selectedShape.getRectF().left, inventoryRect.top - selectedShape.getRectF().height());
             }
         }
-        System.out.println("selectedCopy exist?" + inventoryShapeList.contains(selectedShapeCopy));
+        //System.out.println("selectedCopy exist?" + inventoryShapeList.contains(selectedShapeCopy));
         if (isDragToPage) {
             if (isInPage((int)downX, (int)downY)) {
                 dragToPage();
@@ -427,24 +431,24 @@ public class GameActivity extends Activity {
     private void processOnDropAction() {
         for (Action action : onDropActions) {
             if (action instanceof OnDropAction) {
-                System.out.println("there is a onDrop action object");
+                //System.out.println("there is a onDrop action object");
                 List<String> actionList = action.actionList;
                 for (String str : actionList) {
-                    System.out.println(str);
+                    //System.out.println(str);
                     if (str.contains("GOTO")) {
-                        System.out.println(str);
+                        //System.out.println(str);
                         action.onGoto(str.trim().substring(5));
                     }
                     if (str.contains("SHOW")) {
-                        System.out.println(str);
+                        //System.out.println(str);
                         action.onShow(str.trim().substring(5));
                     }
                     if (str.contains("HIDE")) {
-                        System.out.println(str);
+                        //System.out.println(str);
                         action.onHide(str.trim().substring(5));
                     }
                     if (str.contains("PLAY")) {
-                        System.out.println("The song is: " + str.trim().substring(5));
+                        //System.out.println("The song is: " + str.trim().substring(5));
                         action.onPlay(str.trim().substring(5));
                     }
                 }
@@ -458,24 +462,24 @@ public class GameActivity extends Activity {
 
         for (Action action : triggerActionList) {
             if (action instanceof OnClickAction) {
-                System.out.println("there is a onCLick action object");
+                //System.out.println("there is a onCLick action object");
                 List<String> actionList = action.actionList;
                 for (String str : actionList) {
                     //System.out.println(str);
                     if (str.contains("GOTO")) {
-                        System.out.println(str);
+                        //System.out.println(str);
                         action.onGoto(str.trim().substring(5));
                     }
                     if (str.contains("SHOW")) {
-                        System.out.println(str);
+                        //System.out.println(str);
                         action.onShow(str.trim().substring(5));
                     }
                     if (str.contains("HIDE")) {
-                        System.out.println(str);
+                        //System.out.println(str);
                         action.onHide(str.trim().substring(5));
                     }
                     if (str.contains("PLAY")) {
-                        System.out.println("The song is: " + str.trim().substring(5));
+                        //System.out.println("The song is: " + str.trim().substring(5));
                         action.onPlay(str.trim().substring(5));
                     }
                 }
@@ -500,7 +504,7 @@ public class GameActivity extends Activity {
     private void dragToInventory() {
 //        if (selectedShape == null) System.out.println("selectedShape == null?" + true);
 //        else System.out.println("selectedShape == null?" + false);
-        System.out.println("selectedShape is contained?" + pageShapeList.contains(selectedShape));
+        //System.out.println("selectedShape is contained?" + pageShapeList.contains(selectedShape));
         pageShapeList.remove(selectedShape);
         //gameDatabase.deleteShape(selectedShape);  //Don't include database for the moment, otherwise my local database will be modified and testing cannot be done.
         selectedShapeCopy.setPage("Inventory");

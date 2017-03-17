@@ -3,6 +3,7 @@ package edu.stanford.cs108.rabbit;
 import android.content.Context;
 import android.media.MediaPlayer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,6 +15,8 @@ public abstract class Action {
     List<String> actionList;
     MediaPlayer mp;
     GameView gameView;
+    InventoryView inventoryView;
+    List<Shape> inventoryShapeList;
     Context context;
     GameDatabase gameDatabase;
     Page currPage;
@@ -23,6 +26,7 @@ public abstract class Action {
     public Action(List<String> actionList) {
         this.actionList = actionList;
         gameView = Shape.gameView;
+        inventoryView = Shape.inventoryView;
         context = Shape.context;
         gameDatabase = GameDatabase.getInstance();
         gameDatabase.getDb(context);
@@ -30,7 +34,11 @@ public abstract class Action {
 
     public void setPage() {
         currPage = gameView.getCurrPage();
-        currShapeList = currPage.getShapeList();
+        currShapeList = new ArrayList<>();
+        for (Shape shape : currPage.getShapeList()) currShapeList.add(shape);
+        for (Shape shape : inventoryView.getInventoryShapes()) currShapeList.add(shape);
+        //inventoryShapeList = inventoryView.getInventoryShapes();
+        //currShapeList.addAll(inventoryShapeList);
     }
 
     //Actions handlers: onGoto, onShow, onHide, onPlay.
@@ -46,19 +54,16 @@ public abstract class Action {
 //        }
     }
 
-//    private void processOnEnter() {
-//
-//    }
 
     public void onShow(String shapeName) {
-        System.out.println("shapeName is: " + shapeName );
+        //System.out.println("shapeName is: " + shapeName );
         setPage();
         Shape targetShape = null;
         for (int i = 0; i<currShapeList.size(); i++) {
-            System.out.println("current shape name is: " + currShapeList.get(i).getUniqueName() );
+            //System.out.println("current shape name is: " + currShapeList.get(i).getUniqueName() );
             if (currShapeList.get(i).getUniqueName().equals(shapeName)) {
                 targetShape = currShapeList.get(i);
-                System.out.println("targetShape found" );
+                //System.out.println("targetShape found" );
                 break;
             }
         }
@@ -77,6 +82,7 @@ public abstract class Action {
         for (int i = 0; i<currShapeList.size(); i++) {
             if (currShapeList.get(i).getUniqueName().equals(shapeName)) {
                 targetShape = currShapeList.get(i);
+                targetShape.setHidden(true);
             }
         }
         if (targetShape == null) {
