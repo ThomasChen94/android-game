@@ -2,6 +2,7 @@ package edu.stanford.cs108.rabbit;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.view.View;
 
@@ -48,6 +49,8 @@ public class Page {
         this.name = name;
     }
 
+
+
     public Page(String background, String soundName, List<Shape> shapeList, String pageName, String pageUniqueName, String gameName) {
         this.background = background;
         this.soundName = soundName;
@@ -55,9 +58,15 @@ public class Page {
         this.name = pageName;
         this.uniqueName = pageUniqueName;
         this.game = gameName;
+
+    }
+
+    private void initBG() {
+        //backgroundDrawable = (BitmapDrawable) get
     }
 
     public void draw(Canvas canvas) {
+
         for (Shape shape : shapeList) {
             if (!shape.hidden) {
                 shape.setRectF();

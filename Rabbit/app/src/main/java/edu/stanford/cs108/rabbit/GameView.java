@@ -6,8 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.Display;
@@ -52,9 +55,19 @@ public class GameView extends View {
         //System.out.print("");
 
         pageChanged = true;//for first page on enter actions
+        initBG();
     }
 
-boolean loaded = false;
+    BitmapDrawable backgroundDrawable;
+    Bitmap backgroundBitmap;
+
+    private void initBG() {
+        backgroundDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.grassland_bg);
+        backgroundBitmap = backgroundDrawable.getBitmap();
+    }
+
+    boolean loaded = false;
+
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -62,6 +75,7 @@ boolean loaded = false;
         //System.out.println(getWidth() + " " + getHeight());
 //        System.out.println("I am in onDraw!!!!!!" );
 //        System.out.println("pageChanged!!!!!!" + pageChanged );
+        canvas.drawBitmap(backgroundBitmap, null, new RectF(0,0, 1196, 768), null);
 
         if (pageChanged == true) {
             if (loaded) processOnEnter();

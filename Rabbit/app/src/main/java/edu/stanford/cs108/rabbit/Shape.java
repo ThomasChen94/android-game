@@ -505,7 +505,7 @@ public class Shape {
                 Paint pt = new Paint();
                 pt.setColor(Color.GREEN);
                 pt.setStyle(Paint.Style.STROKE);
-                pt.setStrokeWidth(5.0f);
+                pt.setStrokeWidth(40.0f);
                 canvas.drawRect(rectF, pt);
             }
         }
