@@ -38,21 +38,15 @@ public class GameView extends View {
 
         gameDatabase = GameDatabase.getInstance();
         gameDatabase.getDb(context);
-        //currPage = gameDatabase.getPage(1);
 
         Shape.setContext(context);
-
-        //currPage = gameDatabase.getPage("3"); // get the first page
 
         Display display = ((Activity)getContext()).getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        //System.out.println("width: " + size.x + " height: " + size.y);
         Shape.setGameView(this);
         Shape.setViewHeight(size.y);
         Shape.setViewWidth(size.x);
-        // currPage = gameDatabase.getPage("Game1Page1"); // get the first page
-        //System.out.print("");
 
         pageChanged = true;//for first page on enter actions
         initBG();
@@ -72,9 +66,7 @@ public class GameView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        //System.out.println(getWidth() + " " + getHeight());
-//        System.out.println("I am in onDraw!!!!!!" );
-//        System.out.println("pageChanged!!!!!!" + pageChanged );
+
         canvas.drawBitmap(backgroundBitmap, null, new RectF(0,0, 1196, 768), null);
 
         if (pageChanged == true) {
@@ -91,11 +83,7 @@ public class GameView extends View {
 
 
     public void setCurrentPage(Page newPage) {
-//        System.out.println("currPage unique name!!!!!!" + currPage.getUniqueName() );
-//        System.out.println("newPage unique name!!!!!!" + newPage.getUniqueName() );
-
-        pageChanged = true;  //this line should be commented out when the next line works
-        if (!newPage.getUniqueName().equals(currPage.getUniqueName())) pageChanged = true; //TODO now both curr and new page's uniquename is "".
+        if (!newPage.getUniqueName().equals(currPage.getUniqueName())) pageChanged = true;
         currPage = newPage;
         invalidate(); //Once the page is changed, redraw the view.
 
@@ -104,35 +92,23 @@ public class GameView extends View {
 
     private void processOnEnter() {
         count++;
-        //System.out.println("I am in onEnter!!!!!!" + count);
         List<Shape> currPageShapeList= currPage.getShapeList();
         for (Shape shape : currPageShapeList) {
             List<Action> triggerActionList = shape.getTriggerActionList();
             for (Action action : triggerActionList) {
                 if (action instanceof OnEnterAction) {
-                    //System.out.println("found onEnter Action");
                     List<String> actionList = action.actionList;
                     for (String str : actionList) {
-                        //System.out.println(str);
-
                         if (str.contains("GOTO")) {
-                            //System.out.println("calling GOTO");
-
                             action.onGoto(str.trim().substring(5));
                         }
-                        if (str.contains("SHOW")) {  //Tested; it is working
-                            //System.out.println("calling SHOW");
+                        if (str.contains("SHOW")) {
                             action.onShow(str.trim().substring(5));
-                            //action.onHide("page2_shape1");
                         }
                         if (str.contains("HIDE")) {
-                            //System.out.println("calling HIDE");
-
                             action.onHide(str.trim().substring(5));
                         }
                         if (str.contains("PLAY")) {
-                            //System.out.println("calling PLAY");
-                            //System.out.println("The song is: " + str.trim().substring(5));
                             action.onPlay(str.trim().substring(5));
                         }
                     }

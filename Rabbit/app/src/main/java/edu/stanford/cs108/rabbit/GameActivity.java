@@ -47,19 +47,12 @@ public class GameActivity extends Activity {
         gameDatabase = GameDatabase.getInstance();
         gameDatabase.getDb(Shape.context);
 
-
         loadGame();
 
         gameView = (GameView) findViewById(R.id.gameView);
         inventoryView = (InventoryView) findViewById(R.id.inventory);
         Shape.setGameView(gameView);
         Shape.setInventoryView(inventoryView);
-        //System.out.println("if has gameview:" + Shape.gameView == null);
-
-
-
-
-
         //Shape.setContext(getApplicationContext());   setContext has been moved to GameView's constructor
 
     }
@@ -69,63 +62,6 @@ public class GameActivity extends Activity {
 
 
     public void loadGame() {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-//        builder.setMessage("Load Game");
-//        builder.setTitle("");
-//
-//        // Create Game
-//        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//
-//            }
-//        });
-//        // Load Game
-//        builder.setNegativeButton("Load", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                final List<String> gameList = gameDatabase.getGameNameList();
-//                final Integer[] gameImageID = new Integer[gameList.size()];
-//                for (int i = 0; i < gameList.size(); i++) {
-//                    gameImageID[i] = getResources().getIdentifier(EditView.GAMEICONLIST[i % EditView.GAMEICONLIST.length], EditView.DRAWABLE, EditView.PACKAGENAME);
-//                }
-//                final String[] gameName = new String[gameList.size()];
-//                for (int i = 0; i < gameList.size(); i++) {
-//                    gameName[i] = gameList.get(i);
-//                }
-//                AlertDialog.Builder builderLoad = new AlertDialog.Builder(GameActivity.this);
-//                builderLoad.setTitle("Choose Game to Load");
-//                ListAdapter adapter = new ArrayAdapterWithIcon(GameActivity.this, gameName, gameImageID);
-//                builderLoad.setAdapter(adapter, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        String gameName = gameList.get(which);
-//                        List<Page> curPageList = gameDatabase.getGameByName(gameName);
-//                        String firstPageUniqueName = curPageList.get(0).uniqueName;
-//                        GameView gameView = (GameView) findViewById(R.id.gameView);
-//                        gameView.initFirstPage(gameView.gameDatabase.getPage(firstPageUniqueName));
-//                        gameView.loaded = true;
-//                        gameView.invalidate();
-//                    }
-//                });
-//                builderLoad.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        Intent intent = new Intent(GameActivity.this, FullscreenActivity.class);
-//                        startActivity(intent);
-//                    }
-//                });
-//                builderLoad.setCancelable(false);
-//                AlertDialog dialogLoad = builderLoad.create();
-//                dialogLoad.setCanceledOnTouchOutside(false);
-//                dialogLoad.show();
-//            }
-//        });
-//        AlertDialog dialogLoadOrCreate = builder.create();
-//        dialogLoadOrCreate.setCanceledOnTouchOutside(false);
-//        dialogLoadOrCreate.show();
-
-
 
         final List<String> gameList = gameDatabase.getGameNameList();
         final Integer[] gameImageID = new Integer[gameList.size()];
@@ -171,7 +107,6 @@ public class GameActivity extends Activity {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: {
                 downEventHandler(event);
-                //System.out.println("Action_down!!!!");
                 break;
             }
             case MotionEvent.ACTION_MOVE: {
@@ -180,7 +115,6 @@ public class GameActivity extends Activity {
             }
             case MotionEvent.ACTION_UP: {
                 upEventHandler(event);
-
                 break;
             }
         }
@@ -217,7 +151,7 @@ public class GameActivity extends Activity {
         float downY = event.getY();
         String curPos = "x: " + downX + " y: " +downY;
         Toast toast = Toast.makeText(getApplicationContext(), curPos, Toast.LENGTH_SHORT);
-        toast.show();
+        //toast.show();
         if (!inventoryIsOn || !isClickOnInventory((int)downX, (int)downY) ) {//Not click on inventory); test if clicked on some shape
             findShape(pageShapeList, downX, downY); //assign shape found to selectedShape;
         } else { //TODO: clicked in inventory area
@@ -227,9 +161,6 @@ public class GameActivity extends Activity {
         } //|| !isClickOnInventory((int)downX, (int)downY)
 
         if (selectedShape != null) {
-            //System.out.println("clicked on carrort");
-            //System.out.println("Carrot's uniquename?" + selectedShape.getUniqueName());
-            //System.out.println("Carrot hidden?" + selectedShape.hidden);
             relativeX = downX - selectedShape.getRectF().left;
             relativeY = downY - selectedShape.getRectF().top;
         }
@@ -241,7 +172,6 @@ public class GameActivity extends Activity {
         for (int i = shapeList.size()-1; i>=0; i--) {
             if (shapeList.get(i).getRectF().contains(downX, downY)) {
                 selectedShape =  shapeList.get(i);
-                //System.out.println(selectedShape.getName());
                 //uncomment this to allow selection to appear on top of all. Problematic when selection is big and not movable ,
                 // so selection will cover and hide other shape
 //                shapeList.remove(i);
@@ -260,7 +190,6 @@ public class GameActivity extends Activity {
 
     private void dragEventHandler(MotionEvent event) {
         isClick = false;
-        if (selectedShape != null) System.out.println("selectedShape.movable" + selectedShape.movable);
         if (selectedShape != null && !selectedShape.isHidden() && selectedShape.movable) { //Selected a shape
             if (!selectInventoryItem) { //Selected a shape in page
                 moveShapeInPage(event);
@@ -294,10 +223,6 @@ public class GameActivity extends Activity {
         if (selectInventoryItem) droppingShape = selectedShapeCopy;
         else droppingShape = selectedShape;
 
-        //comment these two line when using working database.
-//        droppingShape.uniqueName = "carrot";  //this line is to give the shape in inventory a unique name
-//        System.out.println("uniquename is ?" + droppingShape.getUniqueName());
-
         if (droppingShape == null) return;
         boolean foundTouchingShape = false;
         for (int i = pageShapeList.size()-1; i>=0; i--) {
@@ -307,7 +232,6 @@ public class GameActivity extends Activity {
                 foundTouchingShape = true;
                 if (onDropActions == null) onDropActions = shape.getOnDropActionsForShape(droppingShape);
                 if (onDropActions != null) {
-                    //System.out.println("onDropActions has size : " + onDropActions.size());
                     shape.highlightBoarder(true);
                 }
                 else {
@@ -331,8 +255,6 @@ public class GameActivity extends Activity {
         if (selectedShapeCopy == null) selectedShapeCopy = Shape.deepCopyShape(selectedShape);
         selectedShapeCopy.setRectFLeftTop(selectedShape.getRectF().left, selectedShape.getRectF().top - inventoryHeightOffset);
         if (!inventoryShapeList.contains(selectedShapeCopy)) {
-//            System.out.println("inventoryView.getTop()" + inventoryView.getTop());
-//            System.out.println("adding: left = " + selectedShapeCopy.getRectF().left + ", top = " + selectedShapeCopy.getRectF().top);
             inventoryShapeList.add(selectedShapeCopy);
         }
     }
@@ -352,7 +274,6 @@ public class GameActivity extends Activity {
 
     private boolean isInInventory(int x, int y) {
         return y >= inventoryRect.top;
-        //return inventoryRect.contains(x, y);
     }
 
 
@@ -390,16 +311,9 @@ public class GameActivity extends Activity {
         if (isClick) {
             triggerActionList = selectedShape.getTriggerActionList();
             processOnClickAction();
-        } else {
-            //selectedShape.onDrop();
         }
 
-        //System.out.println("onDropActions == null? ");
-        //System.out.println("" + onDropActions == null);
-
-
         if (onDropActions != null) {
-            //System.out.println("(in upHandler) onDropActions has size : " + onDropActions.size());
             processOnDropAction();
         }
 
@@ -412,7 +326,6 @@ public class GameActivity extends Activity {
                     selectedShape.setRectFLeftTop(selectedShape.getRectF().left, inventoryRect.top - selectedShape.getRectF().height());
             }
         }
-        //System.out.println("selectedCopy exist?" + inventoryShapeList.contains(selectedShapeCopy));
         if (isDragToPage) {
             if (isInPage((int)downX, (int)downY)) {
                 dragToPage();
@@ -431,24 +344,18 @@ public class GameActivity extends Activity {
     private void processOnDropAction() {
         for (Action action : onDropActions) {
             if (action instanceof OnDropAction) {
-                //System.out.println("there is a onDrop action object");
                 List<String> actionList = action.actionList;
                 for (String str : actionList) {
-                    //System.out.println(str);
                     if (str.contains("GOTO")) {
-                        //System.out.println(str);
                         action.onGoto(str.trim().substring(5));
                     }
                     if (str.contains("SHOW")) {
-                        //System.out.println(str);
                         action.onShow(str.trim().substring(5));
                     }
                     if (str.contains("HIDE")) {
-                        //System.out.println(str);
                         action.onHide(str.trim().substring(5));
                     }
                     if (str.contains("PLAY")) {
-                        //System.out.println("The song is: " + str.trim().substring(5));
                         action.onPlay(str.trim().substring(5));
                     }
                 }
@@ -462,24 +369,18 @@ public class GameActivity extends Activity {
 
         for (Action action : triggerActionList) {
             if (action instanceof OnClickAction) {
-                //System.out.println("there is a onCLick action object");
                 List<String> actionList = action.actionList;
                 for (String str : actionList) {
-                    //System.out.println(str);
                     if (str.contains("GOTO")) {
-                        //System.out.println(str);
                         action.onGoto(str.trim().substring(5));
                     }
                     if (str.contains("SHOW")) {
-                        //System.out.println(str);
                         action.onShow(str.trim().substring(5));
                     }
                     if (str.contains("HIDE")) {
-                        //System.out.println(str);
                         action.onHide(str.trim().substring(5));
                     }
                     if (str.contains("PLAY")) {
-                        //System.out.println("The song is: " + str.trim().substring(5));
                         action.onPlay(str.trim().substring(5));
                     }
                 }
@@ -497,21 +398,16 @@ public class GameActivity extends Activity {
         selectedShapeCopy.setPage(currPage.getName());
         if (selectedShapeCopy.getRectF().bottom >= inventoryRect.top)
             selectedShapeCopy.setRectFLeftTop(selectedShapeCopy.getRectF().left, inventoryRect.top - selectedShapeCopy.getRectF().height());
-
         //gameDatabase.addShape(selectedShapeCopy);
     }
 
     private void dragToInventory() {
-//        if (selectedShape == null) System.out.println("selectedShape == null?" + true);
-//        else System.out.println("selectedShape == null?" + false);
-        //System.out.println("selectedShape is contained?" + pageShapeList.contains(selectedShape));
         pageShapeList.remove(selectedShape);
         //gameDatabase.deleteShape(selectedShape);  //Don't include database for the moment, otherwise my local database will be modified and testing cannot be done.
         selectedShapeCopy.setPage("Inventory");
         selectedShapeCopy.setRectFLeftTop(selectedShapeCopy.getRectF().left, inventoryRect.top - inventoryHeightOffset); //Second arg is essentially 0 (local inventory y coordinate)
 
         //gameDatabase.addShape(selectedShapeCopy);
-
     }
 
 
@@ -553,9 +449,9 @@ public class GameActivity extends Activity {
         Rect rect = wrappingSlidingDrawerRect;
         System.out.println("WrappingDrawer: " + "left: " + rect.left + ", right: " + rect.right + ", top: " + rect.top + ", bottom: " + rect.bottom);
 
-        inventoryView = (InventoryView) findViewById(R.id.inventory);//初始化略过不表
+        inventoryView = (InventoryView) findViewById(R.id.inventory);
         inventoryRect = new Rect();
-        inventoryView.getGlobalVisibleRect(inventoryRect);//此时rec的坐标就是以屏幕左上角为基础的.
+        inventoryView.getGlobalVisibleRect(inventoryRect);
         rect = inventoryRect;
         System.out.println("Inventory: " + "left: " + rect.left + ", right: " + rect.right + ", top: " + rect.top + ", bottom: " + rect.bottom);
 
@@ -573,7 +469,7 @@ public class GameActivity extends Activity {
         rect = turnOffInventoryRect;
         System.out.println("Turn off: "+"left: " + rect.left + ", right: " + rect.right + ", top: " + rect.top + ", bottom: " + rect.bottom);
 
-        inventoryView.getLocalVisibleRect(inventoryRect);//此时rec的坐标就是以屏幕左上角为基础的.
+        inventoryView.getLocalVisibleRect(inventoryRect);
         rect = inventoryRect;
         System.out.println("Inventory local: " + "left: " + rect.left + ", right: " + rect.right + ", top: " + rect.top + ", bottom: " + rect.bottom);
 

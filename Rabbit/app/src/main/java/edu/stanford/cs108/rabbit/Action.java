@@ -37,8 +37,6 @@ public abstract class Action {
         currShapeList = new ArrayList<>();
         for (Shape shape : currPage.getShapeList()) currShapeList.add(shape);
         for (Shape shape : inventoryView.getInventoryShapes()) currShapeList.add(shape);
-        //inventoryShapeList = inventoryView.getInventoryShapes();
-        //currShapeList.addAll(inventoryShapeList);
     }
 
     //Actions handlers: onGoto, onShow, onHide, onPlay.
@@ -47,23 +45,15 @@ public abstract class Action {
         Page newPage = gameDatabase.getPage(pageName.trim());  //Implemented a dummy selectPage() in GameDatabase, should delete that.
         gameView.setCurrentPage(newPage);
         String prevPageName = currPage.getUniqueName();
-        //gameView.invalidate();
-//        if (!newPage.equals(prevPageName)) {
-//            setPage();
-//            processOnEnter();
-//        }
     }
 
 
     public void onShow(String shapeName) {
-        //System.out.println("shapeName is: " + shapeName );
         setPage();
         Shape targetShape = null;
         for (int i = 0; i<currShapeList.size(); i++) {
-            //System.out.println("current shape name is: " + currShapeList.get(i).getUniqueName() );
             if (currShapeList.get(i).getUniqueName().equals(shapeName)) {
                 targetShape = currShapeList.get(i);
-                //System.out.println("targetShape found" );
                 break;
             }
         }

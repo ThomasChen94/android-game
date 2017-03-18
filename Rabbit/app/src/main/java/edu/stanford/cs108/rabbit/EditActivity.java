@@ -173,11 +173,7 @@ public class EditActivity extends Activity {
         builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-//                String changedID = editText.getText().toString();
-//                if (!changedID.isEmpty()) {
-//                    editView.getCurShape().setName(changedID);
-//                    editView.gameDatabase.updateShape(editView.getCurShape());
-//                }
+
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

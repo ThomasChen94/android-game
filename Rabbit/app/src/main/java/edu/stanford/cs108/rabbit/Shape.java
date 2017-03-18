@@ -98,7 +98,6 @@ public class Shape {
     }
 
     public Shape(String image, float size, String text, String soundName, String uniqueName, String name, String page, String script, int order, boolean hidden, boolean movable, float left, float top, float right, float bottom) {
-        //currentShapeNumber++; // every time constructing a new shape, increment the counter
 
         this.image = image;
         this.text = text;
@@ -372,67 +371,6 @@ public class Shape {
         onDropJSON = jsonObject.getJSONObject("on drop");
     }
 
-    //Trigger handlers implementation of onTouchEvent in custom view.
-//    public void onClick() throws JSONException {
-//        actionProcessor(onClickJSON);
-//    }
-//
-//    public void onDrop() throws JSONException {
-//        actionProcessor(onDropJSON);
-//    }
-//
-//    public void onEnter() throws JSONException {
-//        actionProcessor(onEnterJSON);
-//   }
-
-    //Parse actions in the trigger-specific JSONObject and call the corresponding action handler.
-//    private void actionProcessor(JSONObject jsonObject) throws JSONException {
-//        Iterator<String> keys = jsonObject.keys();
-//
-//        while(keys.hasNext()) {
-//            String key = keys.next();
-//            String value = jsonObject.getString(key);
-//
-//            switch (key) {
-//                case "goto": onGoto(value);
-//                    break;
-//                case "show": onShow(value);
-//                    break;
-//                case "hide": onHide(value);
-//                    break;
-//                case "play": onPlay(value);
-//            }
-//        }
-//    }
-
-
-    //Actions handlers: onGoto, onShow, onHide, onPlay.
-    public void onGoto(String pageName) {
-        GameDatabase gameDatabase = GameDatabase.getInstance();
-        Page newPage = gameDatabase.getPage(pageName);  //Implemented a dummy selectPage() in GameDatabase, should delete that.
-        gameView.setCurrentPage(newPage);
-    }
-
-    //TODO: waiting for db's update shape method
-    public void onShow(String shapeName) {
-        //need to see if this shape "shapeName" is in the current page, if so, invalidate();
-    }
-
-    //TODO: waiting for db's update shape method
-    public void onHide(String shapeName) {
-        //need to see if this shape "shapeName" is in the current page, if so, invalidate();
-
-    }
-
-    //TODO: merge this will playSound()
-    public void onPlay(String soundName) {
-        int soundId = context.getResources().getIdentifier(soundName, RAW, context.getPackageName());
-        mp = MediaPlayer.create(context, soundId);
-        mp.start();
-    }
-
-
-
 
     //initialize BitmapDrawable of the shape's associated image
 
@@ -512,16 +450,6 @@ public class Shape {
     }
 
 
-    //TODO: can be merged with onPlay();
-    //e.g. pass this when creating
-    public void playSound() {
-        //System.out.println(context == null);
-        int soundId = context.getResources().getIdentifier(soundName, RAW, context.getPackageName());
-        mp = MediaPlayer.create(context, soundId);
-        mp.start();
-
-    }
-
     public String getRawScript() {
         return rawScript;
     }
@@ -556,7 +484,6 @@ public class Shape {
         List<Action> onDropActions = new ArrayList<>();
         for (Action action : triggerActionList) {
             if (action instanceof OnDropAction) {
-                //System.out.println("Has on drop action");
                 if (((OnDropAction)action).droppingShapeUniqueName.equals(shape1.getUniqueName()))
                     onDropActions.add(action);
             }

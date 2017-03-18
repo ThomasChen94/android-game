@@ -150,33 +150,6 @@ public class EditView extends View {
 
                 gameList = gameDatabase.getGameNameList();
 
-//                final EditText editTextPage = new EditText(getContext());
-//                final int newPageIndex = pageUserList.size() + 1;
-//                editTextPage.setText("Page" + newPageIndex);
-//                AlertDialog.Builder builderPage = new AlertDialog.Builder(getContext());
-//                builderPage.setTitle("Rename");
-//                builderPage.setView(editTextPage);
-//                builderPage.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        insertPage(editTextPage.getText().toString());
-//                        setCurPageName(editTextPage.getText().toString());
-//                    }
-//                });
-//                builderPage.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        insertPage("Page" + newPageIndex);
-//                        setCurPageName("Page" + newPageIndex);
-//                    }
-//                });
-//                builderPage.setCancelable(true);
-//                AlertDialog dialogPage = builderPage.create();
-//                dialogPage.setCanceledOnTouchOutside(false);
-//                dialogPage.show();
-
-//                insertPage("Page1");
-//                setCurPageName("Page1");
 
                 final EditText editTextGame = new EditText(getContext());
                 final String gameUniqueName = "Game" + String.valueOf(gameList.size() + 1);
@@ -187,10 +160,6 @@ public class EditView extends View {
                 builderGame.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        setCurGameName(editTextGame.getText().toString());
-//                        gameDatabase.addGame(gameUniqueName, editTextGame.getText().toString());
-//                        insertPage("Page1");
-//                        setCurPageName("Page1");
                     }
                 });
                 builderGame.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -356,8 +325,7 @@ public class EditView extends View {
         if (curShape == null) {
             RelativeLayout relativeLayout = (RelativeLayout) ((Activity)getContext()).findViewById(R.id.resize_component);
             relativeLayout.setVisibility(INVISIBLE);
-//            SeekBar seekbar = (SeekBar) ((Activity)getContext()).findViewById(R.id.resize_seekbar_edit);
-//            seekbar.setVisibility(INVISIBLE);
+
         }
         TextView textView = (TextView) ((Activity)getContext()).findViewById(R.id.position_textview);
         if (textView.getVisibility() == VISIBLE) {
@@ -554,15 +522,12 @@ public class EditView extends View {
             }
         });
 
-        //popupWindowAttribute.showAtLocation(this, Gravity.LEFT, width, 0);
-
     }
 
     public void expandScriptMenu() {
 
         int width = popupWindowMain.getContentView().getMeasuredWidth();
         popupWindowScript.showAsDropDown(((Activity) getContext()).findViewById(R.id.hidden), width, 0);
-        //popupWindowScript.showAtLocation(this, Gravity.LEFT, width, 0);
     }
 
     public Shape getLastShape() {
@@ -593,13 +558,9 @@ public class EditView extends View {
         int widthMain = popupWindowMain.getContentView().getMeasuredWidth();
         int widthScript = popupWindowScript.getContentView().getMeasuredWidth();
         popupWindowAction.showAsDropDown(((Activity) getContext()).findViewById(R.id.hidden), widthMain + widthScript, 0);
-        //popupWindowAction.showAtLocation(this, Gravity.LEFT, widthMain + widthScript, 0);
     }
 
     public void showShapeScript() {
-//        Toast toast = Toast.makeText(getContext(), curShape.getScript(), Toast.LENGTH_SHORT);
-//        toast.show();
-//        System.out.println(curShape.getRawScript());
 
         final EditView editView = (EditView) findViewById(R.id.editView);
         String curScript = editView.getCurShape().getScript();
