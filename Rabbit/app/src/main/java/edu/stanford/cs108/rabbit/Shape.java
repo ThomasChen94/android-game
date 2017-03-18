@@ -413,6 +413,7 @@ public class Shape {
     //Draw the shape-self; text takes precedence over image
     public void draw(Canvas canvas) {
         Matrix matrix = new Matrix();
+        setSize(this.size);
         if (text != null && !text.equals("") ) {
             canvas.drawText(text, rectF.left, rectF.bottom, textPaint);
         } else if (imageBitmap != null) {
